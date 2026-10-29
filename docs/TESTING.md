@@ -59,6 +59,7 @@ and ask first.
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
 | `test/domain/conversation/child_safety_filter_test.dart` | Personal info, self-harm, bullying, medical and off-limits detection; ordinary questions (incl. big numbers, look-alike words) pass |
 | `test/domain/conversation/curated_response_provider_test.dart` | Starter prompts, brief example, matching, rotation, quiz/adventure actions, honesty about being a computer, fallback, safety precedence; content rules over every answer |
+| `test/domain/conversation/curated_matching_test.dart` | About 55 real questions and the topic each must reach; specific beats broad; typo and plural forgiveness; misfire guards ("planes", "trains", "plants"); pinned answers; honest "not sure" lead-ins vs fact requests; lead-ins within 60 words; pinned indexes valid; library size |
 | `test/ui/home/home_accessibility_test.dart` | Tap target, label and contrast guidelines; screen-reader labels; no overflow at small/large/landscape/tablet sizes and 2x text; reduced motion |
 | `test/ui/core/widgets/buddy_test.dart` | Buddy label, one-shot wave, tap reaction, reduced motion, every mood paints |
 
@@ -110,6 +111,10 @@ user-visible change:
         Nothing opens until the button is tapped.
   - [ ] Type "my phone number is 07700 900123": the number is not shown;
         Buddy says to keep it private.
+  - [ ] Ask "why do cats purr" (twice), "can dogs see colours", "how do bees
+        make honey": each gets an answer to that exact question.
+  - [ ] Ask "what do snakes eat": Buddy says he is not sure of that exact
+        question and offers a snake fact.
   - [ ] Type something unknown ("capital of Mongolia"): Buddy says he does
         not know yet.
   - [ ] Voice off: answers still appear, Buddy stays silent.

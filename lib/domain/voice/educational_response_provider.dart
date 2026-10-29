@@ -45,6 +45,7 @@ class EducationalResponse {
   const EducationalResponse({
     required this.text,
     this.kind = ResponseKind.answer,
+    this.topicId,
     this.action,
     this.actionLabel,
     this.followUps = const [],
@@ -54,6 +55,9 @@ class EducationalResponse {
   /// Short sentences, written to be heard as well as read.
   final String text;
   final ResponseKind kind;
+
+  /// Which curated topic answered, if any (for tests and debugging only).
+  final String? topicId;
 
   /// Optional activity Buddy offers to open. Never run automatically; the
   /// child must tap it.

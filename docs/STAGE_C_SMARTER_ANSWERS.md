@@ -1,8 +1,26 @@
 # Stage C Proposal: Smarter Answers
 
-**Status: proposal, awaiting approval. Nothing here is implemented.** Buddy
-still answers only from reviewed, offline content; no AI service, backend
-or API key exists.
+**Status: Option A approved and implemented (awaiting review); Option C
+approved in principle for later, after the legal/privacy review and
+parental consent.** Buddy still answers only from reviewed, offline
+content; no AI service, backend or API key exists.
+
+### Option A, as built
+
+- About 70 reviewed topics (from about 25): animals, space, Earth and
+  weather, the human body, science, history and clean jokes.
+- Matching: plurals and possessives fold to the base word; one-letter typos
+  forgiven only for long, distinctive names (`typoTolerantWords`), because
+  forgiving ordinary words caused misfires ("planes" → "planets").
+- Pinned answers: question words select the answer that actually answers
+  ("why do cats purr" always gets the purr answer).
+- Honesty: a specific question that only matches a subject gets "I'm not
+  sure about that exact question yet. Here's a snake fact instead!"
+  instead of a fact passed off as an answer.
+- On a sample of 30 typical questions: 25 answered directly (was 10), 1
+  honest "not sure" with a related fact, 4 honest "I don't know yet".
+- Tested by `test/domain/conversation/curated_matching_test.dart` (a table
+  of real questions and the topic each must reach, plus misfire guards).
 
 ## The problem
 

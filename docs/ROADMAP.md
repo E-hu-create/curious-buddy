@@ -72,12 +72,15 @@ Details: [STAGE_B_VOICE_INPUT.md](STAGE_B_VOICE_INPUT.md).
 
 Stage B's tap-to-talk awaits phone testing and review.
 
-## Voice companion: Stage C, smarter answers (proposal, needs approval)
+## Voice companion: Stage C, smarter answers
 
-See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md): recommends
-growing the offline curated library now (Option A) and a cloud AI behind an
-app-owned backend only after legal/privacy review and parental consent
-(Option C). Not started.
+See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
+
+- ✅ Option A (awaiting review): about 70 reviewed offline topics, forgiving
+  but guarded matching, pinned answers, honest "not sure" lead-ins.
+- ⏳ Option C (cloud AI behind an app-owned backend): only after the
+  legal/privacy review, a provider and backend owner, and a parental
+  consent approach are decided. Not started.
 
 ## Phase 3: Persistent progress and settings
 

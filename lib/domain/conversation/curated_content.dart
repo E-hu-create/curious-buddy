@@ -1,20 +1,25 @@
 import '../voice/educational_response_provider.dart';
 
+part 'curated_topics_more.dart';
+
 /// Reviewed, offline answers Buddy can give today.
 ///
-/// Content rules (checked by test/domain/conversation/curated_content_test):
+/// Content rules (checked by test/domain/conversation/curated_*_test):
 /// * Short sentences that sound natural read aloud; at most ~60 words.
 /// * Facts must be well established. Prefer "about" for rounded numbers.
 /// * Buddy is honest: a computer character, not a person, sometimes wrong.
 /// * Every action points at an existing screen in the app.
 ///
 /// To add a topic: add a [CuratedTopic] below, with triggers a child might
-/// actually say, then add a test question for it.
+/// actually say, then add a test question for it in
+/// curated_matching_test.dart.
 class CuratedTopic {
   const CuratedTopic({
     required this.id,
     required this.triggers,
     required this.answers,
+    this.subject,
+    this.pinned = const {},
     this.action,
     this.actionLabel,
     this.followUps = const [],
@@ -28,10 +33,93 @@ class CuratedTopic {
 
   /// Rotated in order so repeated questions get fresh answers.
   final List<String> answers;
+
+  /// Set for "facts about a subject" topics (e.g. 'dog'). When a specific
+  /// question matches only the subject and no [pinned] answer, Buddy says
+  /// honestly that he is not sure of that exact answer and offers a
+  /// [subject] fact instead.
+  final String? subject;
+
+  /// Question word → index in [answers] that actually answers it, e.g.
+  /// `{'purr': 0}` so "why do cats purr" always gets the purr answer.
+  final Map<String, int> pinned;
+
   final BuddyAction? action;
   final String? actionLabel;
   final List<String> followUps;
 }
+
+/// Words that mean "just tell me something", so a subject fact is the right
+/// reply and needs no "not sure" lead-in.
+const factRequestWords = {
+  'fact',
+  'facts',
+  'tell',
+  'about',
+  'something',
+  'another',
+  'more',
+  'cool',
+  'fun',
+  'interesting',
+  'amazing',
+};
+
+/// Words that mark a specific question.
+const questionWords = {
+  'how',
+  'why',
+  'what',
+  "what's",
+  'when',
+  'where',
+  'who',
+  'which',
+  'can',
+  'do',
+  'does',
+  'did',
+  'is',
+  'are',
+  'will',
+  'could',
+  'would',
+};
+
+/// The only words where a one-letter typo is forgiven: long, distinctive
+/// names children often misspell. Ordinary words ("planets", "seasons")
+/// must match exactly, or look-alikes ("planes", "reasons") would misfire.
+const typoTolerantWords = {
+  'astronaut',
+  'butterfly',
+  'caterpillar',
+  'chameleon',
+  'cheetah',
+  'chrysalis',
+  'diaphragm',
+  'dinosaur',
+  'dolphin',
+  'earthquake',
+  'elephant',
+  'giraffe',
+  'gravity',
+  'hiccup',
+  'jellyfish',
+  'lightning',
+  'penguin',
+  'photosynthesis',
+  'pyramid',
+  'rainbow',
+  'skeleton',
+  'snowflake',
+  'spider',
+  'tyrannosaurus',
+  'volcano',
+};
+
+String notSureLeadIn(String subject) =>
+    "I'm not sure about that exact question yet. "
+    "Here's a $subject fact instead! ";
 
 /// Shown on Home before the child has asked anything.
 const starterPrompts = [
@@ -89,8 +177,9 @@ const curatedTopics = <CuratedTopic>[
     ],
     answers: [
       'You can type a question, or tap one of the ideas. '
-          'I know about animals, space, weather and nature. '
-          'I can also take you to missions and stories!',
+          'I know about animals, space, weather, nature, your body and '
+          'science. I can tell jokes, too! '
+          'And I can take you to missions and stories!',
     ],
     followUps: [
       'Tell me an animal fact.',
@@ -298,6 +387,9 @@ const curatedTopics = <CuratedTopic>[
     followUps: ['Tell me an animal fact.', 'How do rainbows form?'],
   ),
 
+  // More specific topics (animals, space, Earth, body, science, jokes).
+  ..._moreTopics,
+
   // ----------------------------------------------------------------- space
   CuratedTopic(
     id: 'moon_distance',
@@ -334,6 +426,7 @@ const curatedTopics = <CuratedTopic>[
       ['moon'],
       ['sun'],
     ],
+    subject: 'space',
     answers: [
       'A day on Venus is longer than its whole year! '
           'Venus spins very slowly, so one turn takes longer than one trip '
@@ -355,6 +448,8 @@ const curatedTopics = <CuratedTopic>[
       ['whale'],
       ['shark'],
     ],
+    subject: 'ocean',
+    pinned: {'octopus': 0, 'heart': 0, 'whale': 1, 'shark': 2},
     answers: [
       'An octopus has three hearts and blue blood! '
           'Want to discover another ocean secret?',
@@ -370,11 +465,10 @@ const curatedTopics = <CuratedTopic>[
     triggers: [
       ['animal'],
       ['animals'],
-      ['dog'],
-      ['cat'],
       ['bird'],
       ['insect'],
     ],
+    subject: 'animal',
     answers: [
       'Sea otters hold hands while they sleep, so they do not drift apart!',
       'Butterflies taste with their feet. '
