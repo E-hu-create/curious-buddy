@@ -19,7 +19,7 @@ is built.
 
 | Data | Why | Where |
 | --- | --- | --- |
-| IDs of completed missions and stories | Show progress | `LearnerProgress` via `ProgressRepository` |
+| IDs of completed missions and stories, and best mission points | Show progress, badges and replay results | `LearnerProgress` via `ProgressRepository` |
 | Voice on/off (`voice.muted`) | Respect the choice to keep Buddy quiet | `BuddyVoice` via `KeyValueStore` |
 | Allow online voice recognition (`voice.allowOnlineRecognition`), off by default | Grown-up choice about where speech is recognised | `BuddyListener` via `KeyValueStore` |
 | *Future:* Creative Island creations | Child's own work | Local storage, deletable from Parent Zone |

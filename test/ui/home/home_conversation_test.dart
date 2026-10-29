@@ -3,6 +3,7 @@ import 'package:curious_buddy/domain/conversation/curated_content.dart';
 import 'package:curious_buddy/ui/home/home_view_model.dart';
 import 'package:curious_buddy/ui/home/widgets/ask_buddy_panel.dart';
 import 'package:curious_buddy/ui/home/widgets/buddy_greeting.dart';
+import 'package:curious_buddy/ui/missions/missions_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -152,7 +153,7 @@ void main() {
     await tester.tap(open);
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('Mystery Missions are coming soon'), findsOne);
+    expect(find.text(MissionsScreen.title), findsOne);
   });
 
   testWidgets('activities never open by themselves', (tester) async {

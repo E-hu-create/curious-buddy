@@ -49,4 +49,59 @@ void main() {
       expect(progress.completedStoryIds, isEmpty);
     });
   });
+
+  group('mission scores (schema 2)', () {
+    test('round-trips best points', () {
+      const progress = LearnerProgress(
+        completedMissionIds: {'moon'},
+        missionBestPoints: {'moon': 120},
+      );
+
+      expect(LearnerProgress.tryFromJson(progress.toJson()), progress);
+    });
+
+    test('reads version 1 data (no scores) without losing missions', () {
+      final progress = LearnerProgress.tryFromJson({
+        'schemaVersion': 1,
+        'completedMissionIds': ['moon'],
+      });
+
+      expect(progress!.completedMissionIds, {'moon'});
+      expect(progress.missionBestPoints, isEmpty);
+    });
+
+    test('drops malformed scores but keeps valid ones', () {
+      final progress = LearnerProgress.tryFromJson({
+        'schemaVersion': 2,
+        'missionBestPoints': {
+          'ok': 50,
+          'negative': -5,
+          'huge': LearnerProgress.maxPoints + 1,
+          'text': 'lots',
+          'Bad Id': 10,
+        },
+      });
+
+      expect(progress!.missionBestPoints, {'ok': 50});
+    });
+
+    test('withMissionResult records completion and keeps the best score', () {
+      final first = LearnerProgress.empty.withMissionResult('moon', 100);
+      final worse = first.withMissionResult('moon', 60);
+      final better = worse.withMissionResult('moon', 140);
+
+      expect(first.completedMissionIds, {'moon'});
+      expect(worse.missionBestPoints['moon'], 100);
+      expect(better.missionBestPoints['moon'], 140);
+    });
+
+    test('total points add each mission best', () {
+      final progress = LearnerProgress.empty
+          .withMissionResult('a', 100)
+          .withMissionResult('b', 50)
+          .withMissionResult('a', 80);
+
+      expect(progress.totalMissionPoints, 150);
+    });
+  });
 }

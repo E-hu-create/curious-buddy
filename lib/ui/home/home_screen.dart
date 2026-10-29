@@ -88,7 +88,15 @@ class _HomeScreenState extends State<HomeScreen> {
     };
   }
 
-  void _open(String route) => Navigator.of(context).pushNamed(route);
+  /// Opens a screen; when the child comes back, refresh progress so new
+  /// mission results show up on Home.
+  void _open(String route) {
+    unawaited(
+      Navigator.of(
+        context,
+      ).pushNamed(route).then((_) => _home.refreshProgress()),
+    );
+  }
 
   /// Tap-to-talk: explain first, and only then let Android ask for the
   /// microphone. Nothing is listened to before the child taps Talk.
@@ -191,6 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ExplorerLog(
                           missionsSolved: progress.completedMissionIds.length,
                           storiesFinished: progress.completedStoryIds.length,
+                          points: progress.totalMissionPoints,
                         ),
                       ],
                       const SizedBox(height: 28),

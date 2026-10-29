@@ -9,10 +9,14 @@ class ExplorerLog extends StatelessWidget {
     super.key,
     required this.missionsSolved,
     required this.storiesFinished,
+    this.points = 0,
   });
 
   final int missionsSolved;
   final int storiesFinished;
+
+  /// Total best mission points. Shown once there are any.
+  final int points;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +34,12 @@ class ExplorerLog extends StatelessWidget {
           color: AppColors.grape,
           label: _count(storiesFinished, 'story finished', 'stories finished'),
         ),
+        if (points > 0)
+          _Stat(
+            icon: Icons.workspace_premium_rounded,
+            color: AppColors.leaf,
+            label: _count(points, 'point', 'points'),
+          ),
       ],
     );
   }

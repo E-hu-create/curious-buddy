@@ -58,6 +58,12 @@ and ask first.
 | `test/ui/parent_zone/parent_zone_screen_test.dart` | Settings hidden behind the parent check; wrong answer; online setting off by default, explanation, toggling saves; on-device status; reached from Grown-ups |
 | `test/data/services/shared_preferences_key_value_store_test.dart` | Save / read / delete, survives a new store ("restart"), keys independent, lazy creation, plugin errors become `StorageException`, real app uses device storage |
 | `test/ui/home/home_restart_test.dart` | Voice off and back on remembered across app restarts; saved progress shown after restart; grown-up online setting remembered |
+| `test/domain/missions/mission_content_test.dart` | Three valid missions; every step solvable; mixed mechanics; wrong choices explain; content safe; puzzle logic computed (shift code, decoys, doubling, beep pattern, word-order uniqueness, timeline, garden clues) |
+| `test/domain/missions/mission_rules_test.dart` | Evaluator for single / multi / order (wrong pick, missing, misplaced, incomplete); scoring (hints never cost, mistakes only skip bonus, max); validator rejects bad stages and missions |
+| `test/data/repositories/mission_repository_test.dart` | Loads three missions offline; leaves out invalid and duplicate missions; empty catalogue |
+| `test/ui/missions/mission_play_view_model_test.dart` | Intro narration; clues; hints; check/retry; locking; next; order editing; shuffle never pre-solved; each mission finished, scored and saved; finishing with mistakes; replay keeps best; failed save; Hear again / Stop; dispose stops speech; voice off |
+| `test/ui/missions/missions_screen_test.dart` | Home opens real Missions; loading, empty, error; full play-throughs; hints and wrong answers; saved, solved, best score, replay; Play again; leaving and Stop silence Buddy; no microphone; Home shows new points |
+| `test/ui/missions/missions_accessibility_test.dart` | Tap target, label and contrast guidelines on list and step; every step of a mission without overflow on small phones and 2x text |
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
 | `test/domain/conversation/child_safety_filter_test.dart` | Personal info, self-harm, bullying, medical and off-limits detection; ordinary questions (incl. big numbers, look-alike words) pass |
 | `test/domain/conversation/curated_response_provider_test.dart` | Starter prompts, brief example, matching, rotation, quiz/adventure actions, honesty about being a computer, fallback, safety precedence; content rules over every answer |
@@ -160,6 +166,23 @@ user-visible change:
       restarts cleanly; media volume at 0 does not break the flow; a call or
       alarm during narration does not crash; denying the microphone leaves a
       working tap alternative.
+- [ ] **Mystery Missions (Phase 4):**
+  - [ ] Home → Mystery Missions: three cases with covers, "New case", 0 points.
+  - [ ] Open a case: Buddy reads the scene; "Stop talking" silences him;
+        "Hear again" repeats.
+  - [ ] Inspect clues; tap the speaker on a clue to hear it.
+  - [ ] Pick a wrong answer → "Keep investigating!" with the reason; pick
+        the right one → "Great reasoning!" plus the explanation.
+  - [ ] Hints appear one at a time; the last says "No more hints".
+  - [ ] Garden step 3 and Signals step 3: tap pieces to order them; tap a
+        placed piece to take it back; "Start over" clears.
+  - [ ] Finish: badge, points breakdown, solution read aloud.
+  - [ ] Back to missions: "Solved", best score, badge on the shelf;
+        "Play again" restarts.
+  - [ ] Press back mid-narration: Buddy stops at once.
+  - [ ] Go back to Home: the explorer log shows the mission and points.
+  - [ ] Force-stop and reopen: solved missions and points are still there.
+  - [ ] Voice off: missions still fully playable with text only.
 - [ ] **Saved settings (Phase 3):** turn Voice off, then force-stop the app
       (Settings → Apps → Curious Buddy → Force stop) and reopen: Buddy stays
       quiet and shows "Voice on". Turn it back on, force-stop, reopen: the

@@ -21,6 +21,10 @@ lib/
     home/                   Home and exploration (Phase 1)
       home_screen.dart, home_view_model.dart, home_destination.dart
       widgets/              Greeting bubble, explorer log, destination grid
+    missions/               Mystery Missions (Phase 4)
+      missions_screen.dart, missions_view_model.dart        Case list
+      mission_play_screen.dart, mission_play_view_model.dart  Playing a case
+      widgets/              Drawn covers, clue cards, choices, order builder
     <feature>/              One folder per feature (see below)
       <feature>_screen.dart
       <feature>_view_model.dart   ChangeNotifier holding screen state/logic
@@ -62,14 +66,14 @@ guards (e.g. the Parent Zone gate) that become awkward without it.
 ## Planned feature boundaries
 
 Each becomes a folder under `lib/ui/` (and `lib/domain/` / `lib/data/` only if
-it needs its own logic or data). Only Home exists. The other destinations
-are routes in `routes.dart` that show `PlaceholderScreen` until built; Home's
-cards come from the `HomeDestination` enum.
+it needs its own logic or data). Home and Mystery Missions exist. The other
+destinations are routes in `routes.dart` that show `PlaceholderScreen` until
+built; Home's cards come from the `HomeDestination` enum.
 
 | Feature | UI folder | Depends on |
 | --- | --- | --- |
 | Home and exploration | `ui/home/` | progress repository |
-| Mystery missions and learning games | `ui/missions/` | progress repository, Narrator |
+| Mystery missions and learning games ✅ | `ui/missions/`, `domain/missions/` | mission repository, progress repository, BuddyVoice |
 | Buddy voice narration and speech input | `domain/voice/`, `data/services/voice/` | (shared service; no own screen) |
 | Living Stories | `ui/stories/` | Narrator, progress repository |
 | Creative Island | `ui/creative/` | local storage only |
@@ -224,6 +228,51 @@ and filter its output too. Any external AI service must sit behind an
 app-owned backend that holds API keys, applies safety checks and stores
 nothing; no keys in the app. Document and get approval first.
 
+## Mystery Missions (Phase 4)
+
+```
+MissionsScreen ─► MissionsViewModel ─► MissionRepository (BundledMissionRepository)
+      │                     └────────► ProgressRepository (best points, solved)
+      └─ push ─► MissionPlayScreen ─► MissionPlayViewModel ─► StageEvaluator, MissionScore
+                                             ├─► BuddyVoice (narration)
+                                             └─► ProgressRepository (save on finish)
+```
+
+| Piece | File | Job |
+| --- | --- | --- |
+| Models | `domain/missions/mission.dart` | `Mission`, `Clue`, `Choice`, `OrderPiece`, and the stage mechanics as a sealed class: `ChoiceStage` (pick one), `MultiSelectStage` (pick all that fit), `OrderStage` (put in order). Every stage has optional clues, progressive hints and an explanation. |
+| Rules | `domain/missions/mission_rules.dart` | `StageEvaluator` (right/wrong with specific feedback), `MissionScore` (transparent points), `MissionValidator` (playability checks). |
+| Content | `domain/missions/mission_content.dart` | The three starter missions, as data separate from UI. |
+| Repository | `data/repositories/mission_repository.dart` | Loads bundled missions offline; leaves out invalid or duplicate ones instead of showing them broken. |
+| Play flow | `ui/missions/mission_play_view_model.dart` | Intro → stages → completion; clue inspection; selections; hints; check/next; replay; save; narration. |
+
+**Mechanics.** Clues start face down and are revealed with "Inspect clue".
+Wrong answers explain why and, if clues are still hidden, Buddy asks
+"Have you inspected every clue?". Single-choice answers unlock for a retry;
+multi-select and order answers keep the child's work. Order pieces are shown
+in a fixed shuffle that is never already correct. A solved step locks and
+shows its explanation.
+
+**Scoring** (`MissionScore`): 50 for solving the case, 10 per step, a 10
+bonus per step right first time, and 5 per clue inspected. Hints and mistakes
+never subtract points, so every child can finish. The completion screen shows
+the breakdown. The best score per mission is kept; replays never lower it.
+
+**Narration.** Buddy reads the opening scene when a case opens, reads the
+question after each step change, reads clues and the question on request,
+speaks feedback, hints and the wrap-up, and offers "Hear again" and "Stop
+talking". Everything spoken is also on screen. Speech stops when the child
+leaves (`MissionPlayViewModel.dispose` and `VoiceNavigatorObserver`); the
+shared `BuddyVoice` prevents overlap. The microphone is never used in
+missions (tested).
+
+**Validation.** `MissionValidator` requires: at least two stages with unique
+ids; a prompt, at least one hint and an explanation per stage; exactly one
+correct choice for single-choice stages; at least one right and one wrong
+option for multi-select; at least three unique pieces for order stages; and
+texts of at most 70 words. Tests also check the puzzles' logic by computing
+the answers (for example decoding the shift code).
+
 ## Saved progress
 
 `LearnerProgress` (domain model) is stored as versioned JSON by
@@ -236,6 +285,8 @@ nothing; no keys in the app. Document and get approval first.
   the app falls back to empty progress. Only the latest bad copy is kept.
 - **Storage errors** are rethrown, not treated as "no progress", so a
   temporary failure cannot lead to valid data being overwritten.
+- **Schema 2** adds `missionBestPoints` (best score per mission, 0 to
+  100,000). Version 1 data is still read, with no scores.
 - **Migrations:** bump `schemaVersion` and handle older versions in
   `tryFromJson`.
 

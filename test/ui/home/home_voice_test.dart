@@ -5,6 +5,7 @@ import 'package:curious_buddy/domain/voice/buddy_voice.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
 import 'package:curious_buddy/ui/home/home_view_model.dart';
 import 'package:curious_buddy/ui/home/widgets/buddy_greeting.dart';
+import 'package:curious_buddy/ui/missions/missions_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -259,7 +260,7 @@ void main() {
       await tester.tap(find.text(HomeDestination.missions.title));
       await tester.pumpAndSettle();
 
-      expect(find.text(HomeDestination.missions.comingSoonMessage), findsOne);
+      expect(find.text(MissionsScreen.title), findsOne);
     });
   });
 }

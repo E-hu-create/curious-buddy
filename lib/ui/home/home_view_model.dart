@@ -51,6 +51,16 @@ class HomeViewModel extends ChangeNotifier {
     if (!_disposed) notifyListeners();
   }
 
+  /// Re-reads saved progress (e.g. after finishing a mission).
+  Future<void> refreshProgress() async {
+    try {
+      _progress = await _progressRepository.load();
+    } on Exception {
+      return; // Keep showing what we had.
+    }
+    if (!_disposed) notifyListeners();
+  }
+
   Future<void> toggleMuted() => _voice.setMuted(!_voice.isMuted);
 
   @override

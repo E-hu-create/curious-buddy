@@ -1,3 +1,4 @@
+import '../data/repositories/mission_repository.dart';
 import '../data/repositories/progress_repository.dart';
 import '../data/services/key_value_store.dart';
 import '../data/services/shared_preferences_key_value_store.dart';
@@ -19,6 +20,7 @@ class AppDependencies {
     required this.progressRepository,
     required this.settingsStore,
     required this.responseProvider,
+    required this.missionRepository,
   });
 
   /// Speech output uses the device's built-in engine. Speech input is
@@ -33,6 +35,7 @@ class AppDependencies {
       progressRepository: LocalProgressRepository(store),
       settingsStore: store,
       responseProvider: CuratedResponseProvider(),
+      missionRepository: BundledMissionRepository(),
     );
   }
 
@@ -46,4 +49,7 @@ class AppDependencies {
   /// Answers children's questions. Reviewed offline content only; no AI
   /// service is connected.
   final EducationalResponseProvider responseProvider;
+
+  /// Mystery Missions content: the reviewed missions bundled in the app.
+  final MissionRepository missionRepository;
 }

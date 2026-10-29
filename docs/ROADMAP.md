@@ -91,10 +91,23 @@ See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
 - ✅ Device test: settings survive force-stop (confirmed on the Samsung
   SM-A516U, 29 Oct 2026).
 
-## Phase 4: Mystery missions and learning games
+## Phase 4: Mystery Missions ✅ (awaiting review)
 
-- First mission with scripted content.
-- Mission completion updates progress.
+- ✅ Missions landing screen with drawn covers, points, badges and status.
+- ✅ Three offline missions with different mechanics: The Missing Moonstone
+  (evidence and inconsistent statements), The Secret of the Wilting Garden
+  (real plant science: fair test and overwatering), The Case of the
+  Mixed-Up Signals (patterns, logic ordering, shift code).
+- ✅ Clue inspection, pick one / pick all / put in order, progressive hints,
+  explanations, encouraging feedback; finishable without a perfect score.
+- ✅ Buddy narrates, reads clues on request, Hear again / Stop talking;
+  speech stops on leaving; microphone never used.
+- ✅ Transparent points (never reduced by hints or mistakes), badges, best
+  score saved on the device, replay.
+- ✅ Content validated; invalid missions are left out.
+- ⏳ Device test on the Samsung.
+- Later: more missions; partial progress inside a mission is not saved
+  (leaving restarts the case).
 
 ## Phase 5: Living Stories
 

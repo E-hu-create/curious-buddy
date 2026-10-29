@@ -1,5 +1,6 @@
 import 'package:curious_buddy/app/app.dart';
 import 'package:curious_buddy/app/app_dependencies.dart';
+import 'package:curious_buddy/data/repositories/mission_repository.dart';
 import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/domain/conversation/curated_response_provider.dart';
@@ -17,6 +18,7 @@ Widget buildTestApp({
   FakeSpeechRecognitionService? speech,
   KeyValueStore? store,
   EducationalResponseProvider? responder,
+  MissionRepository? missions,
 }) {
   final keyValueStore = store ?? InMemoryKeyValueStore();
   return CuriousBuddyApp(
@@ -26,6 +28,7 @@ Widget buildTestApp({
       progressRepository: LocalProgressRepository(keyValueStore),
       settingsStore: keyValueStore,
       responseProvider: responder ?? CuratedResponseProvider(),
+      missionRepository: missions ?? BundledMissionRepository(),
     ),
   );
 }

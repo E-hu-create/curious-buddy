@@ -28,6 +28,9 @@ abstract final class AppColors {
   static const backpackOutline = Color(0xFF8F5E05);
   static const cheek = Color(0xFFFF9BB3);
 
+  /// Soft cyan glow for gems and signals in illustrations.
+  static const eyeGlowSoft = Color(0xFF7FE7FF);
+
   static const sun = Color(0xFFFFC93C);
   static const sunTint = Color(0xFFFFEDB8);
   static const coral = Color(0xFFFF7A59);
