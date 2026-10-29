@@ -2,7 +2,6 @@ import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/domain/models/learner_progress.dart';
 import 'package:curious_buddy/domain/voice/buddy_voice.dart';
-import 'package:curious_buddy/domain/voice/narrator.dart';
 import 'package:curious_buddy/ui/home/home_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -64,14 +63,8 @@ void main() {
     expect(tts.spoken, [HomeViewModel.greeting]);
   });
 
-  test('replayGreeting speaks the greeting again', () async {
-    final viewModel = build();
-    await viewModel.load();
-    await pumpEventQueue();
-
-    expect(await viewModel.replayGreeting(), NarrationOutcome.spoken);
-    expect(tts.spoken, [HomeViewModel.greeting, HomeViewModel.greeting]);
-  });
+  // Replaying what Buddy last said moved to BuddyChatViewModel.replay
+  // (see buddy_chat_view_model_test.dart).
 
   test('toggleMuted switches the voice off and on and notifies', () async {
     final viewModel = build();

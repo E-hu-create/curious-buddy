@@ -1,11 +1,11 @@
 # Curious Buddy
 
-A Flutter learning app for children aged 8–14. **Current state: Phase 2.**
-The app shell and Home screen are built, and Buddy speaks a short welcome
-using the phone's built-in text-to-speech engine, with "Hear again" and
-"Voice off/on" controls. Missions, stories, Creative Island, progress details
-and the Parent Zone are "coming soon" placeholders. There is no speech
-recognition, microphone use or network functionality.
+A Flutter learning app for children aged 8–14. **Current state: voice
+companion Stage A.** Home is built around Buddy: children type a question or
+tap an idea, Buddy answers from reviewed offline content and reads the answer
+aloud with the phone's built-in text-to-speech engine. Activities are
+"coming soon" placeholders. There is no speech recognition, microphone use,
+AI service or network functionality.
 
 ## Requirements
 
@@ -84,6 +84,7 @@ Avoid `git reset --hard` and `git clean`: they discard uncommitted work.
 - [Child safety and privacy](docs/CHILD_SAFETY.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Buddy character model](docs/MASCOT.md)
+- [Stage B voice input proposal](docs/STAGE_B_VOICE_INPUT.md)
 
 To regenerate the Android launcher icons after changing Buddy:
 `flutter test tool/generate_launcher_icons_test.dart`

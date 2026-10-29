@@ -51,6 +51,10 @@ and ask first.
 | `test/ui/home/home_view_model_test.dart` | Loading progress, storage failure, welcome once, replay, voice on/off, unavailable voice |
 | `test/ui/home/home_screen_test.dart` | Destinations, explorer log, navigation to each page and back, Parent Zone |
 | `test/ui/home/home_voice_test.dart` | Welcome once (not after navigation or resume, not when off); "Hear again"; voice off/on; speech stops on navigation, back, app inactive and close; a slow-starting welcome never plays on another screen; no-engine and engine-error fallbacks |
+| `test/ui/home/home_conversation_test.dart` | Ideas and typed questions answered and spoken; Ask disabled when empty; keyboard send; Stop talking; Talking badge; activity buttons open screens (never automatically); personal info hidden; honest unknown answer; Talk button never touches the mic; navigating away stops speech; ideas wrap at 2x text |
+| `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
+| `test/domain/conversation/child_safety_filter_test.dart` | Personal info, self-harm, bullying, medical and off-limits detection; ordinary questions (incl. big numbers, look-alike words) pass |
+| `test/domain/conversation/curated_response_provider_test.dart` | Starter prompts, brief example, matching, rotation, quiz/adventure actions, honesty about being a computer, fallback, safety precedence; content rules over every answer |
 | `test/ui/home/home_accessibility_test.dart` | Tap target, label and contrast guidelines; screen-reader labels; no overflow at small/large/landscape/tablet sizes and 2x text; reduced motion |
 | `test/ui/core/widgets/buddy_test.dart` | Buddy label, one-shot wave, tap reaction, reduced motion, every mood paints |
 
@@ -89,6 +93,25 @@ user-visible change:
         disabled/removed (or no English voice): Home shows the read-along
         note and no voice buttons, and nothing crashes.
   - [ ] No permission prompt appears at any point.
+- [ ] **Talking with Buddy:**
+  - [ ] Each of the five ideas gets a spoken answer; "You asked" shows
+        the question; new follow-up ideas appear.
+  - [ ] "Talking..." shows under Buddy while he speaks; "Stop talking"
+        stops at once; "Hear again" repeats the answer.
+  - [ ] Tapping a second idea mid-answer cuts off the first; no overlap.
+  - [ ] Type a question, press the keyboard's send key: it is answered and
+        the box clears. "Ask" is greyed out when the box is empty.
+  - [ ] "Let's play a quiz." → "Peek at quizzes" opens the Quiz Time page.
+        "Take me on an adventure." → "Open Mystery Missions" works.
+        Nothing opens until the button is tapped.
+  - [ ] Type "my phone number is 07700 900123": the number is not shown;
+        Buddy says to keep it private.
+  - [ ] Type something unknown ("capital of Mongolia"): Buddy says he does
+        not know yet.
+  - [ ] "Talk to Buddy" shows "Talking is coming soon!"; no microphone
+        prompt; "Type instead" opens the keyboard.
+  - [ ] Voice off: answers still appear, Buddy stays silent.
+  - [ ] Largest font size: ideas wrap onto two lines rather than being cut.
 - [ ] With Settings → Accessibility → "Remove animations" on, Buddy does
       not move.
 - [ ] Text is readable at the largest system font size.

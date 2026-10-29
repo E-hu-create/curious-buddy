@@ -43,6 +43,11 @@ class BuddyVoice extends ChangeNotifier {
   bool get hasWelcomed => _hasWelcomed;
   bool _hasWelcomed = false;
 
+  /// True while a line is being spoken (drives the Stop button).
+  bool get isSpeaking => _speakingLine != null;
+  int? _speakingLine;
+  int _lines = 0;
+
   bool _disposed = false;
   int _stops = 0;
 
@@ -70,7 +75,16 @@ class BuddyVoice extends ChangeNotifier {
     if (_disposed || stops != _stops) return NarrationOutcome.interrupted;
     if (_muted) return NarrationOutcome.muted;
     if (_status != VoiceStatus.available) return NarrationOutcome.textOnly;
-    return _narrator.narrate(text);
+
+    final line = _speakingLine = ++_lines;
+    _notify();
+    final outcome = await _narrator.narrate(text);
+    // A newer line or a stop may have taken over meanwhile.
+    if (_speakingLine == line) {
+      _speakingLine = null;
+      _notify();
+    }
+    return outcome;
   }
 
   /// Speaks the welcome the first time it is called in this app session and
@@ -101,6 +115,10 @@ class BuddyVoice extends ChangeNotifier {
   /// Stops current speech and cancels any not yet started.
   Future<void> stop() async {
     _stops++;
+    if (_speakingLine != null) {
+      _speakingLine = null;
+      _notify();
+    }
     await _narrator.stop();
   }
 

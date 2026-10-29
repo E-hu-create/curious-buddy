@@ -28,6 +28,8 @@ void main() {
     await tester.pumpAndSettle();
 
     final destination = HomeDestination.missions;
+    await tester.ensureVisible(find.text(destination.title));
+    await tester.pumpAndSettle();
     expect(
       tester.getSemantics(find.text(destination.title)),
       matchesSemantics(

@@ -66,6 +66,7 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
       routes: {
         Routes.home: (_) => HomeScreen(
           progressRepository: dependencies.progressRepository,
+          responseProvider: dependencies.responseProvider,
           voice: _voice,
         ),
         for (final destination in HomeDestination.values)
@@ -73,6 +74,14 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
             title: destination.title,
             message: destination.comingSoonMessage,
           ),
+        // Placeholder: reached from Buddy's "Let's play a quiz" answer.
+        Routes.quiz: (_) => const PlaceholderScreen(
+          title: 'Quiz Time',
+          message:
+              'Buddy is still writing the questions. Quizzes are coming '
+              'soon!',
+          mood: BuddyMood.excited,
+        ),
         // Placeholder only. The real Parent Zone must sit behind a parent
         // gate (docs/CHILD_SAFETY.md) before it shows any settings or data.
         Routes.parentZone: (_) => const PlaceholderScreen(

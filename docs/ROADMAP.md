@@ -25,7 +25,7 @@ Samsung SM-A516U.
 - ⏳ Final mascot art (premium 3D renders) from an artist or a tool with
   clear usage rights; see MASCOT.md for the spec and integration plan.
 
-## Phase 2: Buddy voice output ✅ (awaiting review)
+## Phase 2: Buddy voice output ✅
 
 Swapped ahead of persistent progress at the product owner's request.
 
@@ -39,6 +39,30 @@ Swapped ahead of persistent progress at the product owner's request.
 - ⏳ Voice on/off is remembered only for the current session until
   Phase 3 adds persistent storage (the code already saves it through
   `KeyValueStore`).
+
+## Voice companion: Stage A, interface and interaction ✅ (awaiting review)
+
+- ✅ Home built around Buddy: bubble with "You asked", Buddy's answer,
+  "Thinking..." / "Talking..." status, Stop talking, Hear again, Voice off/on.
+- ✅ Text box and suggested ideas; follow-up ideas after each answer.
+- ✅ Reviewed offline answers (`CuratedResponseProvider`) behind
+  `EducationalResponseProvider`; honest fallback for unknown questions.
+- ✅ `ChildSafetyFilter`: personal information (hidden on screen),
+  self-harm, bullying, medical and off-limits topics redirect to a grown-up.
+- ✅ Fixed set of `BuddyAction`s mapped to existing screens; the child taps
+  to open them. Quiz is a placeholder page.
+- ✅ "Talk to Buddy" is an honest placeholder; never touches the microphone.
+- ✅ Conversations are never saved.
+
+## Voice companion: Stage B, tap-to-talk (proposal, needs approval)
+
+See [STAGE_B_VOICE_INPUT.md](STAGE_B_VOICE_INPUT.md).
+
+## Voice companion: Stage C, smarter answers (needs approval)
+
+- Architecture and safety review first; any external AI provider only
+  behind a backend that holds the keys, filters input and output, and stores
+  nothing. Not started.
 
 ## Phase 3: Persistent progress and settings
 
@@ -59,13 +83,7 @@ Swapped ahead of persistent progress at the product owner's request.
 
 - Parent gate, settings (voice on/off), progress reset, data overview.
 
-## Phase 7: Optional push-to-talk
-
-- Only after the privacy review in CHILD_SAFETY.md.
-- Implement `SpeechRecognitionService`; permission requested only on tap.
-- Denied-permission and unavailable paths tested on a device.
-
-## Phase 8: Creative Island
+## Phase 7: Creative Island
 
 - Local-only creative activities; deletion from Parent Zone.
 

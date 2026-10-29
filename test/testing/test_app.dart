@@ -2,17 +2,21 @@ import 'package:curious_buddy/app/app.dart';
 import 'package:curious_buddy/app/app_dependencies.dart';
 import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
+import 'package:curious_buddy/domain/conversation/curated_response_provider.dart';
+import 'package:curious_buddy/domain/voice/educational_response_provider.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'fakes.dart';
 
 /// Builds the whole app with fakes. Pass a store to control saved progress
-/// and settings (one store backs both, as in the real app).
+/// and settings (one store backs both, as in the real app). Answers default
+/// to the real curated content.
 Widget buildTestApp({
   FakeTextToSpeechService? tts,
   FakeSpeechRecognitionService? speech,
   KeyValueStore? store,
+  EducationalResponseProvider? responder,
 }) {
   final keyValueStore = store ?? InMemoryKeyValueStore();
   return CuriousBuddyApp(
@@ -21,6 +25,7 @@ Widget buildTestApp({
       speechRecognition: speech ?? FakeSpeechRecognitionService(),
       progressRepository: LocalProgressRepository(keyValueStore),
       settingsStore: keyValueStore,
+      responseProvider: responder ?? CuratedResponseProvider(),
     ),
   );
 }

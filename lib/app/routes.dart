@@ -6,5 +6,6 @@ abstract final class Routes {
   static const stories = '/stories';
   static const creative = '/creative';
   static const discoveries = '/discoveries';
+  static const quiz = '/quiz';
   static const parentZone = '/parent-zone';
 }

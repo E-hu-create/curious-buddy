@@ -175,6 +175,47 @@ Rules:
   scripts. Nothing a child types or says is sent to the speech engine.
 - Speech recognition returns transcripts only. Audio is never stored.
 
+## Talking with Buddy (Stage A)
+
+```
+AskBuddyPanel (text box, ideas) ─► BuddyChatViewModel ─► EducationalResponseProvider
+                                        │                   └ CuratedResponseProvider
+                                        │                        ├ ChildSafetyFilter (first)
+                                        │                        └ curated_content.dart
+                                        └─► BuddyVoice.say(answer)
+```
+
+| Piece | File | Job |
+| --- | --- | --- |
+| `EducationalResponseProvider` | `domain/voice/educational_response_provider.dart` | Interface for anything that answers. Returns text, kind (answer / fallback / safety), optional `BuddyAction`, follow-up ideas, `hideQuestion`. |
+| `ChildSafetyFilter` | `domain/conversation/child_safety_filter.dart` | Runs before matching. Personal info → "keep it private" and the question is hidden on screen. Self-harm, bullying, medical, off-limits → redirect to a trusted grown-up. Conservative keyword rules, not a full safety system. |
+| `CuratedResponseProvider` | `domain/conversation/curated_response_provider.dart` | Matches whole words against reviewed topics; rotates answers; honest fallback. Offline, nothing stored. |
+| Content | `domain/conversation/curated_content.dart` | All answers and starter ideas. Rules enforced by tests: at most 60 words, sentences of at most 22 words, never asks for personal details, does not trip the safety filter. |
+| `BuddyChatViewModel` | `ui/home/buddy_chat_view_model.dart` | One exchange at a time; `thinking` / `speaking` / `idle`; ignores repeat submissions while thinking; a new question stops current speech; friendly error and recovery; never writes to storage. |
+| `routeForAction` | `ui/home/buddy_action_routes.dart` | Exhaustive map from `BuddyAction` to an in-app route. Actions only run when the child taps the button. |
+
+**Actions.** `openMissions`, `openStories`, `openCreative`,
+`openDiscoveries` open existing (placeholder) feature pages; `startQuiz`
+opens a "Quiz Time, coming soon" page. No action can open the web, files
+or device features.
+
+**Talk button.** Speech input is not implemented. "Talk to Buddy" shows a
+"Talking is coming soon!" dialog and a "Type instead" button; it never
+calls `SpeechRecognitionService`. Stage B plan:
+[STAGE_B_VOICE_INPUT.md](STAGE_B_VOICE_INPUT.md).
+
+**Buddy's states.** Idle: happy (or curious after "I don't know",
+thoughtful after a safety reply). Thinking: thoughtful + "Thinking..."
+badge. Speaking: "Talking..." badge and "Stop talking" in place of "Hear
+again". Error: surprised + friendly message. A listening state is
+deliberately absent until Stage B.
+
+**Adding a provider later (Stage C).** Implement
+`EducationalResponseProvider`, keep `ChildSafetyFilter` in front of it,
+and filter its output too. Any external AI service must sit behind an
+app-owned backend that holds API keys, applies safety checks and stores
+nothing; no keys in the app. Document and get approval first.
+
 ## Saved progress
 
 `LearnerProgress` (domain model) is stored as versioned JSON by

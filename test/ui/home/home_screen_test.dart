@@ -73,6 +73,8 @@ void main() {
 
   testWidgets('"Back to Home" button returns to Home', (tester) async {
     await openHome(tester);
+    await tester.ensureVisible(find.text(HomeDestination.missions.title));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(HomeDestination.missions.title));
     await tester.pumpAndSettle();
 

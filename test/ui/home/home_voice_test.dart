@@ -92,18 +92,28 @@ void main() {
       expect(tts.spoken, [greeting, greeting, greeting]);
     });
 
-    testWidgets('replay interrupts the line already playing', (tester) async {
+    testWidgets('while talking, "Stop talking" replaces "Hear again"', (
+      tester,
+    ) async {
       tts.holdSpeech = true;
       await openHome(tester);
       expect(tts.isSpeaking, isTrue);
-      final stopsBefore = tts.stopCalls;
+      expect(find.text(BuddyGreeting.stopLabel), findsOneWidget);
+      expect(find.text(BuddyGreeting.replayLabel), findsNothing);
+
+      await tester.tap(find.text(BuddyGreeting.stopLabel));
+      await tester.pumpAndSettle();
+
+      expect(tts.isSpeaking, isFalse);
+      expect(find.text(BuddyGreeting.stopLabel), findsNothing);
 
       await tester.tap(find.text(BuddyGreeting.replayLabel));
       await tester.pumpAndSettle();
-
-      expect(tts.stopCalls, greaterThan(stopsBefore));
       expect(tts.spoken, [greeting, greeting]);
+      expect(find.text(BuddyGreeting.stopLabel), findsOneWidget);
       tts.finishSpeaking();
+      await tester.pumpAndSettle();
+      expect(find.text(BuddyGreeting.replayLabel), findsOneWidget);
     });
   });
 
@@ -155,6 +165,8 @@ void main() {
       await openHome(tester);
       expect(tts.isSpeaking, isTrue);
 
+      await tester.ensureVisible(find.text(HomeDestination.missions.title));
+      await tester.pumpAndSettle();
       await tester.tap(find.text(HomeDestination.missions.title));
       await tester.pumpAndSettle();
 
@@ -163,6 +175,8 @@ void main() {
 
     testWidgets('speech stops when going back to Home', (tester) async {
       await openHome(tester);
+      await tester.ensureVisible(find.text(HomeDestination.missions.title));
+      await tester.pumpAndSettle();
       await tester.tap(find.text(HomeDestination.missions.title));
       await tester.pumpAndSettle();
       final stopsBefore = tts.stopCalls;
@@ -206,6 +220,8 @@ void main() {
       await tester.pump();
 
       // Child taps a card before the engine has finished starting.
+      await tester.ensureVisible(find.text(HomeDestination.missions.title));
+      await tester.pumpAndSettle();
       await tester.tap(find.text(HomeDestination.missions.title));
       await tester.pumpAndSettle();
       slow.finishStarting();
@@ -237,6 +253,8 @@ void main() {
 
       expect(tester.takeException(), isNull);
       await tester.tap(find.text(BuddyGreeting.replayLabel));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text(HomeDestination.missions.title));
       await tester.pumpAndSettle();
       await tester.tap(find.text(HomeDestination.missions.title));
       await tester.pumpAndSettle();

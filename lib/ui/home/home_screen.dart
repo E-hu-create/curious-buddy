@@ -5,20 +5,29 @@ import 'package:flutter/material.dart';
 import '../../app/routes.dart';
 import '../../data/repositories/progress_repository.dart';
 import '../../domain/voice/buddy_voice.dart';
+import '../../domain/voice/educational_response_provider.dart';
+import '../core/widgets/buddy/buddy.dart';
+import 'buddy_action_routes.dart';
+import 'buddy_chat_view_model.dart';
 import 'home_destination.dart';
 import 'home_view_model.dart';
+import 'widgets/ask_buddy_panel.dart';
 import 'widgets/buddy_greeting.dart';
 import 'widgets/destination_grid.dart';
 import 'widgets/explorer_log.dart';
 
+/// Home is built around Buddy: his bubble and controls first, then ways to
+/// ask him something, then the learning worlds.
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
     required this.progressRepository,
+    required this.responseProvider,
     required this.voice,
   });
 
   final ProgressRepository progressRepository;
+  final EducationalResponseProvider responseProvider;
   final BuddyVoice voice;
 
   @override
@@ -26,22 +35,44 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late final HomeViewModel _viewModel = HomeViewModel(
+  late final HomeViewModel _home = HomeViewModel(
     progressRepository: widget.progressRepository,
     voice: widget.voice,
   );
+  late final BuddyChatViewModel _chat = BuddyChatViewModel(
+    responder: widget.responseProvider,
+    voice: widget.voice,
+    greeting: HomeViewModel.greeting,
+  );
+  late final Listenable _changes = Listenable.merge([_home, _chat]);
 
   @override
   void initState() {
     super.initState();
-    unawaited(_viewModel.load());
+    unawaited(_home.load());
   }
 
   @override
   void dispose() {
-    _viewModel.dispose();
+    _chat.dispose();
+    _home.dispose();
     super.dispose();
   }
+
+  BuddyMood get _mood {
+    if (_chat.hadError) return BuddyMood.surprised;
+    return switch (_chat.activity) {
+      BuddyActivity.thinking => BuddyMood.thoughtful,
+      BuddyActivity.speaking => BuddyMood.happy,
+      BuddyActivity.idle => switch (_chat.response?.kind) {
+        ResponseKind.fallback => BuddyMood.curious,
+        ResponseKind.safety => BuddyMood.thoughtful,
+        ResponseKind.answer || null => BuddyMood.happy,
+      },
+    };
+  }
+
+  void _open(String route) => Navigator.of(context).pushNamed(route);
 
   @override
   Widget build(BuildContext context) {
@@ -55,24 +86,41 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 840),
               child: ListenableBuilder(
-                listenable: _viewModel,
+                listenable: _changes,
                 builder: (context, _) {
-                  final progress = _viewModel.progress;
+                  final progress = _home.progress;
+                  final action = _chat.response?.action;
                   return Column(
                     crossAxisAlignment: .stretch,
                     children: [
-                      _Header(
-                        onGrownUps: () =>
-                            Navigator.of(context).pushNamed(Routes.parentZone),
-                      ),
+                      _Header(onGrownUps: () => _open(Routes.parentZone)),
                       const SizedBox(height: 20),
                       BuddyGreeting(
-                        text: HomeViewModel.greeting,
-                        voiceStatus: _viewModel.voiceStatus,
-                        isMuted: _viewModel.isMuted,
-                        onReplay: () => unawaited(_viewModel.replayGreeting()),
-                        onToggleMuted: () =>
-                            unawaited(_viewModel.toggleMuted()),
+                        text: _chat.message,
+                        mood: _mood,
+                        status: switch (_chat.activity) {
+                          BuddyActivity.thinking => BuddyStatus.thinking,
+                          BuddyActivity.speaking => BuddyStatus.talking,
+                          BuddyActivity.idle => null,
+                        },
+                        youAsked: _chat.youAsked,
+                        questionHidden: _chat.questionHidden,
+                        actionLabel: _chat.response?.actionLabel,
+                        onAction: action == null
+                            ? null
+                            : () => _open(routeForAction(action)),
+                        voiceStatus: _home.voiceStatus,
+                        isMuted: _home.isMuted,
+                        isSpeaking: _chat.activity == BuddyActivity.speaking,
+                        onReplay: () => unawaited(_chat.replay()),
+                        onStop: () => unawaited(_chat.stopSpeaking()),
+                        onToggleMuted: () => unawaited(_home.toggleMuted()),
+                      ),
+                      const SizedBox(height: 20),
+                      AskBuddyPanel(
+                        enabled: _chat.canAsk,
+                        suggestions: _chat.suggestions,
+                        onAsk: (question) => unawaited(_chat.ask(question)),
                       ),
                       if (progress != null) ...[
                         const SizedBox(height: 24),
@@ -92,8 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 14),
                       DestinationGrid(
                         destinations: HomeDestination.values,
-                        onSelected: (destination) =>
-                            Navigator.of(context).pushNamed(destination.route),
+                        onSelected: (destination) => _open(destination.route),
                       ),
                     ],
                   );

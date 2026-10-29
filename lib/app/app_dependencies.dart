@@ -3,6 +3,8 @@ import '../data/services/key_value_store.dart';
 import '../data/services/voice/flutter_tts_service.dart';
 import '../data/services/voice/speech_recognition_service.dart';
 import '../data/services/voice/text_to_speech_service.dart';
+import '../domain/conversation/curated_response_provider.dart';
+import '../domain/voice/educational_response_provider.dart';
 
 /// Composition root: the single place where concrete services are chosen.
 ///
@@ -14,11 +16,12 @@ class AppDependencies {
     required this.speechRecognition,
     required this.progressRepository,
     required this.settingsStore,
+    required this.responseProvider,
   });
 
   /// Speech output uses the device's built-in engine. Speech input stays
-  /// unavailable (no microphone). Storage is in memory only until a
-  /// persistent store is approved.
+  /// unavailable (no microphone). Answers come from reviewed offline
+  /// content. Storage is in memory only until a persistent store is approved.
   factory AppDependencies.defaults() {
     final store = InMemoryKeyValueStore();
     return AppDependencies(
@@ -26,6 +29,7 @@ class AppDependencies {
       speechRecognition: const UnavailableSpeechRecognitionService(),
       progressRepository: LocalProgressRepository(store),
       settingsStore: store,
+      responseProvider: CuratedResponseProvider(),
     );
   }
 
@@ -35,4 +39,8 @@ class AppDependencies {
 
   /// Small app settings such as the voice on/off switch.
   final KeyValueStore settingsStore;
+
+  /// Answers children's questions. Reviewed offline content only; no AI
+  /// service is connected.
+  final EducationalResponseProvider responseProvider;
 }

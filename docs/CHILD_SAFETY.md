@@ -59,6 +59,38 @@ Currently held **in memory only**; nothing is written to disk yet.
   network voices if the device owner enables them in system settings; the
   app does not request this. Note this in the privacy policy before release.
 
+## Talking with Buddy
+
+- Answers come only from reviewed, offline content in the app
+  (`curated_content.dart`). **There is no AI model, chatbot or network
+  service.** Unknown questions get an honest "I don't know that one yet".
+- Buddy is honest about what he is: a computer character, not a person,
+  without real feelings, and able to make mistakes.
+- A safety filter runs before any answer:
+  - Personal information (phone numbers, emails, addresses, postcodes,
+    passwords, full names, school names) gets "Let's keep that private!"
+    and the child's message is **not shown or repeated**.
+  - Self-harm, bullying, medical and off-limits topics (weapons, drugs,
+    hacking, sexual content) redirect to a trusted grown-up. No
+    instructions are given.
+  - The filter is a conservative keyword list. It will miss things phrased
+    unusually, which is acceptable only because every possible answer is
+    pre-written and reviewed. **It is not sufficient for any open-ended
+    response engine.**
+- Buddy never asks for a name, address, school, password, location or
+  contact details (enforced by tests over all content).
+- Conversations are **not saved**: they live in memory and disappear when
+  the app closes (tested).
+- Buddy can suggest an activity, but only from a fixed list of in-app
+  screens, and only opens it when the child taps.
+- Voice input does not exist yet. See
+  [STAGE_B_VOICE_INPUT.md](STAGE_B_VOICE_INPUT.md) for the proposal and its
+  privacy implications (the phone's recognition service may send audio to
+  its provider unless on-device mode is used).
+
+These are design principles, not a legal compliance claim. A proper
+privacy and legal review is needed before release.
+
 ## No accounts, backend or AI yet
 
 There is no account system, remote server, cloud storage, analytics or AI

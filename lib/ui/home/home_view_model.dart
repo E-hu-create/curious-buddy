@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import '../../data/repositories/progress_repository.dart';
 import '../../domain/models/learner_progress.dart';
 import '../../domain/voice/buddy_voice.dart';
-import '../../domain/voice/narrator.dart';
 
 class HomeViewModel extends ChangeNotifier {
   HomeViewModel({
@@ -36,7 +35,7 @@ class HomeViewModel extends ChangeNotifier {
   VoiceStatus get voiceStatus => _voice.status;
   bool get isMuted => _voice.isMuted;
 
-  /// Whether to show the "Hear again" button.
+  /// Whether Buddy will speak if asked (voice available and on).
   bool get canReplay => _voice.canSpeak;
 
   /// Loads progress and gives the spoken welcome. The welcome plays once per
@@ -51,8 +50,6 @@ class HomeViewModel extends ChangeNotifier {
     _isLoading = false;
     if (!_disposed) notifyListeners();
   }
-
-  Future<NarrationOutcome> replayGreeting() => _voice.say(greeting);
 
   Future<void> toggleMuted() => _voice.setMuted(!_voice.isMuted);
 

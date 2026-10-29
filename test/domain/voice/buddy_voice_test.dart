@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/domain/voice/buddy_voice.dart';
 import 'package:curious_buddy/domain/voice/narrator.dart';
@@ -133,6 +135,52 @@ void main() {
 
       expect(tts.isSpeaking, isFalse);
       expect(await line, NarrationOutcome.interrupted);
+    });
+  });
+
+  group('speaking state', () {
+    test('is true only while a line plays', () async {
+      tts.holdSpeech = true;
+      build();
+      expect(voice.isSpeaking, isFalse);
+
+      final line = voice.say('Hi');
+      await pumpEventQueue();
+      expect(voice.isSpeaking, isTrue);
+
+      tts.finishSpeaking();
+      await line;
+      expect(voice.isSpeaking, isFalse);
+    });
+
+    test('stop clears it immediately', () async {
+      tts.holdSpeech = true;
+      build();
+      unawaited(voice.say('Hi'));
+      await pumpEventQueue();
+
+      await voice.stop();
+
+      expect(voice.isSpeaking, isFalse);
+    });
+
+    test('an interrupted line does not clear the newer one', () async {
+      tts.holdSpeech = true;
+      build();
+      final first = voice.say('One');
+      await pumpEventQueue();
+      unawaited(voice.say('Two'));
+      await first;
+      await pumpEventQueue();
+
+      expect(voice.isSpeaking, isTrue);
+    });
+
+    test('is never true when muted or unavailable', () async {
+      tts.available = false;
+      build();
+      await voice.say('Hi');
+      expect(voice.isSpeaking, isFalse);
     });
   });
 
