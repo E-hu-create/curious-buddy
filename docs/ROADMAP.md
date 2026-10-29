@@ -68,11 +68,16 @@ Swapped ahead of persistent progress at the product owner's request.
 
 Details: [STAGE_B_VOICE_INPUT.md](STAGE_B_VOICE_INPUT.md).
 
-## Voice companion: Stage C, smarter answers (needs approval)
+## Voice companion: Stage B, review ⏳
 
-- Architecture and safety review first; any external AI provider only
-  behind a backend that holds the keys, filters input and output, and stores
-  nothing. Not started.
+Stage B's tap-to-talk awaits phone testing and review.
+
+## Voice companion: Stage C, smarter answers (proposal, needs approval)
+
+See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md): recommends
+growing the offline curated library now (Option A) and a cloud AI behind an
+app-owned backend only after legal/privacy review and parental consent
+(Option C). Not started.
 
 ## Phase 3: Persistent progress and settings
 
