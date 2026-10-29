@@ -1,6 +1,8 @@
 import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/domain/models/learner_progress.dart';
+import 'package:curious_buddy/domain/voice/buddy_voice.dart';
+import 'package:curious_buddy/domain/voice/narrator.dart';
 import 'package:curious_buddy/ui/home/home_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -9,42 +11,42 @@ import '../../testing/fakes.dart';
 void main() {
   late FakeTextToSpeechService tts;
   late InMemoryKeyValueStore store;
+  late BuddyVoice voice;
 
-  HomeViewModel build({KeyValueStore? withStore}) => HomeViewModel(
-    progressRepository: LocalProgressRepository(withStore ?? store),
-    textToSpeech: tts,
+  HomeViewModel build({KeyValueStore? progressStore}) => HomeViewModel(
+    progressRepository: LocalProgressRepository(progressStore ?? store),
+    voice: voice,
   );
 
   setUp(() {
     tts = FakeTextToSpeechService();
     store = InMemoryKeyValueStore();
+    voice = BuddyVoice(textToSpeech: tts, settings: store);
   });
 
-  test('starts loading with no progress and no speech', () {
+  tearDown(() => voice.dispose());
+
+  test('starts loading with no progress', () {
     final viewModel = build();
 
     expect(viewModel.isLoading, isTrue);
     expect(viewModel.progress, isNull);
-    expect(viewModel.canSpeak, isFalse);
   });
 
-  test('load reads saved progress and notifies once', () async {
+  test('load reads saved progress', () async {
     await LocalProgressRepository(
       store,
     ).save(const LearnerProgress(completedMissionIds: {'a', 'b'}));
     final viewModel = build();
-    var notifications = 0;
-    viewModel.addListener(() => notifications++);
 
     await viewModel.load();
 
     expect(viewModel.isLoading, isFalse);
     expect(viewModel.progress?.completedMissionIds, {'a', 'b'});
-    expect(notifications, 1);
   });
 
   test('storage failure leaves progress empty instead of throwing', () async {
-    final viewModel = build(withStore: FailingKeyValueStore());
+    final viewModel = build(progressStore: FailingKeyValueStore());
 
     await viewModel.load();
 
@@ -52,33 +54,56 @@ void main() {
     expect(viewModel.progress, isNull);
   });
 
-  test('canSpeak follows speech availability', () async {
-    tts.available = false;
-    final silent = build();
-    await silent.load();
-    expect(silent.canSpeak, isFalse);
+  test('load gives the welcome once, even if Home loads again', () async {
+    await build().load();
+    await voice.ready;
+    await pumpEventQueue();
+    await build().load();
+    await pumpEventQueue();
 
-    tts.available = true;
-    final speaking = build();
-    await speaking.load();
-    expect(speaking.canSpeak, isTrue);
-  });
-
-  test('loading never speaks; speakGreeting does', () async {
-    final viewModel = build();
-
-    await viewModel.load();
-    expect(tts.spoken, isEmpty);
-
-    await viewModel.speakGreeting();
     expect(tts.spoken, [HomeViewModel.greeting]);
   });
 
-  test('load after dispose does not notify', () async {
+  test('replayGreeting speaks the greeting again', () async {
     final viewModel = build();
-    final pending = viewModel.load();
+    await viewModel.load();
+    await pumpEventQueue();
+
+    expect(await viewModel.replayGreeting(), NarrationOutcome.spoken);
+    expect(tts.spoken, [HomeViewModel.greeting, HomeViewModel.greeting]);
+  });
+
+  test('toggleMuted switches the voice off and on and notifies', () async {
+    final viewModel = build();
+    await voice.ready;
+    var notifications = 0;
+    viewModel.addListener(() => notifications++);
+
+    await viewModel.toggleMuted();
+    expect(viewModel.isMuted, isTrue);
+    expect(viewModel.canReplay, isFalse);
+
+    await viewModel.toggleMuted();
+    expect(viewModel.isMuted, isFalse);
+    expect(viewModel.canReplay, isTrue);
+    expect(notifications, 2);
+  });
+
+  test('reports an unavailable voice', () async {
+    tts.available = false;
+    final viewModel = build();
+    await voice.ready;
+
+    expect(viewModel.voiceStatus, VoiceStatus.unavailable);
+    expect(viewModel.canReplay, isFalse);
+  });
+
+  test('stops listening to the voice when disposed', () async {
+    final viewModel = build();
+    await voice.ready;
     viewModel.dispose();
 
-    await expectLater(pending, completes);
+    // Would throw "used after dispose" if the listener were still attached.
+    await voice.setMuted(true);
   });
 }

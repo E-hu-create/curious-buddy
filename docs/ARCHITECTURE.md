@@ -107,23 +107,58 @@ Features must not import each other's internals. Shared pieces move to
 
 ## Voice system
 
-Interfaces only. **No real speech engine is implemented.** The app ships with
-`UnavailableTextToSpeechService` and `UnavailableSpeechRecognitionService`,
-which honestly report "unavailable".
+**Speech output is implemented** with the device's built-in text-to-speech
+engine. **Speech input is not**: the app ships with
+`UnavailableSpeechRecognitionService`, which honestly reports
+"unavailable", and never touches the microphone.
 
 | Concern | Type | File |
 | --- | --- | --- |
-| Speech output | `TextToSpeechService` | `data/services/voice/text_to_speech_service.dart` |
+| Speech output (interface) | `TextToSpeechService` | `data/services/voice/text_to_speech_service.dart` |
+| Speech output (device engine) | `FlutterTtsService` | `data/services/voice/flutter_tts_service.dart` |
+| App-wide voice: on/off, welcome once, stop | `BuddyVoice` | `domain/voice/buddy_voice.dart` |
+| Stop speech on navigation | `VoiceNavigatorObserver` | `app/voice_navigator_observer.dart` |
 | Push-to-talk input | `SpeechRecognitionService` | `data/services/voice/speech_recognition_service.dart` |
 | Narration and dialogue policy | `Narrator` | `domain/voice/narrator.dart` |
 | Answers to children's questions | `EducationalResponseProvider` | `domain/voice/educational_response_provider.dart` |
 | Shared failure reasons | `VoiceFailure` | `data/services/voice/voice_failure.dart` |
 
+### How speech flows
+
+```
+HomeViewModel ──► BuddyVoice ──► Narrator ──► TextToSpeechService
+ (one per screen)   (one per app)   (playback policy)   (FlutterTtsService)
+```
+
+- `CuriousBuddyApp` creates the single `BuddyVoice` and disposes it on close.
+  Screens get it through constructors, so only one line can ever play.
+- **Welcome:** `BuddyVoice.welcomeOnce` speaks at most once per app session.
+  Rebuilds, returning to Home and resuming the app do not repeat it.
+- **Replay:** "Hear again" calls `BuddyVoice.say` with the same text.
+  A new line always interrupts the current one.
+- **Voice on/off:** `BuddyVoice.setMuted`. Turning it off stops speech
+  immediately and silences later lines; turning it on never speaks by
+  itself. Saved under `voice.muted` in `KeyValueStore` (in memory until
+  persistent storage is added).
+- **Cleanup:** `VoiceNavigatorObserver` stops speech on every push, pop,
+  replace and remove; `AppLifecycleListener` stops it when the app becomes
+  inactive (call, app switcher, screen off) or hidden; dispose stops it on
+  close. `stop()` also cancels a line still waiting for the engine, so a
+  stopped welcome can never start on another screen.
+- **Engine setup:** `FlutterTtsService` picks the first installed voice from
+  en-US, en-GB, en-AU, en-CA, en-IN; rate 0.5 (normal), pitch 1.15. It is
+  checked once per session.
+- **Why requests are tracked by hand:** on Android, `flutter_tts`'s
+  `speak()` future never completes after an engine error. Each request is
+  resolved by the completion/error callbacks, `stop()`, or a timeout
+  (6s + 120ms per character).
+
 ### Failure strategy
 
 | Situation | Behaviour |
 | --- | --- |
-| No TTS engine or voice not installed | `Narrator` returns `textOnly`. Text is always on screen, so nothing is lost. No error dialog. |
+| No TTS engine or voice not installed | `BuddyVoice.status` is `unavailable`. Home shows "Buddy can't talk on this phone right now, but you can read along!" and no voice buttons. Text is always on screen, so nothing is lost. No error dialog. |
+| Engine error, rejected request or timeout mid-speech | Becomes `textOnly` silently; Home stays usable and "Hear again" can retry. |
 | Speech interrupted (new line, call, audio focus loss) | New narration stops the old one first. Result `interrupted`; UI may offer replay. |
 | Repeated playback | `Narrator.replay()` speaks the last line again. |
 | Engine throws (plugin bug) | Caught in `Narrator`; becomes `textOnly`. Never crashes a session. |
@@ -134,8 +169,10 @@ which honestly report "unavailable".
 Rules:
 - Never request microphone permission at launch. Only `requestPermission()`
   may prompt, and only after the child or parent explicitly taps
-  push-to-talk. A widget test checks that launch makes no speech or
-  microphone calls.
+  push-to-talk. A widget test checks that launch speaks only the welcome
+  and makes no microphone calls.
+- Buddy only speaks text that is also on screen, from the app's own
+  scripts. Nothing a child types or says is sent to the speech engine.
 - Speech recognition returns transcripts only. Audio is never stored.
 
 ## Saved progress

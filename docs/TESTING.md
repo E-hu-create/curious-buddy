@@ -42,12 +42,15 @@ and ask first.
 
 | File | Covers |
 | --- | --- |
-| `test/widget_test.dart` | App launches; launch makes no microphone/speech calls; unknown routes; default dependencies |
+| `test/widget_test.dart` | App launches; launch speaks only the welcome and makes no microphone calls; unknown routes; real dependencies fall back to text with no engine |
 | `test/domain/models/learner_progress_test.dart` | Progress JSON validation and versioning |
 | `test/data/repositories/progress_repository_test.dart` | Save/load, corrupt-data backup and recovery, storage errors |
 | `test/domain/voice/narrator_test.dart` | Narration, interruption, replay, unavailable and failing engines |
-| `test/ui/home/home_view_model_test.dart` | Loading progress, storage failure, speech availability, never speaking on load |
-| `test/ui/home/home_screen_test.dart` | Destinations, explorer log, navigation to each page and back, Parent Zone, "Hear Buddy" button |
+| `test/domain/voice/buddy_voice_test.dart` | Availability, welcome once, replay, interrupting, stop, dispose, mute stops/silences/saves/restores, storage failures |
+| `test/data/services/voice/flutter_tts_service_test.dart` | Voice selection and fallback language, missing plugin, completion, engine error (no hang), rejected speak, stop, timeout (simulated plugin channel) |
+| `test/ui/home/home_view_model_test.dart` | Loading progress, storage failure, welcome once, replay, voice on/off, unavailable voice |
+| `test/ui/home/home_screen_test.dart` | Destinations, explorer log, navigation to each page and back, Parent Zone |
+| `test/ui/home/home_voice_test.dart` | Welcome once (not after navigation or resume, not when off); "Hear again"; voice off/on; speech stops on navigation, back, app inactive and close; a slow-starting welcome never plays on another screen; no-engine and engine-error fallbacks |
 | `test/ui/home/home_accessibility_test.dart` | Tap target, label and contrast guidelines; screen-reader labels; no overflow at small/large/landscape/tablet sizes and 2x text; reduced motion |
 | `test/ui/core/widgets/buddy_test.dart` | Buddy label, one-shot wave, tap reaction, reduced motion, every mood paints |
 
@@ -72,7 +75,20 @@ user-visible change:
 - [ ] Each Home card opens its "coming soon" page; the back arrow and
       "Back to Home" both return to Home.
 - [ ] "Grown-ups" opens the Parent Zone placeholder.
-- [ ] No "Hear Buddy" button is shown (no speech engine yet).
+- [ ] **Voice** (media volume up, phone not on silent-media):
+  - [ ] Buddy says the welcome once on a fresh start (force-stop first).
+  - [ ] Visiting a card and coming back does not repeat it.
+  - [ ] "Hear again" repeats it; tapping it mid-sentence restarts cleanly,
+        no overlap.
+  - [ ] Tapping a card mid-sentence stops speech at once.
+  - [ ] Pressing Home or opening the app switcher mid-sentence stops speech.
+  - [ ] "Voice off" stops speech at once and hides "Hear again"; "Voice on"
+        brings it back without talking by itself.
+  - [ ] Voice off, visit a card, come back: still off.
+  - [ ] Settings → General management → Text-to-speech → Preferred engine
+        disabled/removed (or no English voice): Home shows the read-along
+        note and no voice buttons, and nothing crashes.
+  - [ ] No permission prompt appears at any point.
 - [ ] With Settings → Accessibility → "Remove animations" on, Buddy does
       not move.
 - [ ] Text is readable at the largest system font size.

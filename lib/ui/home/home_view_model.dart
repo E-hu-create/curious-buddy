@@ -1,23 +1,27 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import '../../data/repositories/progress_repository.dart';
-import '../../data/services/voice/text_to_speech_service.dart';
 import '../../domain/models/learner_progress.dart';
+import '../../domain/voice/buddy_voice.dart';
 import '../../domain/voice/narrator.dart';
 
 class HomeViewModel extends ChangeNotifier {
   HomeViewModel({
     required ProgressRepository progressRepository,
-    required TextToSpeechService textToSpeech,
+    required BuddyVoice voice,
   }) : _progressRepository = progressRepository,
-       _textToSpeech = textToSpeech,
-       _narrator = Narrator(textToSpeech);
+       _voice = voice {
+    _voice.addListener(notifyListeners);
+  }
 
-  static const greeting = 'Hi, explorer! Where should we go today?';
+  /// Shown in Buddy's speech bubble and spoken as the welcome, so what the
+  /// child hears always matches what they can read.
+  static const greeting = "Hi, explorer! I'm Buddy. Where should we go today?";
 
   final ProgressRepository _progressRepository;
-  final TextToSpeechService _textToSpeech;
-  final Narrator _narrator;
+  final BuddyVoice _voice;
 
   bool _disposed = false;
 
@@ -29,35 +33,33 @@ class HomeViewModel extends ChangeNotifier {
   LearnerProgress? get progress => _progress;
   LearnerProgress? _progress;
 
-  /// Whether to offer the "Hear Buddy" button. False until a real speech
-  /// engine exists, so the UI never shows a button that does nothing.
-  bool get canSpeak => _canSpeak;
-  bool _canSpeak = false;
+  VoiceStatus get voiceStatus => _voice.status;
+  bool get isMuted => _voice.isMuted;
 
+  /// Whether to show the "Hear again" button.
+  bool get canReplay => _voice.canSpeak;
+
+  /// Loads progress and gives the spoken welcome. The welcome plays once per
+  /// app session; [BuddyVoice] ignores later calls.
   Future<void> load() async {
+    unawaited(_voice.welcomeOnce(greeting));
     try {
       _progress = await _progressRepository.load();
     } on Exception {
       _progress = null;
     }
-    try {
-      _canSpeak = await _textToSpeech.isAvailable();
-    } on Exception {
-      _canSpeak = false;
-    }
     _isLoading = false;
     if (!_disposed) notifyListeners();
   }
 
-  /// Only ever called from an explicit tap; Home never speaks on its own.
-  Future<void> speakGreeting() async {
-    await _narrator.narrate(greeting);
-  }
+  Future<NarrationOutcome> replayGreeting() => _voice.say(greeting);
+
+  Future<void> toggleMuted() => _voice.setMuted(!_voice.isMuted);
 
   @override
   void dispose() {
     _disposed = true;
-    _narrator.stop().ignore();
+    _voice.removeListener(notifyListeners);
     super.dispose();
   }
 }

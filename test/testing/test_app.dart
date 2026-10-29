@@ -7,20 +7,23 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'fakes.dart';
 
-/// Builds the whole app with fakes. Pass a store to control saved progress.
+/// Builds the whole app with fakes. Pass a store to control saved progress
+/// and settings (one store backs both, as in the real app).
 Widget buildTestApp({
   FakeTextToSpeechService? tts,
   FakeSpeechRecognitionService? speech,
   KeyValueStore? store,
-}) => CuriousBuddyApp(
-  dependencies: AppDependencies(
-    textToSpeech: tts ?? FakeTextToSpeechService(),
-    speechRecognition: speech ?? FakeSpeechRecognitionService(),
-    progressRepository: LocalProgressRepository(
-      store ?? InMemoryKeyValueStore(),
+}) {
+  final keyValueStore = store ?? InMemoryKeyValueStore();
+  return CuriousBuddyApp(
+    dependencies: AppDependencies(
+      textToSpeech: tts ?? FakeTextToSpeechService(),
+      speechRecognition: speech ?? FakeSpeechRecognitionService(),
+      progressRepository: LocalProgressRepository(keyValueStore),
+      settingsStore: keyValueStore,
     ),
-  ),
-);
+  );
+}
 
 /// Sizes the test window like a typical Android phone (Samsung A51:
 /// 412 x 892 logical pixels), or [logicalSize] if given.

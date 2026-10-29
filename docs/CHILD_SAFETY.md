@@ -20,7 +20,7 @@ is built.
 | Data | Why | Where |
 | --- | --- | --- |
 | IDs of completed missions and stories | Show progress | `LearnerProgress` via `ProgressRepository` |
-| *Future:* settings (e.g. voice on/off) | Parent preferences | Local storage |
+| Voice on/off (`voice.muted`) | Respect the choice to keep Buddy quiet | `BuddyVoice` via `KeyValueStore` |
 | *Future:* Creative Island creations | Child's own work | Local storage, deletable from Parent Zone |
 
 Currently held **in memory only**; nothing is written to disk yet.
@@ -42,7 +42,22 @@ Currently held **in memory only**; nothing is written to disk yet.
 - Microphone: requested only when the child or parent explicitly taps
   push-to-talk, never at launch (checked by a widget test). Denial must leave
   a fully working tap alternative.
+- `DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` (added automatically by
+  AndroidX via `flutter_tts`): private to this app, signature-protected,
+  never shown to users, gives no access to user data.
 - Each new permission must be listed here with its reason.
+
+## Buddy's voice
+
+- Uses the phone's own text-to-speech engine (e.g. Google or Samsung TTS).
+  No paid voice service, API key or app-run server.
+- Buddy only speaks the app's own scripted text, which is always also on
+  screen. No child input is ever passed to the speech engine.
+- Speaking aloud at launch is limited to one short welcome per app session.
+  The "Voice off" button silences Buddy immediately.
+- The speech engine belongs to the phone's maker. Some engines can use
+  network voices if the device owner enables them in system settings; the
+  app does not request this. Note this in the privacy policy before release.
 
 ## No accounts, backend or AI yet
 

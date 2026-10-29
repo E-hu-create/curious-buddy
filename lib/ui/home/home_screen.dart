@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/routes.dart';
 import '../../data/repositories/progress_repository.dart';
-import '../../data/services/voice/text_to_speech_service.dart';
+import '../../domain/voice/buddy_voice.dart';
 import 'home_destination.dart';
 import 'home_view_model.dart';
 import 'widgets/buddy_greeting.dart';
@@ -15,11 +15,11 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
     required this.progressRepository,
-    required this.textToSpeech,
+    required this.voice,
   });
 
   final ProgressRepository progressRepository;
-  final TextToSpeechService textToSpeech;
+  final BuddyVoice voice;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -28,7 +28,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late final HomeViewModel _viewModel = HomeViewModel(
     progressRepository: widget.progressRepository,
-    textToSpeech: widget.textToSpeech,
+    voice: widget.voice,
   );
 
   @override
@@ -68,9 +68,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 20),
                       BuddyGreeting(
                         text: HomeViewModel.greeting,
-                        onSpeak: _viewModel.canSpeak
-                            ? () => unawaited(_viewModel.speakGreeting())
-                            : null,
+                        voiceStatus: _viewModel.voiceStatus,
+                        isMuted: _viewModel.isMuted,
+                        onReplay: () => unawaited(_viewModel.replayGreeting()),
+                        onToggleMuted: () =>
+                            unawaited(_viewModel.toggleMuted()),
                       ),
                       if (progress != null) ...[
                         const SizedBox(height: 24),

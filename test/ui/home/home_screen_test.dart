@@ -93,24 +93,5 @@ void main() {
     expect(find.text('Parent Zone'), findsOneWidget);
   });
 
-  testWidgets('no "Hear Buddy" button when speech is unavailable', (
-    tester,
-  ) async {
-    tts.available = false;
-    await openHome(tester);
-
-    expect(find.text('Hear Buddy'), findsNothing);
-  });
-
-  testWidgets('"Hear Buddy" speaks the greeting only when tapped', (
-    tester,
-  ) async {
-    await openHome(tester);
-    expect(tts.spoken, isEmpty);
-
-    await tester.tap(find.text('Hear Buddy'));
-    await tester.pumpAndSettle();
-
-    expect(tts.spoken, [HomeViewModel.greeting]);
-  });
+  // Voice behaviour on Home is covered in home_voice_test.dart.
 }

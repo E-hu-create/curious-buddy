@@ -10,7 +10,7 @@ Git, lint and analysis rules, layered folder structure, voice and progress
 interfaces, tests, documentation. Gradle heap set to 3 GB. Verified on a
 Samsung SM-A516U.
 
-## Phase 1: App shell and Home ✅ (awaiting review)
+## Phase 1: App shell and Home ✅
 
 - ✅ Home and exploration screen with view model and tests.
 - ✅ Navigation to placeholder feature screens and a Parent Zone placeholder
@@ -25,17 +25,26 @@ Samsung SM-A516U.
 - ⏳ Final mascot art (premium 3D renders) from an artist or a tool with
   clear usage rights; see MASCOT.md for the spec and integration plan.
 
-## Phase 2: Persistent progress
+## Phase 2: Buddy voice output ✅ (awaiting review)
+
+Swapped ahead of persistent progress at the product owner's request.
+
+- ✅ `FlutterTtsService` on the device's built-in engine (`flutter_tts`).
+- ✅ `BuddyVoice`: one app-wide voice with on/off setting and
+  welcome-once-per-session.
+- ✅ Spoken welcome on launch; "Hear again" and "Voice off / Voice on" on Home.
+- ✅ Speech stops on navigation, when the app is hidden or interrupted, and
+  on close.
+- ✅ Text fallback when no engine or voice is installed, or speech fails.
+- ⏳ Voice on/off is remembered only for the current session until
+  Phase 3 adds persistent storage (the code already saves it through
+  `KeyValueStore`).
+
+## Phase 3: Persistent progress and settings
 
 - Add `shared_preferences`; implement `KeyValueStore`.
-- Wire `ProgressRepository` into Home.
-- Device test: progress survives force-stop.
-
-## Phase 3: Buddy voice output
-
-- Add a TTS package; implement `TextToSpeechService`.
-- Use `Narrator` in Home and missions. Text always visible.
-- Device tests for interruption, replay and missing voices.
+- Wire `ProgressRepository` into Home. Voice on/off then survives restarts.
+- Device test: progress and voice setting survive force-stop.
 
 ## Phase 4: Mystery missions and learning games
 
