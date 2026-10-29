@@ -1,5 +1,6 @@
 import '../voice/educational_response_provider.dart';
 
+part 'curated_topics_extra.dart';
 part 'curated_topics_more.dart';
 
 /// Reviewed, offline answers Buddy can give today.
@@ -389,6 +390,7 @@ const curatedTopics = <CuratedTopic>[
 
   // More specific topics (animals, space, Earth, body, science, jokes).
   ..._moreTopics,
+  ..._extraTopics,
 
   // ----------------------------------------------------------------- space
   CuratedTopic(

@@ -78,6 +78,69 @@ void main() {
     }
   });
 
+  group('third batch: 50 more real questions', () {
+    for (final (question, topic) in [
+      ('how do fish breathe', 'fish'),
+      ('what do pandas eat', 'pandas'),
+      ('how do planes fly', 'planes'),
+      ('who invented the light bulb', 'light_bulb'),
+      ('how loud is a lion\x27s roar', 'lions'),
+      ('why do tigers have stripes', 'tigers'),
+      ('what colour is a polar bear\x27s skin', 'polar_bears'),
+      ('how big is a baby kangaroo', 'kangaroos'),
+      ('do crocodiles have tongues', 'crocodiles'),
+      ('can horses sleep standing up', 'horses'),
+      ('how many stomachs does a cow have', 'cows'),
+      ('how do birds fly', 'birds'),
+      ('how do worms breathe', 'worms'),
+      ('how well can eagles see', 'eagles'),
+      ('why can parrots talk', 'parrots'),
+      ('how do rockets work', 'rockets'),
+      ('what is electricity', 'electricity'),
+      ('how do batteries work', 'batteries'),
+      ('what is the internet', 'internet'),
+      ('how do mobile phones work', 'phones'),
+      ('what is sound', 'sound'),
+      ('what is an echo', 'echo'),
+      ('why does ice float', 'float'),
+      ('why is the sea blue', 'sea_blue'),
+      ('what makes wind', 'wind'),
+      ('how are mountains made', 'mountains'),
+      ('what is a desert', 'deserts'),
+      ('what lives in the rainforest', 'rainforests'),
+      ('what is in the middle of the earth', 'earth_core'),
+      ('what makes waves', 'waves'),
+      ('how big is the sun', 'sun_size'),
+      ('how far away is the sun', 'sun_distance'),
+      ('how old is the earth', 'earth_age'),
+      ('why does the moon follow our car', 'moon_follows'),
+      ('what is the biggest planet', 'jupiter'),
+      ('is pluto a planet', 'pluto'),
+      ('what is a comet', 'comets'),
+      ('are aliens real', 'aliens'),
+      ('who was the first person on the moon', 'moon_landing'),
+      ('who invented the telephone', 'telephone'),
+      ('why do we sneeze', 'sneeze'),
+      ('why do we need water', 'body_water'),
+      ('how many teeth do we have', 'teeth'),
+      ('why do we blink', 'blink'),
+      ('why do we get goosebumps', 'goosebumps'),
+      ('why do my fingers wrinkle in the bath', 'wrinkly_fingers'),
+      ('how many taste buds do i have', 'taste_buds'),
+      ('tell me a riddle', 'riddles'),
+      ('i\x27m sad', 'feelings'),
+      ('i feel lonely', 'feelings'),
+    ]) {
+      test(question, () async {
+        final response = await provider.respond(
+          EducationalPrompt(question: question),
+        );
+        expect(response.topicId, topic);
+        expect(response.isFallback, isFalse, reason: 'answers directly');
+      });
+    }
+  });
+
   group('specific topics win over broad ones', () {
     test('octopus hearts goes to the ocean, not the human heart', () async {
       expect(
@@ -92,6 +155,32 @@ void main() {
 
     test('rainbows are not rain', () async {
       expect(await topicFor('how are rainbows made'), 'rainbow');
+    });
+
+    test('frogs drinking water stay with frogs, not body water', () async {
+      expect(await topicFor('why do frogs drink water'), 'frogs');
+    });
+
+    test('T. rex teeth stay with T. rex, not human teeth', () async {
+      expect(await topicFor('how big were t rex teeth'), 't_rex');
+    });
+
+    test('"sad" in a joke request is not a feelings reply', () async {
+      expect(await topicFor('tell me a joke about a sad maths book'), 'jokes');
+    });
+
+    test('a phone number is still caught by the safety filter', () async {
+      final response = await provider.respond(
+        const EducationalPrompt(question: 'how do phones work 07700 900123'),
+      );
+      expect(response.hideQuestion, isTrue);
+    });
+
+    test('feelings replies point to a trusted grown-up', () async {
+      final response = await provider.respond(
+        const EducationalPrompt(question: "I'm sad"),
+      );
+      expect(response.text, contains('grown-up you trust'));
     });
   });
 
@@ -164,13 +253,16 @@ void main() {
       expect(response.kind, ResponseKind.fallback);
     });
 
-    test('"how big is the sun" admits it, then offers a space fact', () async {
-      final response = await provider.respond(
-        const EducationalPrompt(question: 'How big is the sun?'),
-      );
+    test(
+      '"how hot is Jupiter" admits it, then offers a Jupiter fact',
+      () async {
+        final response = await provider.respond(
+          const EducationalPrompt(question: 'How hot is Jupiter?'),
+        );
 
-      expect(response.text, startsWith(notSureLeadIn('space')));
-    });
+        expect(response.text, startsWith(notSureLeadIn('Jupiter')));
+      },
+    );
 
     test('a fact request needs no lead-in', () async {
       for (final question in [
@@ -231,6 +323,6 @@ void main() {
 
   test('library size', () {
     // Guards against accidentally dropping topics.
-    expect(curatedTopics.length, greaterThanOrEqualTo(70));
+    expect(curatedTopics.length, greaterThanOrEqualTo(119));
   });
 }

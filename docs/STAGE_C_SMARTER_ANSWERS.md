@@ -7,8 +7,10 @@ content; no AI service, backend or API key exists.
 
 ### Option A, as built
 
-- About 70 reviewed topics (from about 25): animals, space, Earth and
-  weather, the human body, science, history and clean jokes.
+- About 120 reviewed topics (from about 25), added in two batches:
+  animals, space, Earth and weather, the human body, science and machines,
+  history, jokes, riddles, and a gentle "I'm sad" reply that points to a
+  trusted grown-up.
 - Matching: plurals and possessives fold to the base word; one-letter typos
   forgiven only for long, distinctive names (`typoTolerantWords`), because
   forgiving ordinary words caused misfires ("planes" → "planets").
@@ -17,8 +19,9 @@ content; no AI service, backend or API key exists.
 - Honesty: a specific question that only matches a subject gets "I'm not
   sure about that exact question yet. Here's a snake fact instead!"
   instead of a fact passed off as an answer.
-- On a sample of 30 typical questions: 25 answered directly (was 10), 1
+- First sample of 30 typical questions: 25 answered directly (was 10), 1
   honest "not sure" with a related fact, 4 honest "I don't know yet".
+- Second sample of 50 different questions: all 50 answered directly (was 1).
 - Tested by `test/domain/conversation/curated_matching_test.dart` (a table
   of real questions and the topic each must reach, plus misfire guards).
 

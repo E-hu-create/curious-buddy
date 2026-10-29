@@ -614,9 +614,12 @@ const _moreTopics = <CuratedTopic>[
       ['float'],
       ['why', 'sink'],
     ],
+    pinned: {'ice': 1},
     answers: [
       'Things float when they push aside water that weighs more than they do. '
           'That is how a huge steel ship can float!',
+      'Ice floats because water spreads out when it freezes. '
+          'That makes ice lighter than the same amount of liquid water!',
     ],
     followUps: ['How do magnets work?', 'Why is the ocean salty?'],
   ),

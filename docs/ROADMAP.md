@@ -76,7 +76,7 @@ Stage B's tap-to-talk awaits phone testing and review.
 
 See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
 
-- ✅ Option A (awaiting review): about 70 reviewed offline topics, forgiving
+- ✅ Option A (awaiting review): about 120 reviewed offline topics, forgiving
   but guarded matching, pinned answers, honest "not sure" lead-ins.
 - ⏳ Option C (cloud AI behind an app-owned backend): only after the
   legal/privacy review, a provider and backend owner, and a parental
