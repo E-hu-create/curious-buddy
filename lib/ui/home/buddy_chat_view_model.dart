@@ -9,8 +9,7 @@ import '../../domain/voice/narrator.dart';
 
 /// What Buddy is doing, shown by his expression and the bubble.
 ///
-/// `listening` is deliberately absent: speech input is not implemented
-/// (Stage B), and the UI must not pretend otherwise.
+/// Listening is tracked separately by `TalkViewModel` / `BuddyListener`.
 enum BuddyActivity { idle, thinking, speaking }
 
 /// One question-and-answer exchange with Buddy at a time.

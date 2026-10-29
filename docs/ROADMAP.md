@@ -40,7 +40,7 @@ Swapped ahead of persistent progress at the product owner's request.
   Phase 3 adds persistent storage (the code already saves it through
   `KeyValueStore`).
 
-## Voice companion: Stage A, interface and interaction ✅ (awaiting review)
+## Voice companion: Stage A, interface and interaction ✅
 
 - ✅ Home built around Buddy: bubble with "You asked", Buddy's answer,
   "Thinking..." / "Talking..." status, Stop talking, Hear again, Voice off/on.
@@ -54,9 +54,19 @@ Swapped ahead of persistent progress at the product owner's request.
 - ✅ "Talk to Buddy" is an honest placeholder; never touches the microphone.
 - ✅ Conversations are never saved.
 
-## Voice companion: Stage B, tap-to-talk (proposal, needs approval)
+## Voice companion: Stage B, tap-to-talk ✅ (awaiting review)
 
-See [STAGE_B_VOICE_INPUT.md](STAGE_B_VOICE_INPUT.md).
+- ✅ `speech_to_text` 7.4.0; `RECORD_AUDIO` + `INTERNET`, no Bluetooth.
+- ✅ Explanation before the permission prompt; live words; Done / Cancel;
+  words go in the text box for checking, never sent automatically.
+- ✅ On-device only unless a grown-up allows online (enforced with an
+  Android check, because the plugin would silently fall back online).
+- ✅ Minimal Parent Zone: parent check + "Allow online voice recognition".
+- ✅ Cancelled on navigation, interruptions and close.
+- ⏳ Privacy and legal review before external testers (agreed).
+- ⏳ Settings reset on restart until Phase 3 storage.
+
+Details: [STAGE_B_VOICE_INPUT.md](STAGE_B_VOICE_INPUT.md).
 
 ## Voice companion: Stage C, smarter answers (needs approval)
 
@@ -81,7 +91,8 @@ See [STAGE_B_VOICE_INPUT.md](STAGE_B_VOICE_INPUT.md).
 
 ## Phase 6: Parent Zone
 
-- Parent gate, settings (voice on/off), progress reset, data overview.
+- Fuller parent gate, more settings (voice on/off), progress reset, data
+  overview. (A minimal gate and the online-recognition setting exist.)
 
 ## Phase 7: Creative Island
 

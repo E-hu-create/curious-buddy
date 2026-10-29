@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/routes.dart';
 import '../../data/repositories/progress_repository.dart';
+import '../../domain/voice/buddy_listener.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../../domain/voice/educational_response_provider.dart';
 import '../core/widgets/buddy/buddy.dart';
@@ -11,6 +12,7 @@ import 'buddy_action_routes.dart';
 import 'buddy_chat_view_model.dart';
 import 'home_destination.dart';
 import 'home_view_model.dart';
+import 'talk_view_model.dart';
 import 'widgets/ask_buddy_panel.dart';
 import 'widgets/buddy_greeting.dart';
 import 'widgets/destination_grid.dart';
@@ -24,11 +26,22 @@ class HomeScreen extends StatefulWidget {
     required this.progressRepository,
     required this.responseProvider,
     required this.voice,
+    required this.listener,
   });
 
   final ProgressRepository progressRepository;
   final EducationalResponseProvider responseProvider;
   final BuddyVoice voice;
+  final BuddyListener listener;
+
+  static const micTitle = 'Can Buddy use the microphone?';
+  static const micMessage =
+      'Buddy needs the microphone to hear your question. '
+      'Your phone will ask if that is okay. A grown-up may need to help.\n\n'
+      'Buddy only listens after you tap Talk, and the app does not save '
+      'what you say.';
+  static const micOkLabel = 'OK';
+  static const micNotNowLabel = 'Not now';
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -44,7 +57,8 @@ class _HomeScreenState extends State<HomeScreen> {
     voice: widget.voice,
     greeting: HomeViewModel.greeting,
   );
-  late final Listenable _changes = Listenable.merge([_home, _chat]);
+  late final TalkViewModel _talk = TalkViewModel(listener: widget.listener);
+  late final Listenable _changes = Listenable.merge([_home, _chat, _talk]);
 
   @override
   void initState() {
@@ -54,12 +68,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    _talk.dispose();
     _chat.dispose();
     _home.dispose();
     super.dispose();
   }
 
   BuddyMood get _mood {
+    if (_talk.isListening) return BuddyMood.curious;
     if (_chat.hadError) return BuddyMood.surprised;
     return switch (_chat.activity) {
       BuddyActivity.thinking => BuddyMood.thoughtful,
@@ -73,6 +89,38 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _open(String route) => Navigator.of(context).pushNamed(route);
+
+  /// Tap-to-talk: explain first, and only then let Android ask for the
+  /// microphone. Nothing is listened to before the child taps Talk.
+  Future<void> _startTalking() async {
+    final step = await _talk.prepare();
+    if (!mounted) return;
+    switch (step) {
+      case TalkStep.unavailable:
+        return;
+      case TalkStep.ready:
+        await _talk.listen();
+      case TalkStep.needsPermission:
+        final agreed = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text(HomeScreen.micTitle),
+            content: const Text(HomeScreen.micMessage),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text(HomeScreen.micNotNowLabel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text(HomeScreen.micOkLabel),
+              ),
+            ],
+          ),
+        );
+        if (agreed == true && mounted) await _talk.requestPermissionAndListen();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,11 +146,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       BuddyGreeting(
                         text: _chat.message,
                         mood: _mood,
-                        status: switch (_chat.activity) {
-                          BuddyActivity.thinking => BuddyStatus.thinking,
-                          BuddyActivity.speaking => BuddyStatus.talking,
-                          BuddyActivity.idle => null,
-                        },
+                        status: _talk.isListening
+                            ? BuddyStatus.listening
+                            : switch (_chat.activity) {
+                                BuddyActivity.thinking => BuddyStatus.thinking,
+                                BuddyActivity.speaking => BuddyStatus.talking,
+                                BuddyActivity.idle => null,
+                              },
                         youAsked: _chat.youAsked,
                         questionHidden: _chat.questionHidden,
                         actionLabel: _chat.response?.actionLabel,
@@ -112,7 +162,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         voiceStatus: _home.voiceStatus,
                         isMuted: _home.isMuted,
                         isSpeaking: _chat.activity == BuddyActivity.speaking,
-                        onReplay: () => unawaited(_chat.replay()),
+                        // Never talk over a child who is speaking.
+                        onReplay: _talk.isListening
+                            ? null
+                            : () => unawaited(_chat.replay()),
                         onStop: () => unawaited(_chat.stopSpeaking()),
                         onToggleMuted: () => unawaited(_home.toggleMuted()),
                       ),
@@ -120,7 +173,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       AskBuddyPanel(
                         enabled: _chat.canAsk,
                         suggestions: _chat.suggestions,
-                        onAsk: (question) => unawaited(_chat.ask(question)),
+                        onAsk: (question) {
+                          _talk.clearNotice();
+                          unawaited(_chat.ask(question));
+                        },
+                        onTalk: () => unawaited(_startTalking()),
+                        onFinishListening: () => unawaited(_talk.finish()),
+                        onCancelListening: () => unawaited(_talk.cancel()),
+                        isListening: _talk.isListening,
+                        liveWords: _talk.liveWords,
+                        notice: _talk.notice,
+                        draft: _talk.draft,
+                        draftId: _talk.draftId,
                       ),
                       if (progress != null) ...[
                         const SizedBox(height: 24),

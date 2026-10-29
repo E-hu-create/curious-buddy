@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/data/services/voice/speech_recognition_service.dart';
 import 'package:curious_buddy/data/services/voice/text_to_speech_service.dart';
+import 'package:curious_buddy/data/services/voice/voice_failure.dart';
 
 /// Records calls and returns scripted results.
 ///
@@ -55,40 +56,111 @@ class ReadOnlyKeyValueStore extends InMemoryKeyValueStore {
       throw const FileSystemLikeException();
 }
 
-/// Counts every call so tests can assert the microphone is never touched.
+/// Scriptable recogniser. Counts every call so tests can assert the
+/// microphone is never touched unless the child asked.
+///
+/// With [holdListening], a session stays open until [hear] / [finish] /
+/// [stopListening] / [cancel], so tests can act while Buddy is listening.
 class FakeSpeechRecognitionService implements SpeechRecognitionService {
+  bool available = true;
+  bool onDevice = true;
+  MicrophonePermission permission = MicrophonePermission.unknown;
+  bool grantOnRequest = true;
+  ListenResult nextResult = const ListenHeard('Why is the sky blue?');
+  bool holdListening = false;
+
   int totalCalls = 0;
   int permissionRequests = 0;
+  int listenCalls = 0;
+  int cancelCalls = 0;
+  int stopCalls = 0;
+  bool? lastAllowOnline;
+
+  Completer<ListenResult>? _session;
+  void Function(String words)? _onWords;
+  String _words = '';
+
+  bool get isListening => _session != null;
 
   @override
   Future<bool> isAvailable() async {
     totalCalls++;
-    return true;
+    return available;
+  }
+
+  @override
+  Future<bool> supportsOnDevice() async {
+    totalCalls++;
+    return onDevice;
   }
 
   @override
   Future<MicrophonePermission> checkPermission() async {
     totalCalls++;
-    return MicrophonePermission.unknown;
+    return permission;
   }
 
   @override
   Future<MicrophonePermission> requestPermission() async {
     totalCalls++;
     permissionRequests++;
-    return MicrophonePermission.granted;
+    permission = grantOnRequest
+        ? MicrophonePermission.granted
+        : MicrophonePermission.denied;
+    return permission;
   }
 
   @override
   Future<ListenResult> listen({
-    Duration maxDuration = const Duration(seconds: 10),
+    Duration maxDuration = const Duration(seconds: 15),
+    Duration pauseFor = const Duration(seconds: 3),
+    bool allowOnline = false,
+    void Function(String words)? onWords,
   }) async {
     totalCalls++;
-    return const ListenNothingHeard();
+    listenCalls++;
+    lastAllowOnline = allowOnline;
+    if (!allowOnline && !onDevice) {
+      return const ListenFailed(VoiceFailure.offlineUnavailable);
+    }
+    if (!holdListening) return nextResult;
+    _onWords = onWords;
+    _words = '';
+    return (_session = Completer<ListenResult>()).future;
+  }
+
+  /// Simulates partial words arriving while listening.
+  void hear(String words) {
+    _words = words;
+    _onWords?.call(words);
+  }
+
+  /// Ends the held session with [result] (default: what was heard).
+  void finish([ListenResult? result]) => _end(
+    result ??
+        (_words.isEmpty ? const ListenNothingHeard() : ListenHeard(_words)),
+  );
+
+  @override
+  Future<void> stopListening() async {
+    totalCalls++;
+    stopCalls++;
+    finish();
   }
 
   @override
-  Future<void> stopListening() async => totalCalls++;
+  Future<void> cancel() async {
+    totalCalls++;
+    cancelCalls++;
+    _end(const ListenCancelled());
+  }
+
+  void _end(ListenResult result) {
+    final session = _session;
+    _session = null;
+    _onWords = null;
+    session?.complete(result);
+  }
 }
 
 /// Store whose reads fail, to simulate a storage error.

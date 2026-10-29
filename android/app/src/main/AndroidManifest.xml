@@ -1,4 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Tap-to-talk only, requested after the child taps "Talk to Buddy" and
+         sees an explanation. Never used in the background. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- The phone's speech recogniser may need the network, and only when a
+         grown-up allows online recognition. The app itself makes no network
+         calls. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="Curious Buddy"
         android:name="${applicationName}"
@@ -45,6 +52,10 @@
              (Android 11+ package visibility). Not a permission. -->
         <intent>
             <action android:name="android.intent.action.TTS_SERVICE"/>
+        </intent>
+        <!-- Lets the app find the phone's speech recogniser (Android 11+). -->
+        <intent>
+            <action android:name="android.speech.RecognitionService"/>
         </intent>
     </queries>
 </manifest>

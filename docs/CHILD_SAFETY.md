@@ -21,6 +21,7 @@ is built.
 | --- | --- | --- |
 | IDs of completed missions and stories | Show progress | `LearnerProgress` via `ProgressRepository` |
 | Voice on/off (`voice.muted`) | Respect the choice to keep Buddy quiet | `BuddyVoice` via `KeyValueStore` |
+| Allow online voice recognition (`voice.allowOnlineRecognition`), off by default | Grown-up choice about where speech is recognised | `BuddyListener` via `KeyValueStore` |
 | *Future:* Creative Island creations | Child's own work | Local storage, deletable from Parent Zone |
 
 Currently held **in memory only**; nothing is written to disk yet.
@@ -30,18 +31,22 @@ Currently held **in memory only**; nothing is written to disk yet.
 - Names, birthdays, ages, photos, contacts, email or phone numbers.
 - Precise or approximate location. No location permission is requested.
 - Advertising IDs, analytics, tracking or fingerprinting.
-- Voice recordings. Speech recognition returns text only. Audio is never
-  saved, logged or uploaded by the app.
+- Voice recordings. The app receives recognised text only; it never saves,
+  logs or uploads audio. (Where the phone's recogniser sends audio is covered
+  under "Voice input" below.)
 - Free-text typed by children, beyond what a feature needs at that moment.
 
 ## Permissions
 
-- The main Android manifest requests **no permissions**. Debug and profile
-  builds add `INTERNET` for Flutter tooling (hot reload) only. Check that
-  release builds still have no `INTERNET` permission until a feature needs it.
-- Microphone: requested only when the child or parent explicitly taps
-  push-to-talk, never at launch (checked by a widget test). Denial must leave
-  a fully working tap alternative.
+Release builds request exactly (verified in the merged manifest):
+
+- `RECORD_AUDIO`: tap-to-talk. Requested only after the child taps Talk
+  and agrees to "Can Buddy use the microphone?"; never at launch or in the
+  background (widget tests check that launch and normal use make no
+  recogniser calls). Denial leaves typing fully working.
+- `INTERNET`: only so the phone's speech recogniser can work online **when
+  a grown-up allows it** in the Parent Zone. The app itself makes no network
+  calls, has no backend, analytics or ads.
 - `DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` (added automatically by
   AndroidX via `flutter_tts`): private to this app, signature-protected,
   never shown to users, gives no access to user data.
@@ -83,10 +88,29 @@ Currently held **in memory only**; nothing is written to disk yet.
   the app closes (tested).
 - Buddy can suggest an activity, but only from a fixed list of in-app
   screens, and only opens it when the child taps.
-- Voice input does not exist yet. See
-  [STAGE_B_VOICE_INPUT.md](STAGE_B_VOICE_INPUT.md) for the proposal and its
-  privacy implications (the phone's recognition service may send audio to
-  its provider unless on-device mode is used).
+- Recognised speech goes through the same safety filter as typed
+  questions, and only after the child checks it and taps Ask.
+
+## Voice input
+
+- Explicit tap-to-talk only: one session per tap, 15 seconds max, never
+  continuous, never in the background. Cancelled on Cancel, navigation,
+  interruptions (calls, app switcher, screen off) and app close (tested).
+- The child sees an explanation before Android's permission prompt and can
+  say **Not now**. Denial is never re-prompted automatically.
+- **Where the voice goes:** recognition is done by the phone's own
+  recognition service, not by the app.
+  - **Default (online not allowed):** on-device only. The app checks with
+    Android that on-device recognition exists and otherwise refuses to
+    listen, because the plugin alone would silently fall back to an
+    online recogniser.
+  - **Online allowed (grown-up setting):** the phone's recognition provider
+    (often Google) may receive the audio, under its own privacy terms.
+- The app receives text only and stores nothing (no audio, no transcripts).
+- The Parent Zone's times-table check is a light gate for young children,
+  not a security control.
+- Details: [STAGE_B_VOICE_INPUT.md](STAGE_B_VOICE_INPUT.md). **A privacy
+  and legal review is required before external testers use voice input.**
 
 These are design principles, not a legal compliance claim. A proper
 privacy and legal review is needed before release.

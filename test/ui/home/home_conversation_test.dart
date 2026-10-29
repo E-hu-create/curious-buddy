@@ -47,7 +47,6 @@ void main() {
 
     expect(find.text(HomeViewModel.greeting), findsOneWidget);
     expect(find.text(AskBuddyPanel.talkLabel), findsOneWidget);
-    expect(find.text(AskBuddyPanel.comingSoonTag), findsOneWidget);
     expect(find.byType(TextField), findsOneWidget);
     for (final prompt in starterPrompts) {
       expect(find.widgetWithText(SuggestionButton, prompt), findsOneWidget);
@@ -185,36 +184,7 @@ void main() {
 
     expect(find.textContaining("I don't know that one yet"), findsOneWidget);
   });
-
-  group('talk button (voice input not built yet)', () {
-    testWidgets('explains it is coming soon and never touches the mic', (
-      tester,
-    ) async {
-      await openHome(tester);
-
-      await tester.tap(find.text(AskBuddyPanel.talkLabel));
-      await tester.pumpAndSettle();
-
-      expect(find.text(AskBuddyPanel.talkSoonTitle), findsOneWidget);
-      expect(speech.totalCalls, 0);
-      expect(speech.permissionRequests, 0);
-    });
-
-    testWidgets('"Type instead" closes it and focuses the text box', (
-      tester,
-    ) async {
-      await openHome(tester);
-      await tester.tap(find.text(AskBuddyPanel.talkLabel));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text(AskBuddyPanel.typeInsteadLabel));
-      await tester.pumpAndSettle();
-
-      expect(find.text(AskBuddyPanel.talkSoonTitle), findsNothing);
-      final field = tester.widget<TextField>(find.byType(TextField));
-      expect(field.focusNode!.hasFocus, isTrue);
-    });
-  });
+  // Tap-to-talk (Stage B) is covered in home_talk_test.dart.
 
   testWidgets('status badge shows Talking only while Buddy talks', (
     tester,

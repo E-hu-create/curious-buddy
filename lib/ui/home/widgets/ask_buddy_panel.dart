@@ -3,35 +3,47 @@ import 'package:flutter/material.dart';
 import '../../core/themes/app_colors.dart';
 import '../../core/themes/app_theme.dart';
 
-/// How a child asks Buddy something: a talk button, a text box, and
-/// suggested questions.
+/// How a child asks Buddy something: tap-to-talk, a text box, and suggested
+/// questions.
 ///
-/// Talking is not available yet (Stage B). The talk button is an honest
-/// placeholder: it explains that, points to typing, and never touches the
-/// microphone.
+/// Talking never sends anything by itself: recognised words arrive as a
+/// [draft] in the text box, and the child taps Ask when they are happy.
 class AskBuddyPanel extends StatefulWidget {
   const AskBuddyPanel({
     super.key,
     required this.enabled,
     required this.suggestions,
     required this.onAsk,
+    required this.onTalk,
+    required this.onFinishListening,
+    required this.onCancelListening,
+    this.isListening = false,
+    this.liveWords = '',
+    this.notice,
+    this.draft,
+    this.draftId = 0,
   });
 
   /// False while Buddy is preparing an answer.
   final bool enabled;
   final List<String> suggestions;
   final ValueChanged<String> onAsk;
+  final VoidCallback onTalk;
+  final VoidCallback onFinishListening;
+  final VoidCallback onCancelListening;
+  final bool isListening;
+  final String liveWords;
+  final String? notice;
+  final String? draft;
+  final int draftId;
 
   static const talkLabel = 'Talk to Buddy';
-  static const comingSoonTag = 'Coming soon';
+  static const listeningLabel = 'Listening...';
+  static const listeningPrompt = 'Say your question now.';
+  static const doneLabel = 'Done';
+  static const cancelLabel = 'Cancel';
   static const fieldHint = 'Type a question';
   static const askLabel = 'Ask';
-  static const talkSoonTitle = 'Talking is coming soon!';
-  static const talkSoonMessage =
-      "Soon you'll be able to ask Buddy out loud. "
-      "Before Buddy can use the microphone, you'll be asked first. "
-      'For now, type your question or tap one of the ideas.';
-  static const typeInsteadLabel = 'Type instead';
   static const maxLength = 200;
 
   @override
@@ -49,13 +61,27 @@ class _AskBuddyPanelState extends State<AskBuddyPanel> {
   }
 
   @override
+  void didUpdateWidget(AskBuddyPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final draft = widget.draft;
+    if (widget.draftId != oldWidget.draftId && draft != null) {
+      // Put the heard words in the box for checking; never auto-send.
+      _controller.value = TextEditingValue(
+        text: draft,
+        selection: TextSelection.collapsed(offset: draft.length),
+      );
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     _focus.dispose();
     super.dispose();
   }
 
-  bool get _canSend => widget.enabled && _controller.text.trim().isNotEmpty;
+  bool get _inputEnabled => widget.enabled && !widget.isListening;
+  bool get _canSend => _inputEnabled && _controller.text.trim().isNotEmpty;
 
   void _send() {
     if (!_canSend) return;
@@ -65,30 +91,13 @@ class _AskBuddyPanelState extends State<AskBuddyPanel> {
     widget.onAsk(question);
   }
 
-  Future<void> _explainTalking() async {
-    final typeInstead = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text(AskBuddyPanel.talkSoonTitle),
-        content: const Text(AskBuddyPanel.talkSoonMessage),
-        actions: [
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text(AskBuddyPanel.typeInsteadLabel),
-          ),
-        ],
-      ),
-    );
-    if (typeInstead == true && mounted) _focus.requestFocus();
-  }
-
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final field = TextField(
       controller: _controller,
       focusNode: _focus,
-      enabled: widget.enabled,
+      enabled: _inputEnabled,
       maxLength: AskBuddyPanel.maxLength,
       textInputAction: TextInputAction.send,
       textCapitalization: TextCapitalization.sentences,
@@ -120,6 +129,7 @@ class _AskBuddyPanelState extends State<AskBuddyPanel> {
     final stacked =
         MediaQuery.textScalerOf(context).scale(1) >= 1.3 ||
         MediaQuery.sizeOf(context).width < 340;
+    final notice = widget.notice;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -127,7 +137,21 @@ class _AskBuddyPanelState extends State<AskBuddyPanel> {
       child: Column(
         crossAxisAlignment: .stretch,
         children: [
-          _TalkButton(onPressed: _explainTalking),
+          if (widget.isListening)
+            _ListeningCard(
+              words: widget.liveWords,
+              onDone: widget.onFinishListening,
+              onCancel: widget.onCancelListening,
+            )
+          else
+            _TalkButton(onPressed: widget.enabled ? widget.onTalk : null),
+          if (notice != null) ...[
+            const SizedBox(height: 10),
+            Semantics(
+              liveRegion: true,
+              child: Text(notice, style: textTheme.bodyMedium),
+            ),
+          ],
           const SizedBox(height: 14),
           // Side by side normally; stacked with large text or on narrow
           // screens so the box keeps room to show what is typed.
@@ -151,7 +175,7 @@ class _AskBuddyPanelState extends State<AskBuddyPanel> {
               for (final suggestion in widget.suggestions)
                 SuggestionButton(
                   label: suggestion,
-                  onPressed: widget.enabled
+                  onPressed: _inputEnabled
                       ? () => widget.onAsk(suggestion)
                       : null,
                 ),
@@ -172,43 +196,81 @@ class _AskBuddyPanelState extends State<AskBuddyPanel> {
 class _TalkButton extends StatelessWidget {
   const _TalkButton({required this.onPressed});
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton(
+    return FilledButton.icon(
       onPressed: onPressed,
       style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(72)),
-      // Wraps so the tag drops below the label on narrow screens or with
-      // large text instead of overflowing.
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 10,
-        runSpacing: 6,
+      icon: const Icon(Icons.mic_rounded, size: 30),
+      label: const Text(AskBuddyPanel.talkLabel),
+    );
+  }
+}
+
+/// Shown only while the microphone is on: what is being heard, plus clear
+/// ways to stop.
+class _ListeningCard extends StatelessWidget {
+  const _ListeningCard({
+    required this.words,
+    required this.onDone,
+    required this.onCancel,
+  });
+
+  final String words;
+  final VoidCallback onDone;
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.leafTint,
+        borderRadius: BorderRadius.circular(AppShapes.radius),
+        border: Border.all(color: AppColors.ink, width: AppShapes.outlineWidth),
+      ),
+      child: Column(
+        crossAxisAlignment: .stretch,
         children: [
-          const Row(
-            mainAxisSize: .min,
+          Row(
             children: [
-              Icon(Icons.mic_rounded, size: 30),
-              SizedBox(width: 10),
-              Flexible(child: Text(AskBuddyPanel.talkLabel)),
+              const Icon(Icons.mic_rounded, color: AppColors.ink, size: 28),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  AskBuddyPanel.listeningLabel,
+                  style: textTheme.titleMedium,
+                ),
+              ),
             ],
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: AppColors.sun,
-              borderRadius: BorderRadius.circular(999),
-              border: Border.all(color: AppColors.ink, width: 1.5),
-            ),
+          const SizedBox(height: 8),
+          Semantics(
+            liveRegion: true,
             child: Text(
-              AskBuddyPanel.comingSoonTag,
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: AppColors.ink,
-                fontWeight: FontWeight.w800,
-              ),
+              words.isEmpty ? AskBuddyPanel.listeningPrompt : words,
+              style: textTheme.bodyLarge,
             ),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              FilledButton.icon(
+                onPressed: onDone,
+                icon: const Icon(Icons.check_rounded),
+                label: const Text(AskBuddyPanel.doneLabel),
+              ),
+              OutlinedButton.icon(
+                onPressed: onCancel,
+                icon: const Icon(Icons.close_rounded),
+                label: const Text(AskBuddyPanel.cancelLabel),
+              ),
+            ],
           ),
         ],
       ),

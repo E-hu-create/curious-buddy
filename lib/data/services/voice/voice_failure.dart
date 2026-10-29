@@ -10,9 +10,13 @@ enum VoiceFailure {
   /// The child or parent declined microphone access.
   permissionDenied,
 
-  /// Declined with "don't ask again"; only system settings can fix it.
-  permissionPermanentlyDenied,
-
   /// The platform engine reported an error.
   platformError,
+
+  /// Online recognition is not allowed and this phone cannot recognise
+  /// speech on the device.
+  offlineUnavailable,
+
+  /// Recognition needed the network and it was unavailable.
+  network,
 }

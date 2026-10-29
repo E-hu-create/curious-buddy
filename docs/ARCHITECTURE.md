@@ -107,18 +107,23 @@ Features must not import each other's internals. Shared pieces move to
 
 ## Voice system
 
-**Speech output is implemented** with the device's built-in text-to-speech
-engine. **Speech input is not**: the app ships with
-`UnavailableSpeechRecognitionService`, which honestly reports
-"unavailable", and never touches the microphone.
+**Speech output** uses the device's built-in text-to-speech engine.
+**Speech input** is explicit tap-to-talk on Android's recogniser,
+on-device only unless a grown-up allows online recognition (Stage B; see
+[STAGE_B_VOICE_INPUT.md](STAGE_B_VOICE_INPUT.md)).
 
 | Concern | Type | File |
 | --- | --- | --- |
 | Speech output (interface) | `TextToSpeechService` | `data/services/voice/text_to_speech_service.dart` |
 | Speech output (device engine) | `FlutterTtsService` | `data/services/voice/flutter_tts_service.dart` |
 | App-wide voice: on/off, welcome once, stop | `BuddyVoice` | `domain/voice/buddy_voice.dart` |
-| Stop speech on navigation | `VoiceNavigatorObserver` | `app/voice_navigator_observer.dart` |
-| Push-to-talk input | `SpeechRecognitionService` | `data/services/voice/speech_recognition_service.dart` |
+| Stop speech and listening on navigation | `VoiceNavigatorObserver` | `app/voice_navigator_observer.dart` |
+| Tap-to-talk input (interface) | `SpeechRecognitionService` | `data/services/voice/speech_recognition_service.dart` |
+| Tap-to-talk input (Android) | `SpeechToTextRecognitionService` + `PluginSpeechEngine` | `data/services/voice/speech_to_text_recognition_service.dart` |
+| On-device recognition check | `MainActivity.kt` (`curious_buddy/speech` channel) | `android/app/src/main/kotlin/.../MainActivity.kt` |
+| App-wide microphone: one session, allow-online setting, cancel | `BuddyListener` | `domain/voice/buddy_listener.dart` |
+| Talk flow on Home (explain, permission, listen, draft) | `TalkViewModel` | `ui/home/talk_view_model.dart` |
+| Grown-up setting behind a parent check | `ParentZoneScreen` | `ui/parent_zone/parent_zone_screen.dart` |
 | Narration and dialogue policy | `Narrator` | `domain/voice/narrator.dart` |
 | Answers to children's questions | `EducationalResponseProvider` | `domain/voice/educational_response_provider.dart` |
 | Shared failure reasons | `VoiceFailure` | `data/services/voice/voice_failure.dart` |
@@ -199,16 +204,19 @@ AskBuddyPanel (text box, ideas) ─► BuddyChatViewModel ─► EducationalResp
 opens a "Quiz Time, coming soon" page. No action can open the web, files
 or device features.
 
-**Talk button.** Speech input is not implemented. "Talk to Buddy" shows a
-"Talking is coming soon!" dialog and a "Type instead" button; it never
-calls `SpeechRecognitionService`. Stage B plan:
-[STAGE_B_VOICE_INPUT.md](STAGE_B_VOICE_INPUT.md).
+**Talk button (Stage B).** `HomeScreen._startTalking` →
+`TalkViewModel.prepare`: unavailable → notice; permission missing →
+explanation dialog, and only on **OK** `requestPermissionAndListen`;
+granted → `listen`. `BuddyListener` stops Buddy's voice first and runs one
+session (15 s max, 3 s pause). Heard words become a `draft` that
+`AskBuddyPanel` puts in the text box; the child sends it with Ask. Details
+and failure messages: [STAGE_B_VOICE_INPUT.md](STAGE_B_VOICE_INPUT.md).
 
 **Buddy's states.** Idle: happy (or curious after "I don't know",
-thoughtful after a safety reply). Thinking: thoughtful + "Thinking..."
-badge. Speaking: "Talking..." badge and "Stop talking" in place of "Hear
-again". Error: surprised + friendly message. A listening state is
-deliberately absent until Stage B.
+thoughtful after a safety reply). Listening: curious + "Listening..."
+badge; "Hear again", typing and ideas disabled. Thinking: thoughtful +
+"Thinking..." badge. Speaking: "Talking..." badge and "Stop talking" in
+place of "Hear again". Error: surprised + friendly message.
 
 **Adding a provider later (Stage C).** Implement
 `EducationalResponseProvider`, keep `ChildSafetyFilter` in front of it,

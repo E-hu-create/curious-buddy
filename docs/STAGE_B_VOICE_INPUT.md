@@ -1,91 +1,95 @@
-# Stage B Proposal: Tap-to-Talk Voice Input
+# Stage B: Tap-to-Talk Voice Input
 
-**Status: proposal, awaiting approval. Nothing here is implemented.** The
-app currently has no speech recognition, requests no microphone
-permission, and the "Talk to Buddy" button only explains that talking is
-coming soon.
+**Status: implemented (awaiting review).** Approved decisions:
+`speech_to_text` 7.4.0 with `RECORD_AUDIO` + `INTERNET` (no Bluetooth);
+recognition **on-device only unless a grown-up allows online**; a privacy
+review before anyone outside the team uses voice input.
 
-## Recommended package
+## Package
 
 | | |
 | --- | --- |
-| Package | [`speech_to_text`](https://pub.dev/packages/speech_to_text) by Corner Software Development Corp. |
-| Version | **7.4.0**: newest that resolves with Flutter 3.41.8 / Dart 3.11.5 (checked with `flutter pub add speech_to_text --dry-run`; 7.5.0+ does not resolve). |
+| Package | [`speech_to_text`](https://pub.dev/packages/speech_to_text) **7.4.0**, pinned exactly (newest that resolves with Flutter 3.41.8 / Dart 3.11.5). |
 | Licence | BSD 3-Clause. Free; no service fees or API keys. |
-| Adds | 5 small packages (`speech_to_text_platform_interface`, `speech_to_text_windows`, `json_annotation`, `plugin_platform_interface`, `web`). |
-| How it works | Thin wrapper around Android's built-in `SpeechRecognizer`. It does not do recognition itself; the phone's recognition service does (on Samsung phones usually the Google app or Samsung's service). |
-| Maintenance | Long-standing, widely used, regular releases. |
+| Adds | `speech_to_text_platform_interface`, `speech_to_text_windows`, `json_annotation`, `plugin_platform_interface`, `web`. |
+| How it works | Wraps Android's built-in `SpeechRecognizer`. The phone's recognition service does the recognition. |
+| Only file importing it | `lib/data/services/voice/speech_to_text_recognition_service.dart` (`PluginSpeechEngine`). |
 
-Alternatives considered: on-device engines such as Vosk need large language
-model downloads (50 MB+) and native setup; cloud APIs (Google Cloud
-Speech, etc.) need keys, a backend and fees. Both are out of scope for now.
+## Android
 
-## Android requirements
+| Manifest entry | Why |
+| --- | --- |
+| `RECORD_AUDIO` | Microphone. Runtime permission; requested only after the child taps Talk and agrees to the explanation. |
+| `INTERNET` | Only so the phone's recogniser can work online when a grown-up allows it. **Release builds now include `INTERNET`.** The app itself makes no network calls. |
+| `<queries>` `android.speech.RecognitionService` | Find the recogniser on Android 11+. Not a permission. |
 
-| Manifest entry | Why | Notes |
-| --- | --- | --- |
-| `RECORD_AUDIO` | Microphone access | A **runtime permission**: Android shows a system prompt. We request it only after the child taps Talk and sees our explanation. |
-| `INTERNET` | The phone's recognizer may use online recognition | Release builds would gain `INTERNET` for the first time (debug builds already have it for tooling). The app itself still makes no network calls. |
-| `BLUETOOTH`, `BLUETOOTH_ADMIN`, `BLUETOOTH_CONNECT` | Headset microphones | **Avoidable**: initialise with `SpeechConfigOption.androidNoBluetooth` and do not declare them. Recommended. |
-| `<queries>` for `android.speech.RecognitionService` | Find the recognizer on Android 11+ | Not a permission. |
+No Bluetooth permissions (`SpeechConfigOption.androidNoBluetooth`). Verified
+in the merged debug **and release** manifests.
 
-The plugin's own manifest declares no permissions; we would add only
-`RECORD_AUDIO`, `INTERNET` and the query.
+## Why "on-device only" needed extra code
 
-## Privacy: where the child's voice goes
+The plugin's `onDevice: true` only *prefers* on-device recognition: in its
+Android source (`createRecognizer`), if the phone has no on-device
+recogniser it **silently falls back** to the default one, which may send
+audio online. To honour "on-device only unless a grown-up allows online":
 
-- **Audio is processed by the phone's speech recognition service, not by
-  this app.** On most Android phones that is Google's service. Unless
-  on-device mode is used, **audio may be sent to the service provider's
-  servers** to be transcribed, under that provider's privacy terms.
-- `speech_to_text` offers `onDevice: true`. When the device has an offline
-  language pack installed, recognition stays on the phone; when it does
-  not, listening fails instead of going online. **Proposal:** try
-  on-device first. If it is unavailable, show a parent-facing message
-  explaining that online recognition would be used, and keep it off unless
-  a grown-up enables it in the Parent Zone (Stage B+ / Phase 6).
-- The app receives **text only**. It never saves, logs or uploads audio,
-  and transcripts are not stored (same as typed questions today).
-- Children's voice data is sensitive personal data under COPPA, GDPR and
-  the UK Age Appropriate Design Code. **A proper privacy and legal review is
-  needed before release.** This proposal is not a compliance claim.
+- `MainActivity.kt` answers `isOnDeviceAvailable` on the
+  `curious_buddy/speech` channel using Android's
+  `SpeechRecognizer.isOnDeviceRecognitionAvailable` (Android 12+).
+- When online is not allowed and that returns false,
+  `SpeechToTextRecognitionService.listen` **refuses to start** and returns
+  `offlineUnavailable`. When it returns true, the plugin uses Android's
+  `createOnDeviceSpeechRecognizer`, which does not use the network.
+- If the on-device recogniser lacks an English language pack, the error is
+  reported as `offlineUnavailable` too.
 
-## Proposed behaviour
+On the Samsung SM-A516U test phone, the configured on-device recogniser is
+Google's Android System Intelligence
+(`com.google.android.as/...AiAiSpeechRecognitionService`); the default
+(online-capable) one is Google's (`com.google.android.tts`).
+
+## Behaviour
 
 1. Child taps **Talk to Buddy**.
-2. First time only: a child-friendly explanation ("Buddy needs the
-   microphone to hear you. A grown-up may need to say yes."), with **Not
-   now** and **OK**. Only **OK** triggers Android's permission prompt.
-3. Listening state: Buddy's ears/expression change, a clear "Listening..."
-   badge and a big **Stop** button. Maximum 15 seconds; stops after 3
-   seconds of silence.
-4. Recognised words appear **in the text box for checking**. Nothing is
-   sent until the child taps **Ask** (they can edit or clear first).
-5. Listening stops on: Stop, Cancel, navigating away, the app being
-   hidden/interrupted, a phone call, or the screen being disposed. It never
-   runs in the background and never starts by itself.
-6. Buddy stops speaking before listening starts (no talking over the child).
+2. If the microphone is not yet granted: **"Can Buddy use the
+   microphone?"** explanation with **Not now** / **OK**. Only **OK** shows
+   Android's prompt.
+3. Buddy stops talking. **Listening...** card with the words appearing live,
+   **Done** and **Cancel**; "Listening..." badge under Buddy, who looks
+   curious. "Hear again", typing and ideas are disabled meanwhile.
+4. Limits: 15 seconds; stops after 3 seconds of silence.
+5. Words go into the text box with "Check your words, then tap Ask."
+   **Nothing is sent until the child taps Ask.**
+6. Listening is cancelled on: Cancel, navigating to another screen, the app
+   becoming inactive or hidden (calls, app switcher, screen off), and app
+   close. It never runs in the background and never starts by itself.
 
 | Situation | What the child sees |
 | --- | --- |
-| Permission denied | "That's okay! You can type to Buddy instead." Text box focused. No repeat prompt. |
-| Permanently denied | Same, plus a Parent Zone note explaining how to enable it in Settings. |
-| No recogniser / no offline pack | Talk button shows "Not available on this phone"; typing still works. |
-| Nothing heard / error | "I didn't catch that. Try again, or type it!" |
+| Permission denied | "That's okay! You can type to Buddy instead. A grown-up can turn on the microphone ... in the phone's Settings." Never re-prompted automatically. |
+| No on-device recogniser and online not allowed | "This phone can't listen without the internet. A grown-up can allow online listening in the Parent Zone. You can type instead!" |
+| Nothing heard | "I didn't catch that. Tap Talk to try again, or type it!" |
+| Network problem (online mode) | "Buddy couldn't hear you because the internet isn't working..." |
+| No recogniser / not Android | "Talking isn't available on this phone. You can type to Buddy instead!" |
 
-## Implementation outline (once approved)
+Android does not tell apps whether a denial was "don't ask again", so the
+denied message always mentions Settings.
 
-- `SpeechToTextRecognitionService implements SpeechRecognitionService`
-  (interface already exists) in `data/services/voice/`; only file to import
-  the plugin.
-- Listening state added to `BuddyChatViewModel` (`BuddyActivity.listening`).
-- `VoiceNavigatorObserver` and the lifecycle listener also stop listening.
-- Tests with a fake recogniser for every row of the table above, plus a
-  widget test that permission is never requested before the explanation.
+## Parent Zone (minimal)
 
-## Decisions needed from you
+"Grown-ups" opens a parent check (a times-table question, asked every
+time; a light gate for young children, not a security control), then one
+setting: **Allow online voice recognition**, off by default, with a plain
+explanation of where audio may go, and whether this phone can recognise
+speech on the device. The setting resets to off on restart until saved
+settings arrive (Phase 3).
 
-1. Approve `speech_to_text` 7.4.0 and the `RECORD_AUDIO` + `INTERNET`
-   permissions (no Bluetooth permissions)?
-2. On-device only, or allow online recognition when a grown-up enables it?
-3. Is a privacy review planned before any external testers use voice input?
+## Privacy summary
+
+- Audio is handled by the phone's recognition service, not by the app. Off
+  (default): only on-device. On: the provider (often Google) may receive
+  audio under its own privacy terms.
+- The app receives text only; it never saves, logs or uploads audio, and
+  transcripts are not stored.
+- **Not a compliance claim.** A privacy and legal review is required before
+  external testers use voice input (agreed).

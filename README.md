@@ -1,11 +1,13 @@
 # Curious Buddy
 
 A Flutter learning app for children aged 8–14. **Current state: voice
-companion Stage A.** Home is built around Buddy: children type a question or
+companion Stage B.** Home is built around Buddy: children type a question or
 tap an idea, Buddy answers from reviewed offline content and reads the answer
 aloud with the phone's built-in text-to-speech engine. Activities are
-"coming soon" placeholders. There is no speech recognition, microphone use,
-AI service or network functionality.
+"coming soon" placeholders. Children can also tap **Talk to Buddy** to ask
+out loud: on-device recognition only unless a grown-up allows online in the
+Parent Zone, and the words are shown for checking before sending. There is
+no AI service, backend or analytics.
 
 ## Requirements
 

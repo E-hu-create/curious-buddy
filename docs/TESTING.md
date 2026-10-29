@@ -51,7 +51,11 @@ and ask first.
 | `test/ui/home/home_view_model_test.dart` | Loading progress, storage failure, welcome once, replay, voice on/off, unavailable voice |
 | `test/ui/home/home_screen_test.dart` | Destinations, explorer log, navigation to each page and back, Parent Zone |
 | `test/ui/home/home_voice_test.dart` | Welcome once (not after navigation or resume, not when off); "Hear again"; voice off/on; speech stops on navigation, back, app inactive and close; a slow-starting welcome never plays on another screen; no-engine and engine-error fallbacks |
-| `test/ui/home/home_conversation_test.dart` | Ideas and typed questions answered and spoken; Ask disabled when empty; keyboard send; Stop talking; Talking badge; activity buttons open screens (never automatically); personal info hidden; honest unknown answer; Talk button never touches the mic; navigating away stops speech; ideas wrap at 2x text |
+| `test/ui/home/home_conversation_test.dart` | Ideas and typed questions answered and spoken; Ask disabled when empty; keyboard send; Stop talking; Talking badge; activity buttons open screens (never automatically); personal info hidden; honest unknown answer; navigating away stops speech; ideas wrap at 2x text |
+| `test/ui/home/home_talk_test.dart` | No recogniser calls at launch or in normal use; explanation before prompt; Not now / OK; denied notice and no re-prompt; listening UI, live words, draft for checking (not auto-sent), Done keeps / Cancel discards; Hear again, typing and ideas disabled while listening; Buddy stops talking first; cancelled on navigation, interruption and close; nothing heard / network / error / unavailable notices; on-device default, offline-unavailable notice, online when a grown-up allows |
+| `test/domain/voice/buddy_listener_test.dart` | Touches nothing when created; one session at a time; live words; stops voice first; stop vs cancel; dispose; allow-online default, save, restore, unreadable |
+| `test/data/services/voice/speech_to_text_recognition_service_test.dart` | Fake plugin engine: check never prompts, request via initialize, denied, no recogniser, unsupported platform; final/partial results, done status, no match, network, stop/cancel, idle safety, one session, safety timer; refuses without on-device unless online allowed; language pack missing; lazy plugin creation |
+| `test/ui/parent_zone/parent_zone_screen_test.dart` | Settings hidden behind the parent check; wrong answer; online setting off by default, explanation, toggling saves; on-device status; reached from Grown-ups |
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
 | `test/domain/conversation/child_safety_filter_test.dart` | Personal info, self-harm, bullying, medical and off-limits detection; ordinary questions (incl. big numbers, look-alike words) pass |
 | `test/domain/conversation/curated_response_provider_test.dart` | Starter prompts, brief example, matching, rotation, quiz/adventure actions, honesty about being a computer, fallback, safety precedence; content rules over every answer |
@@ -108,9 +112,34 @@ user-visible change:
         Buddy says to keep it private.
   - [ ] Type something unknown ("capital of Mongolia"): Buddy says he does
         not know yet.
-  - [ ] "Talk to Buddy" shows "Talking is coming soon!"; no microphone
-        prompt; "Type instead" opens the keyboard.
   - [ ] Voice off: answers still appear, Buddy stays silent.
+- [ ] **Talking to Buddy (tap-to-talk):**
+  - [ ] Fresh install: tapping Talk shows "Can Buddy use the microphone?"
+        first. **Not now** → no Android prompt.
+  - [ ] Talk → **OK** → Android's prompt appears. **Don't allow** → the
+        "You can type instead" notice; typing still works; tapping Talk again
+        shows the explanation again (no surprise prompt).
+  - [ ] Allow → "Listening..." card and badge; Buddy stops talking. Say "why
+        is the sky blue": words appear live, then land in the text box with
+        "Check your words, then tap Ask." Nothing is answered until you tap
+        Ask.
+  - [ ] Done mid-sentence keeps the words; Cancel clears them.
+  - [ ] While listening: Hear again, typing and ideas are disabled.
+  - [ ] Mid-listen, press Home or open the app switcher: listening stops
+        (microphone indicator in the status bar turns off).
+  - [ ] Mid-listen, tap Grown-ups: listening stops.
+  - [ ] Stay silent: "I didn't catch that..." after a few seconds.
+  - [ ] If "This phone can't listen without the internet..." appears:
+        on-device English is not installed. Either install it (Settings →
+        Google → Search, Assistant & Voice → Voice → Offline speech
+        recognition, or the phone's equivalent) or allow online in the
+        Parent Zone.
+- [ ] **Parent Zone:** Grown-ups → times-table question; a wrong answer stays
+      locked; the right one shows "Allow online voice recognition" (off) and
+      whether this phone recognises speech on-device. The question is asked
+      again each time.
+- [ ] Settings → Apps → Curious Buddy → Permissions shows only Microphone
+      (and nothing else that asks the user).
   - [ ] Largest font size: ideas wrap onto two lines rather than being cut.
 - [ ] With Settings → Accessibility → "Remove animations" on, Buddy does
       not move.

@@ -20,7 +20,7 @@ class BuddyGreeting extends StatelessWidget {
     required this.text,
     required this.voiceStatus,
     required this.isMuted,
-    required this.onReplay,
+    this.onReplay,
     required this.onToggleMuted,
     this.isSpeaking = false,
     this.onStop,
@@ -45,7 +45,9 @@ class BuddyGreeting extends StatelessWidget {
   /// What Buddy is doing ("Talking...", "Thinking..."), shown under him.
   /// Null when idle.
   final BuddyStatus? status;
-  final VoidCallback onReplay;
+
+  /// Null disables "Hear again" (e.g. while Buddy is listening).
+  final VoidCallback? onReplay;
   final VoidCallback? onStop;
   final VoidCallback onToggleMuted;
 
@@ -133,7 +135,8 @@ class BuddyGreeting extends StatelessWidget {
 
 enum BuddyStatus {
   thinking('Thinking...', Icons.more_horiz_rounded),
-  talking('Talking...', Icons.graphic_eq_rounded);
+  talking('Talking...', Icons.graphic_eq_rounded),
+  listening('Listening...', Icons.hearing_rounded);
 
   const BuddyStatus(this.label, this.icon);
 

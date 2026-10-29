@@ -2,6 +2,7 @@ import '../data/repositories/progress_repository.dart';
 import '../data/services/key_value_store.dart';
 import '../data/services/voice/flutter_tts_service.dart';
 import '../data/services/voice/speech_recognition_service.dart';
+import '../data/services/voice/speech_to_text_recognition_service.dart';
 import '../data/services/voice/text_to_speech_service.dart';
 import '../domain/conversation/curated_response_provider.dart';
 import '../domain/voice/educational_response_provider.dart';
@@ -19,14 +20,15 @@ class AppDependencies {
     required this.responseProvider,
   });
 
-  /// Speech output uses the device's built-in engine. Speech input stays
-  /// unavailable (no microphone). Answers come from reviewed offline
-  /// content. Storage is in memory only until a persistent store is approved.
+  /// Speech output uses the device's built-in engine. Speech input is
+  /// tap-to-talk on Android's recogniser, on-device only unless a grown-up
+  /// allows online recognition. Answers come from reviewed offline content.
+  /// Storage is in memory only until a persistent store is approved.
   factory AppDependencies.defaults() {
     final store = InMemoryKeyValueStore();
     return AppDependencies(
       textToSpeech: FlutterTtsService(),
-      speechRecognition: const UnavailableSpeechRecognitionService(),
+      speechRecognition: SpeechToTextRecognitionService(),
       progressRepository: LocalProgressRepository(store),
       settingsStore: store,
       responseProvider: CuratedResponseProvider(),
