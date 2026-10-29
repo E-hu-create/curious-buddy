@@ -80,7 +80,7 @@ See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
   legal/privacy review, a provider and backend owner, and a parental
   consent approach are decided. Not started.
 
-## Phase 3: Persistent progress and settings ✅ (awaiting review)
+## Phase 3: Persistent progress and settings ✅
 
 - ✅ `shared_preferences` 2.5.6; `SharedPreferencesKeyValueStore` behind
   `KeyValueStore`. No other code changed.
@@ -88,7 +88,8 @@ See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
   restarts.
 - ✅ Android cloud backup off, so data stays on the phone.
 - ✅ Storage failures (even plugin errors) fall back safely.
-- ⏳ Device test: settings survive force-stop.
+- ✅ Device test: settings survive force-stop (confirmed on the Samsung
+  SM-A516U, 29 Oct 2026).
 
 ## Phase 4: Mystery missions and learning games
 
