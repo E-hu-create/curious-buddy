@@ -210,4 +210,58 @@ void main() {
       expect(progress.storyBookmarks, isEmpty);
     });
   });
+
+  group('quiz results (schema 4)', () {
+    test('keeps the best score per level', () {
+      final progress = LearnerProgress.empty
+          .withQuizResult('space_starter', 3)
+          .withQuizResult('space_starter', 2)
+          .withQuizResult('space_starter', 5)
+          .withQuizResult('body_starter', 1);
+
+      expect(progress.quizBest, {'space_starter': 5, 'body_starter': 1});
+    });
+
+    test('round-trips through JSON', () {
+      final progress = LearnerProgress.empty
+          .withQuizResult('space_starter', 4)
+          .withMissionResult('moon', 80);
+
+      final json = jsonDecode(jsonEncode(progress.toJson()));
+      expect(LearnerProgress.tryFromJson(json), progress);
+    });
+
+    test('older saved data is read without quiz results', () {
+      final progress = LearnerProgress.tryFromJson({
+        'schemaVersion': 3,
+        'completedMissionIds': ['moon'],
+        'quizBest': {'space_starter': 4},
+      });
+
+      expect(progress!.completedMissionIds, {'moon'});
+      expect(progress.quizBest, isEmpty);
+    });
+
+    test('drops malformed quiz scores but keeps valid ones', () {
+      final progress = LearnerProgress.tryFromJson({
+        'schemaVersion': 4,
+        'quizBest': {
+          'ok': 4,
+          'negative': -1,
+          'huge': LearnerProgress.maxQuizScore + 1,
+          'text': 'five',
+          'Bad Id': 3,
+        },
+      });
+
+      expect(progress!.quizBest, {'ok': 4});
+    });
+
+    test('quiz results take part in equality', () {
+      expect(
+        LearnerProgress.empty.withQuizResult('a', 3),
+        isNot(LearnerProgress.empty),
+      );
+    });
+  });
 }

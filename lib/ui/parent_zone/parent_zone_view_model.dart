@@ -26,6 +26,9 @@ class ActivitySummary {
   int get endingsFound =>
       progress.storyEndings.values.fold(0, (sum, e) => sum + e.length);
   int get storiesInProgress => progress.storyBookmarks.length;
+  int get quizLevelsDone => progress.quizBest.length;
+  int get quizBestCorrect =>
+      progress.quizBest.values.fold(0, (sum, n) => sum + n);
 
   bool get isEmpty => progress == LearnerProgress.empty && !hasBackup;
 }

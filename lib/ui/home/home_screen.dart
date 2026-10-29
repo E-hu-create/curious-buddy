@@ -200,6 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           missionsSolved: progress.completedMissionIds.length,
                           storiesFinished: progress.completedStoryIds.length,
                           points: progress.totalMissionPoints,
+                          quizLevels: progress.quizBest.length,
                         ),
                       ],
                       const SizedBox(height: 28),

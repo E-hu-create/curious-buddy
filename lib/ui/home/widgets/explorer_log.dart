@@ -10,6 +10,7 @@ class ExplorerLog extends StatelessWidget {
     required this.missionsSolved,
     required this.storiesFinished,
     this.points = 0,
+    this.quizLevels = 0,
   });
 
   final int missionsSolved;
@@ -17,6 +18,9 @@ class ExplorerLog extends StatelessWidget {
 
   /// Total best mission points. Shown once there are any.
   final int points;
+
+  /// Quiz levels finished at least once. Shown once there are any.
+  final int quizLevels;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +38,12 @@ class ExplorerLog extends StatelessWidget {
           color: AppColors.grape,
           label: _count(storiesFinished, 'story finished', 'stories finished'),
         ),
+        if (quizLevels > 0)
+          _Stat(
+            icon: Icons.quiz_rounded,
+            color: AppColors.brandBlue,
+            label: _count(quizLevels, 'quiz level done', 'quiz levels done'),
+          ),
         if (points > 0)
           _Stat(
             icon: Icons.workspace_premium_rounded,

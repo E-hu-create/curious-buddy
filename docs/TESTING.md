@@ -74,6 +74,12 @@ and ask first.
 | `test/data/repositories/story_repository_test.dart` | Loads three stories offline; leaves out invalid and duplicate stories; empty catalogue |
 | `test/ui/stories/story_play_view_model_test.dart` | Intro and scene narration; choices and consequences; invalid and out-of-place choices ignored; ending recorded, new vs found before; bookmark saved each page; resume; invalid saved paths start fresh; restart; replay finds other endings; every ending reachable by choosing; read the choices; Hear again / Stop; new page interrupts; dispose stops speech; voice off; failed save; saves in order |
 | `test/ui/stories/stories_screen_test.dart` | Home opens real Stories; loading, empty, error, broken content left out; full read to an ending; endings on the card; different path; found before; continue after leaving and after an app restart; Start again; stale bookmark ignored; leaving, page turns and Stop silence Buddy; Read the choices; no speech engine; no microphone; Home shows the finished story |
+| `test/domain/quiz/quiz_content_test.dart` | Four topics, three levels of five; unique level ids; every topic valid; right answers in varied positions; no repeated questions; facts match Buddy's answers; no personal questions |
+| `test/domain/quiz/quiz_rules_test.dart` | Pass mark, stars for every score, level unlocking, next level; validator rejects missing levels/questions, repeated ids, wrong answer counts, repeated answers, missing text, "all of the above", long text, invalid ids |
+| `test/data/repositories/quiz_repository_test.dart` | Loads four topics offline; leaves out invalid topics, repeated topic ids and repeated level ids; empty catalogue |
+| `test/ui/quiz/quiz_play_view_model_test.dart` | Question narration; shuffling keeps every answer and never the written order; right and wrong feedback; one pick only; next; stars for every score; save and best kept; next level opens and is announced once; last level; play again; failed save; read question/answers; automatic reading off; voice off; dispose stops speech |
+| `test/ui/quiz/quiz_screen_test.dart` | Home card; four topics with locks; loading, empty, error; right/wrong answers; no second try; perfect round, summary, Next level; stars and open levels back on Quiz Time; not passing; Play again; app restart; explorer log; Parent Zone shows and deletes quiz results; leaving and Stop silence Buddy; Read the answers; no speech engine; no microphone |
+| `test/ui/quiz/quiz_accessibility_test.dart` | Guidelines on Quiz Time, a question, its result and the summary; lettered answer labels; every question of every level without overflow on small phones and 2x text |
 | `test/ui/stories/stories_accessibility_test.dart` | Tap target, label and contrast guidelines on the shelf, intro, a choice page and an ending; numbered choice labels; picture descriptions; every page of every story without overflow on small phones and 2x text |
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
 | `test/domain/conversation/child_safety_filter_test.dart` | Personal info, self-harm, bullying, medical and off-limits detection; ordinary questions (incl. big numbers, look-alike words) pass |
@@ -100,8 +106,8 @@ user-visible change:
       "Curious Buddy".
 - [ ] Home: Buddy waves once; tapping Buddy makes him excited (arms up,
       eyes squeezed) and then he settles.
-- [ ] Each Home card opens its "coming soon" page; the back arrow and
-      "Back to Home" both return to Home.
+- [ ] Creative Island and My Discoveries open their "coming soon" page; the
+      back arrow and "Back to Home" both return to Home.
 - [ ] "Grown-ups" opens the Parent Zone.
 - [ ] **Voice** (media volume up, phone not on silent-media):
   - [ ] Buddy says the welcome once on a fresh start (force-stop first).
@@ -125,7 +131,7 @@ user-visible change:
   - [ ] Tapping a second idea mid-answer cuts off the first; no overlap.
   - [ ] Type a question, press the keyboard's send key: it is answered and
         the box clears. "Ask" is greyed out when the box is empty.
-  - [ ] "Let's play a quiz." → "Peek at quizzes" opens the Quiz Time page.
+  - [ ] "Let's play a quiz." → "Play Quiz Time" opens Quiz Time.
         "Take me on an adventure." → "Open Mystery Missions" works.
         Nothing opens until the button is tapped.
   - [ ] Type "my phone number is 07700 900123": the number is not shown;
@@ -221,6 +227,27 @@ user-visible change:
   - [ ] Go back to Home: the explorer log shows the mission and points.
   - [ ] Force-stop and reopen: solved missions and points are still there.
   - [ ] Voice off: missions still fully playable with text only.
+- [ ] **Quiz Time:**
+  - [ ] Home → Quiz Time card: four topics, "0 of 36 stars", Starter open,
+        Explorer and Expert locked ("Get 3 right in ... to open").
+  - [ ] Play Starter: Buddy reads "Question 1 of 5", the question and the
+        lettered answers. "Read the answers" and the speaker work; Stop
+        talking silences him.
+  - [ ] Pick a wrong answer: "Not quite. The answer is ...", "Your answer"
+        and "Right answer" marked, explanation shown; tapping another
+        answer changes nothing.
+  - [ ] Pick a right answer: "That's right!" and the explanation.
+  - [ ] Finish with 3 or more right: summary with score, stars, "You opened
+        the next level!", your answers; Next level opens Explorer.
+  - [ ] Finish with 2 or fewer: encouraging message, no Next level; Play
+        again restarts with the answers in a new order.
+  - [ ] Back to Quiz Time: stars and "Best: n of 5"; Explorer open.
+  - [ ] Press back mid-question: Buddy stops at once.
+  - [ ] Home explorer log: "1 quiz level done".
+  - [ ] Force-stop and reopen: stars and open levels remain.
+  - [ ] Parent Zone: "Quiz Time results" shows the levels; Delete all
+        progress lists and deletes them; Quiz Time is back to 0 stars.
+  - [ ] Voice off and automatic reading off: still fully playable.
 - [ ] **Living Stories (Phase 5):**
   - [ ] Home → Living Stories: three stories with pictures, "New story",
         "0 of 12 endings found".

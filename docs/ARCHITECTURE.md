@@ -29,6 +29,10 @@ lib/
       stories_screen.dart, stories_view_model.dart          Story shelf
       story_play_screen.dart, story_play_view_model.dart    Reading a story
       widgets/              Drawn scene pictures, choice cards, tags
+    quiz/                   Quiz Time
+      quiz_hub_screen.dart, quiz_hub_view_model.dart        Topics and levels
+      quiz_play_screen.dart, quiz_play_view_model.dart      Playing a round
+      widgets/              Topic badges, stars, answer tiles, result panel
     <feature>/              One folder per feature (see below)
       <feature>_screen.dart
       <feature>_view_model.dart   ChangeNotifier holding screen state/logic
@@ -70,7 +74,7 @@ guards (e.g. the Parent Zone gate) that become awkward without it.
 ## Planned feature boundaries
 
 Each becomes a folder under `lib/ui/` (and `lib/domain/` / `lib/data/` only if
-it needs its own logic or data). Home, Mystery Missions and Living Stories exist. The other
+it needs its own logic or data). Home, Mystery Missions, Living Stories and Quiz Time exist. The other
 destinations are routes in `routes.dart` that show `PlaceholderScreen` until
 built; Home's cards come from the `HomeDestination` enum.
 
@@ -80,6 +84,7 @@ built; Home's cards come from the `HomeDestination` enum.
 | Mystery missions and learning games ✅ | `ui/missions/`, `domain/missions/` | mission repository, progress repository, BuddyVoice |
 | Buddy voice narration and speech input | `domain/voice/`, `data/services/voice/` | (shared service; no own screen) |
 | Living Stories ✅ | `ui/stories/`, `domain/stories/` | story repository, progress repository, BuddyVoice |
+| Quiz Time ✅ | `ui/quiz/`, `domain/quiz/` | quiz repository, progress repository, BuddyVoice |
 | Creative Island | `ui/creative/` | local storage only |
 | Saved progress | `domain/models/`, `data/repositories/` | KeyValueStore |
 | Parent Zone ✅ | `ui/parent_zone/`, `domain/parent/`, `domain/settings/` | progress repository, BuddyVoice, BuddyListener, DisplaySettings; behind `ParentGate` |
@@ -208,9 +213,9 @@ AskBuddyPanel (text box, ideas) ─► BuddyChatViewModel ─► EducationalResp
 | `routeForAction` | `ui/home/buddy_action_routes.dart` | Exhaustive map from `BuddyAction` to an in-app route. Actions only run when the child taps the button. |
 
 **Actions.** `openMissions`, `openStories`, `openCreative`,
-`openDiscoveries` open existing (placeholder) feature pages; `startQuiz`
-opens a "Quiz Time, coming soon" page. No action can open the web, files
-or device features.
+`openDiscoveries` open existing feature pages (Creative Island and My
+Discoveries are still placeholders); `startQuiz` opens Quiz Time. No action
+can open the web, files or device features.
 
 **Talk button (Stage B).** `HomeScreen._startTalking` →
 `TalkViewModel.prepare`: unavailable → notice; permission missing →
@@ -328,6 +333,41 @@ shown in a small note and the story carries on. On the shelf, a bookmark is
 offered as "Continue the story" only if it is still a real route through the
 current story; otherwise it is ignored.
 
+## Quiz Time
+
+```
+QuizHubScreen ─► QuizHubViewModel ─► QuizRepository (BundledQuizRepository)
+      │                   └────────► ProgressRepository (best per level)
+      └─ push ─► QuizPlayScreen ─► QuizPlayViewModel ─► QuizRules
+                                         ├─► BuddyVoice (narration)
+                                         └─► ProgressRepository (save on finish)
+```
+
+| Piece | File | Job |
+| --- | --- | --- |
+| Models | `domain/quiz/quiz.dart` | `QuizTopic` → `QuizLevel` (Starter, Explorer, Expert) → `QuizQuestion` with 3–4 `QuizOption`s, one answer and an explanation. |
+| Rules | `domain/quiz/quiz_rules.dart` | `QuizRules`: pass mark (3 of 5), stars (5 = 3, 4 = 2, 3 = 1), which levels are open. `QuizValidator`: playability checks. |
+| Content | `domain/quiz/quiz_content.dart` | Four topics (Space, Animals, Amazing Body, Earth & Weather), 3 levels of 5 questions: 60 questions, consistent with Buddy's answers. |
+| Repository | `data/repositories/quiz_repository.dart` | Loads bundled topics offline; leaves out invalid ones, repeated topic ids and level ids used by another topic. |
+| Round | `ui/quiz/quiz_play_view_model.dart` | Shuffled answers; one pick per question; feedback and explanation; summary; save the best; play again; next level. |
+
+**Rules.** One pick per question; the right answer and the explanation are
+always shown. Wrong answers never remove anything. The first level of each
+topic is open; the next opens when the level before has been passed (3 of
+5). The best score per level is kept; replays never lower it. A round in
+progress is not saved.
+
+**Validation.** `QuizValidator` requires valid, unique ids; at least one
+level and one question; 3–4 different answers with exactly one correct;
+no "all/none of the above"; an explanation; and short text (question 25,
+answer 8, explanation 40 words). Tests also check the right answer is in
+varied positions and that key facts match Buddy's curated answers.
+
+**Narration.** Buddy reads each question with lettered answers, then the
+result and explanation, then the summary. "Read the question", "Read the
+answers", Hear again and Stop talking; automatic reading follows the Parent
+Zone setting. Speech stops on leaving; the microphone is never used.
+
 ## Saved progress
 
 `LearnerProgress` (domain model) is stored as versioned JSON by
@@ -346,6 +386,8 @@ current story; otherwise it is ignored.
   `storyBookmarks` (the scene path of an unfinished story, at most 64
   entries; a bookmark with any bad entry is dropped whole). Older data is
   still read, with no story details.
+- **Schema 4** adds `quizBest` (best correct answers per quiz level id, 0 to
+  100). Older data is still read, with no quiz results.
 - **Migrations:** bump `schemaVersion` and handle older versions in
   `tryFromJson`.
 

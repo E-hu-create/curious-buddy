@@ -28,6 +28,15 @@ enum HomeDestination {
     color: AppColors.grape,
     tint: AppColors.grapeTint,
   ),
+  quiz(
+    route: Routes.quiz,
+    title: 'Quiz Time',
+    subtitle: 'Test what you know and earn stars',
+    comingSoonMessage: 'Quiz Time is getting ready. Check back soon!',
+    icon: Icons.quiz_rounded,
+    color: AppColors.brandBlue,
+    tint: AppColors.brandBlueTint,
+  ),
   creative(
     route: Routes.creative,
     title: 'Creative Island',

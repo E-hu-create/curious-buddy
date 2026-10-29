@@ -11,6 +11,7 @@ abstract final class AppColors {
   /// Buttons and interactive accents.
   static const brandBlue = Color(0xFF4A93FA);
   static const brandBlueDeep = Color(0xFF2A68C9);
+  static const brandBlueTint = Color(0xFFDCE9FF);
 
   // Buddy's character model. See docs/MASCOT.md before changing these.
   static const buddyTealLight = Color(0xFF6FDDD2);

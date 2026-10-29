@@ -4,6 +4,7 @@ import 'package:curious_buddy/ui/home/home_view_model.dart';
 import 'package:curious_buddy/ui/home/widgets/ask_buddy_panel.dart';
 import 'package:curious_buddy/ui/home/widgets/buddy_greeting.dart';
 import 'package:curious_buddy/ui/missions/missions_screen.dart';
+import 'package:curious_buddy/ui/quiz/quiz_hub_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -135,13 +136,13 @@ void main() {
     await openHome(tester);
     await tapChip(tester, "Let's play a quiz.");
 
-    final peek = find.text('Peek at quizzes');
-    await tester.ensureVisible(peek);
-    await tester.tap(peek);
+    final play = find.text('Play Quiz Time');
+    await tester.ensureVisible(play);
+    await tester.tap(play);
     await tester.pumpAndSettle();
 
-    expect(find.text('Quiz Time'), findsOneWidget);
-    expect(find.textContaining('Quizzes are coming soon'), findsOneWidget);
+    expect(find.text(QuizHubScreen.title), findsOneWidget);
+    expect(find.text(QuizHubScreen.welcome), findsOneWidget);
   });
 
   testWidgets('adventure opens Mystery Missions', (tester) async {

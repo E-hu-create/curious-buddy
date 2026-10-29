@@ -52,12 +52,13 @@ void main() {
     expect(second.text, isNot(first.text));
   });
 
-  test('quiz is an honest placeholder that opens the quiz page', () async {
+  test('quiz offers Quiz Time', () async {
     final response = await ask("Let's play a quiz.");
 
-    expect(response.text, contains('coming soon'));
+    expect(response.text, contains('Quiz Time'));
+    expect(response.text, isNot(contains('coming soon')));
     expect(response.action, BuddyAction.startQuiz);
-    expect(response.actionLabel, isNotNull);
+    expect(response.actionLabel, 'Play Quiz Time');
   });
 
   test('adventure offers Mystery Missions', () async {

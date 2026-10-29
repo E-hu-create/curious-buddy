@@ -34,6 +34,9 @@ class DataOverviewSection extends StatelessWidget {
   static const storiesTitle = 'Living Stories endings';
   static const storiesWhy =
       'Shows which stories are finished and which endings have been found.';
+  static const quizTitle = 'Quiz Time results';
+  static const quizWhy =
+      'Shows stars and best scores, and which quiz levels are open.';
   static const placesTitle = 'Place in unfinished stories';
   static const placesWhy =
       'Lets your child continue a story from the page they stopped on.';
@@ -85,6 +88,9 @@ class DataOverviewSection extends StatelessWidget {
   static String storiesValue(ActivitySummary s) =>
       '${_count(s.storiesFinished, 'story', 'stories')} finished, '
       '${_count(s.endingsFound, 'ending')} found';
+  static String quizValue(ActivitySummary s) =>
+      '${_count(s.quizLevelsDone, 'level')} played, '
+      '${_count(s.quizBestCorrect, 'right answer')} at best';
   static String placesValue(ActivitySummary s) =>
       '${_count(s.storiesInProgress, 'story', 'stories')} in progress';
   static String backupValue(ActivitySummary s) =>
@@ -137,6 +143,12 @@ class DataOverviewSection extends StatelessWidget {
               title: storiesTitle,
               value: storiesValue(summary),
               why: storiesWhy,
+              reset: deleted,
+            ),
+            _Record(
+              title: quizTitle,
+              value: quizValue(summary),
+              why: quizWhy,
               reset: deleted,
             ),
             _Record(

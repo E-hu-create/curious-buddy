@@ -2,8 +2,8 @@
 ///
 /// Deliberately contains no personal information: no name, age, photo,
 /// location or voice data. Only identifiers of content the child completed,
-/// their best mission scores, the story endings they found and where they
-/// stopped reading.
+/// their best mission scores, the story endings they found, where they
+/// stopped reading, and their best score on each quiz level.
 class LearnerProgress {
   const LearnerProgress({
     this.completedMissionIds = const {},
@@ -11,18 +11,20 @@ class LearnerProgress {
     this.missionBestPoints = const {},
     this.storyEndings = const {},
     this.storyBookmarks = const {},
+    this.quizBest = const {},
   });
 
   static const empty = LearnerProgress();
 
   /// Bump when the stored shape changes, and handle older versions in
   /// [tryFromJson]. History: 1 = ids only; 2 = adds mission best points;
-  /// 3 = adds story endings and bookmarks.
-  static const schemaVersion = 3;
+  /// 3 = adds story endings and bookmarks; 4 = adds best quiz scores.
+  static const schemaVersion = 4;
 
   static const maxIdLength = 64;
   static const maxPoints = 100000;
   static const maxBookmarkLength = 64;
+  static const maxQuizScore = 100;
   static final _validId = RegExp(r'^[a-z0-9_\-]+$');
 
   final Set<String> completedMissionIds;
@@ -38,6 +40,10 @@ class LearnerProgress {
   /// start to the current scene. Removed when the story reaches an ending.
   final Map<String, List<String>> storyBookmarks;
 
+  /// Best number of correct answers per quiz level id. Replays never lower
+  /// it.
+  final Map<String, int> quizBest;
+
   /// Sum of each mission's best score.
   int get totalMissionPoints =>
       missionBestPoints.values.fold(0, (sum, points) => sum + points);
@@ -48,12 +54,14 @@ class LearnerProgress {
     Map<String, int>? missionBestPoints,
     Map<String, Set<String>>? storyEndings,
     Map<String, List<String>>? storyBookmarks,
+    Map<String, int>? quizBest,
   }) => LearnerProgress(
     completedMissionIds: completedMissionIds ?? this.completedMissionIds,
     completedStoryIds: completedStoryIds ?? this.completedStoryIds,
     missionBestPoints: missionBestPoints ?? this.missionBestPoints,
     storyEndings: storyEndings ?? this.storyEndings,
     storyBookmarks: storyBookmarks ?? this.storyBookmarks,
+    quizBest: quizBest ?? this.quizBest,
   );
 
   /// Records a finished mission, keeping the best score so far.
@@ -65,6 +73,14 @@ class LearnerProgress {
         ...missionBestPoints,
         missionId: points > best ? points : best,
       },
+    );
+  }
+
+  /// Records a finished quiz level, keeping the best score so far.
+  LearnerProgress withQuizResult(String levelId, int correct) {
+    final best = quizBest[levelId] ?? 0;
+    return copyWith(
+      quizBest: {...quizBest, levelId: correct > best ? correct : best},
     );
   }
 
@@ -96,6 +112,7 @@ class LearnerProgress {
         key: value.toList()..sort(),
     },
     'storyBookmarks': storyBookmarks,
+    'quizBest': quizBest,
   };
 
   /// Parses stored progress, returning null if the data is unusable.
@@ -118,6 +135,9 @@ class LearnerProgress {
       storyEndings: version >= 3 ? _endings(json['storyEndings']) : const {},
       storyBookmarks: version >= 3
           ? _bookmarks(json['storyBookmarks'])
+          : const {},
+      quizBest: version >= 4
+          ? _points(json['quizBest'], max: maxQuizScore)
           : const {},
     );
   }
@@ -163,11 +183,11 @@ class LearnerProgress {
     };
   }
 
-  static Map<String, int> _points(Object? raw) {
+  static Map<String, int> _points(Object? raw, {int max = maxPoints}) {
     if (raw is! Map<String, Object?>) return const {};
     return {
       for (final MapEntry(:key, :value) in raw.entries)
-        if (_isValidId(key) && value is int && value >= 0 && value <= maxPoints)
+        if (_isValidId(key) && value is int && value >= 0 && value <= max)
           key: value,
     };
   }
@@ -181,6 +201,7 @@ class LearnerProgress {
       _setEquals(other.completedMissionIds, completedMissionIds) &&
       _setEquals(other.completedStoryIds, completedStoryIds) &&
       _mapEquals(other.missionBestPoints, missionBestPoints) &&
+      _mapEquals(other.quizBest, quizBest) &&
       _keyed(other.storyEndings) == _keyed(storyEndings) &&
       _keyed(other.storyBookmarks) == _keyed(storyBookmarks);
 
@@ -194,6 +215,9 @@ class LearnerProgress {
     ]),
     _keyed(storyEndings),
     _keyed(storyBookmarks),
+    Object.hashAllUnordered([
+      for (final MapEntry(:key, :value) in quizBest.entries) '$key=$value',
+    ]),
   );
 
   /// A canonical string for comparing story maps: endings are sets (order

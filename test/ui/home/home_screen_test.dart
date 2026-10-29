@@ -4,6 +4,7 @@ import 'package:curious_buddy/domain/models/learner_progress.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
 import 'package:curious_buddy/ui/home/home_view_model.dart';
 import 'package:curious_buddy/ui/missions/missions_screen.dart';
+import 'package:curious_buddy/ui/quiz/quiz_hub_screen.dart';
 import 'package:curious_buddy/ui/stories/stories_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -71,6 +72,9 @@ void main() {
       } else if (destination == HomeDestination.stories) {
         // Built in Phase 5: the real Living Stories screen.
         expect(find.text(StoriesScreen.title), findsOneWidget);
+      } else if (destination == HomeDestination.quiz) {
+        // The real Quiz Time screen.
+        expect(find.text(QuizHubScreen.welcome), findsOneWidget);
       } else {
         expect(find.text(destination.comingSoonMessage), findsOneWidget);
       }

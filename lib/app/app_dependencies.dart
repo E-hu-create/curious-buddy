@@ -1,5 +1,6 @@
 import '../data/repositories/mission_repository.dart';
 import '../data/repositories/progress_repository.dart';
+import '../data/repositories/quiz_repository.dart';
 import '../data/repositories/story_repository.dart';
 import '../data/services/key_value_store.dart';
 import '../data/services/shared_preferences_key_value_store.dart';
@@ -23,6 +24,7 @@ class AppDependencies {
     required this.responseProvider,
     required this.missionRepository,
     required this.storyRepository,
+    required this.quizRepository,
   });
 
   /// Speech output uses the device's built-in engine. Speech input is
@@ -39,6 +41,7 @@ class AppDependencies {
       responseProvider: CuratedResponseProvider(),
       missionRepository: BundledMissionRepository(),
       storyRepository: BundledStoryRepository(),
+      quizRepository: BundledQuizRepository(),
     );
   }
 
@@ -58,4 +61,7 @@ class AppDependencies {
 
   /// Living Stories content: the reviewed stories bundled in the app.
   final StoryRepository storyRepository;
+
+  /// Quiz Time questions: the reviewed quizzes bundled in the app.
+  final QuizRepository quizRepository;
 }

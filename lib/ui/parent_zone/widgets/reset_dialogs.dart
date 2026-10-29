@@ -17,7 +17,7 @@ class ResetExplainDialog extends StatefulWidget {
   static const deletesHeading = 'This deletes from this phone:';
   static const keepsHeading = 'This keeps:';
   static const keeps = [
-    'All missions and stories, ready to play again from the start.',
+    'All missions, stories and quizzes, ready to play again from the start.',
     'Your settings, unless you tick the box below.',
   ];
   static const settingsToo = 'Also restore default settings';
@@ -35,6 +35,9 @@ class ResetExplainDialog extends StatefulWidget {
     s == null
         ? 'Living Stories endings found.'
         : 'Living Stories: ${DataOverviewSection.storiesValue(s)}.',
+    s == null
+        ? 'Quiz Time stars and best scores.'
+        : 'Quiz Time results: ${DataOverviewSection.quizValue(s)}.',
     s == null
         ? 'The place in any unfinished story.'
         : 'Place in unfinished stories: '

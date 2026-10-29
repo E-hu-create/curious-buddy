@@ -7,8 +7,9 @@ aloud with the phone's built-in text-to-speech engine. **Mystery Missions**
 has three playable, offline detective cases with clues, hints, narration,
 points and badges. **Living Stories** has three narrated branching stories
 where the child's choices lead to different endings, and the place in a
-story is remembered. Other activities are
-"coming soon" placeholders. Children can also tap **Talk to Buddy** to ask
+story is remembered. **Quiz Time** has 60 questions in four topics and
+three levels, with stars and explanations. Creative Island and My
+Discoveries are still "coming soon" placeholders. Children can also tap **Talk to Buddy** to ask
 out loud: on-device recognition only unless a grown-up allows online in the
 Parent Zone, and the words are shown for checking before sending. The **Parent
 Zone** (behind a grown-up check) has voice, listening and display settings,

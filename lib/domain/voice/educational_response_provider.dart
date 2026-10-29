@@ -37,7 +37,7 @@ enum BuddyAction {
   openCreative,
   openDiscoveries,
 
-  /// Placeholder: there is no quiz engine yet; opens a "coming soon" page.
+  /// Opens Quiz Time.
   startQuiz,
 }
 

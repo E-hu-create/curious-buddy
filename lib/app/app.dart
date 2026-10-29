@@ -13,6 +13,7 @@ import '../ui/home/home_destination.dart';
 import '../ui/home/home_screen.dart';
 import '../ui/missions/missions_screen.dart';
 import '../ui/parent_zone/parent_zone_screen.dart';
+import '../ui/quiz/quiz_hub_screen.dart';
 import '../ui/stories/stories_screen.dart';
 import 'app_dependencies.dart';
 import 'routes.dart';
@@ -128,18 +129,17 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
         // Destinations not built yet still show a "coming soon" page.
         for (final destination in HomeDestination.values)
           if (destination.route != Routes.missions &&
-              destination.route != Routes.stories)
+              destination.route != Routes.stories &&
+              destination.route != Routes.quiz)
             destination.route: (_) => PlaceholderScreen(
               title: destination.title,
               message: destination.comingSoonMessage,
             ),
-        // Placeholder: reached from Buddy's "Let's play a quiz" answer.
-        Routes.quiz: (_) => const PlaceholderScreen(
-          title: 'Quiz Time',
-          message:
-              'Buddy is still writing the questions. Quizzes are coming '
-              'soon!',
-          mood: BuddyMood.excited,
+        // Reached from Home and from Buddy's "Let's play a quiz" answer.
+        Routes.quiz: (_) => QuizHubScreen(
+          quizRepository: dependencies.quizRepository,
+          progressRepository: dependencies.progressRepository,
+          voice: _voice,
         ),
         // Behind a parent check.
         Routes.parentZone: (_) => ParentZoneScreen(

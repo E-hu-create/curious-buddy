@@ -222,11 +222,11 @@ const curatedTopics = <CuratedTopic>[
       ['trivia'],
     ],
     answers: [
-      "Quizzes are coming soon! I'm still writing the questions. "
-          'You can peek at the quiz page, or ask me for a fact instead.',
+      "Let's do it! Quiz Time has questions about space, animals, your "
+          'body and our planet. Each right answer helps you earn stars.',
     ],
     action: BuddyAction.startQuiz,
-    actionLabel: 'Peek at quizzes',
+    actionLabel: 'Play Quiz Time',
     followUps: ['Teach me something amazing.', 'Tell me a space fact.'],
   ),
   CuratedTopic(
