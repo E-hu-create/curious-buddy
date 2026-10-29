@@ -40,7 +40,7 @@ class CuriousBuddyApp extends StatelessWidget {
           title: 'Parent Zone',
           message:
               'Settings for grown-ups will live here, behind a parent check.',
-          mood: BuddyMood.cheerful,
+          mood: BuddyMood.thoughtful,
         ),
       },
       onUnknownRoute: (settings) => MaterialPageRoute<void>(
@@ -48,6 +48,7 @@ class CuriousBuddyApp extends StatelessWidget {
         builder: (_) => const PlaceholderScreen(
           title: 'Oops!',
           message: 'We could not find that page.',
+          mood: BuddyMood.surprised,
         ),
       ),
     );

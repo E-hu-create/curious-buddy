@@ -9,8 +9,8 @@ abstract final class AppTheme {
 
   static ThemeData light() {
     final scheme = ColorScheme.fromSeed(
-      seedColor: AppColors.buddyBlue,
-      primary: AppColors.buddyBlueShade,
+      seedColor: AppColors.brandBlue,
+      primary: AppColors.brandBlueDeep,
       onPrimary: AppColors.white,
       surface: AppColors.paper,
       onSurface: AppColors.ink,

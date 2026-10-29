@@ -6,7 +6,8 @@ import 'buddy_painter.dart';
 
 export 'buddy_painter.dart' show BuddyMood;
 
-/// Buddy the robot. Waves once when shown and reacts when tapped.
+/// Buddy, the Curious Buddy mascot. Waves once when shown and gets excited
+/// when tapped.
 ///
 /// Animations are one-shot (never looping) and are skipped entirely when the
 /// device's "remove animations" accessibility setting is on.
@@ -14,7 +15,7 @@ class Buddy extends StatefulWidget {
   const Buddy({
     super.key,
     this.height = 132,
-    this.mood = BuddyMood.cheerful,
+    this.mood = BuddyMood.happy,
     this.waveOnAppear = true,
   });
 
@@ -22,7 +23,8 @@ class Buddy extends StatefulWidget {
   final BuddyMood mood;
   final bool waveOnAppear;
 
-  static const semanticLabel = 'Buddy, a small blue robot';
+  static const semanticLabel =
+      'Buddy, a small teal creature with a yellow backpack';
 
   @override
   State<Buddy> createState() => _BuddyState();
@@ -53,7 +55,7 @@ class _BuddyState extends State<Buddy> with SingleTickerProviderStateMixin {
 
   void _onTap() {
     if (_reduceMotion) {
-      // No motion: toggle the happy face instead of animating.
+      // No motion: toggle the excited face instead of animating.
       setState(() => _reacting = !_reacting);
       return;
     }
@@ -87,7 +89,7 @@ class _BuddyState extends State<Buddy> with SingleTickerProviderStateMixin {
               child: CustomPaint(
                 size: Size(width, widget.height),
                 painter: BuddyPainter(
-                  mood: _reacting ? BuddyMood.happy : widget.mood,
+                  mood: _reacting ? BuddyMood.excited : widget.mood,
                   armLift: lift,
                   armSwing: math.sin(t * math.pi * 6) * lift,
                 ),

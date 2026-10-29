@@ -81,13 +81,17 @@ Features must not import each other's internals. Shared pieces move to
 
 ## Visual design and accessibility
 
-- **Style:** flat "sticker" look: solid fills, 2.5px dark ink outlines and a
-  hard offset shadow (`AppShapes.sticker`). No gradients, no photographic or
-  AI-generated imagery. Colours live only in `app_colors.dart`.
-- **Buddy** is drawn in code (`BuddyPainter`) with moods `cheerful`, `happy`
-  and `curious`. He waves once when shown and reacts when tapped. Animations
-  are one-shot and are skipped when the system "remove animations" setting
-  is on.
+- **Style:** UI uses a flat "sticker" look: solid fills, 2.5px dark ink
+  outlines and a hard offset shadow (`AppShapes.sticker`). Only Buddy uses
+  soft shading. Colours live only in `app_colors.dart`.
+- **Buddy** is drawn in code (`BuddyPainter`) as an interim stand-in for
+  final art. Six moods: `neutral`, `happy`, `curious`, `surprised`,
+  `thoughtful` and `excited`. He waves once when shown and gets excited when
+  tapped. Animations are one-shot and are skipped when the system "remove
+  animations" setting is on. The character model is defined in
+  [MASCOT.md](MASCOT.md).
+- **Launcher icon** is generated from `BuddyPainter` by
+  `tool/generate_launcher_icons_test.dart` (legacy + adaptive icon).
 - **Touch targets:** buttons are at least 56dp tall (`AppTheme.minTouchTarget`)
   and destination cards at least 150dp.
 - **Text:** layouts reflow for large system text (one column at 1.5x and

@@ -65,7 +65,10 @@ user-visible change:
 
 - [ ] App installs and opens without crashing.
 - [ ] No permission prompt appears at launch.
-- [ ] Home: Buddy waves once; tapping Buddy makes him smile and wave again.
+- [ ] Launcher shows the Buddy icon (not the Flutter logo) with the name
+      "Curious Buddy".
+- [ ] Home: Buddy waves once; tapping Buddy makes him excited (arms up,
+      eyes squeezed) and then he settles.
 - [ ] Each Home card opens its "coming soon" page; the back arrow and
       "Back to Home" both return to Home.
 - [ ] "Grown-ups" opens the Parent Zone placeholder.

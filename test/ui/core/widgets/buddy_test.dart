@@ -38,17 +38,17 @@ void main() {
     expect(tester.hasRunningAnimations, isFalse);
   });
 
-  testWidgets('tapping makes Buddy happy until the reaction ends', (
+  testWidgets('tapping makes Buddy excited until the reaction ends', (
     tester,
   ) async {
     await tester.pumpWidget(host(const Buddy(waveOnAppear: false)));
 
     await tester.tap(find.byType(Buddy));
     await tester.pump(const Duration(milliseconds: 100));
-    expect(painterOf(tester).mood, BuddyMood.happy);
+    expect(painterOf(tester).mood, BuddyMood.excited);
 
     await tester.pumpAndSettle();
-    expect(painterOf(tester).mood, BuddyMood.cheerful);
+    expect(painterOf(tester).mood, BuddyMood.happy);
   });
 
   testWidgets('with reduced motion, tapping toggles mood without motion', (
@@ -60,7 +60,7 @@ void main() {
     await tester.tap(find.byType(Buddy));
     await tester.pump();
 
-    expect(painterOf(tester).mood, BuddyMood.happy);
+    expect(painterOf(tester).mood, BuddyMood.excited);
     expect(painterOf(tester).armLift, 0);
     expect(tester.hasRunningAnimations, isFalse);
   });

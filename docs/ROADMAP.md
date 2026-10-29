@@ -16,11 +16,14 @@ Samsung SM-A516U.
 - ✅ Navigation to placeholder feature screens and a Parent Zone placeholder
   (no settings yet; the parent gate comes in Phase 6).
 - ✅ Theme: flat sticker style, child-friendly colours, 56dp touch targets.
-- ✅ Buddy drawn in code with three moods and a one-shot wave.
+- ✅ Buddy redesigned per the mascot brief: a teal creature with a golden
+  backpack, drawn in code with six moods (interim, see MASCOT.md).
 - ✅ Android app label "Curious Buddy".
 - ⏳ Permanent application ID: still `com.example.curious_buddy` by choice.
   Must be decided before anyone outside the team installs a build.
-- ⏳ Launcher icon: still the Flutter default. Planned: a Buddy icon.
+- ✅ Launcher icon generated from Buddy (Android legacy + adaptive).
+- ⏳ Final mascot art (premium 3D renders) from an artist or a tool with
+  clear usage rights; see MASCOT.md for the spec and integration plan.
 
 ## Phase 2: Persistent progress
 

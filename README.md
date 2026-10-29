@@ -81,3 +81,7 @@ Avoid `git reset --hard` and `git clean`: they discard uncommitted work.
 - [Testing](docs/TESTING.md)
 - [Child safety and privacy](docs/CHILD_SAFETY.md)
 - [Roadmap](docs/ROADMAP.md)
+- [Buddy character model](docs/MASCOT.md)
+
+To regenerate the Android launcher icons after changing Buddy:
+`flutter test tool/generate_launcher_icons_test.dart`
