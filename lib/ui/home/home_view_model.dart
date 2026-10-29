@@ -18,7 +18,7 @@ class HomeViewModel extends ChangeNotifier {
 
   /// Shown in Buddy's speech bubble and spoken as the welcome, so what the
   /// child hears always matches what they can read.
-  static const greeting = "Hi, explorer! I'm Buddy. Where should we go today?";
+  static const greeting = "Hi! I'm Buddy. Where should we go today?";
 
   final ProgressRepository _progressRepository;
   final BuddyVoice _voice;
