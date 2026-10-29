@@ -16,13 +16,13 @@ import 'voice_failure.dart';
 /// a timeout, whichever comes first.
 class FlutterTtsService implements TextToSpeechService {
   FlutterTtsService({
-    FlutterTts? tts,
+    FlutterTts Function() createTts = FlutterTts.new,
     this.languages = const ['en-US', 'en-GB', 'en-AU', 'en-CA', 'en-IN'],
     this.speechRate = 0.5,
     this.pitch = 1.15,
     Duration setupTimeout = const Duration(seconds: 8),
     Duration Function(String text)? timeoutFor,
-  }) : _tts = tts ?? FlutterTts(),
+  }) : _createTts = createTts,
        _setupTimeout = setupTimeout,
        _timeoutFor = timeoutFor ?? _defaultTimeout;
 
@@ -33,7 +33,13 @@ class FlutterTtsService implements TextToSpeechService {
   final double speechRate;
   final double pitch;
 
-  final FlutterTts _tts;
+  final FlutterTts Function() _createTts;
+
+  /// Created on first use, not in the constructor: `FlutterTts()` registers
+  /// a platform channel handler, which crashes if it runs before the Flutter
+  /// binding exists (e.g. when dependencies are built at the top of main).
+  late final FlutterTts _tts = _createTts();
+
   final Duration _setupTimeout;
   final Duration Function(String text) _timeoutFor;
 

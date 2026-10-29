@@ -3,6 +3,7 @@ import 'package:curious_buddy/data/services/voice/text_to_speech_service.dart';
 import 'package:curious_buddy/data/services/voice/voice_failure.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 /// Stands in for the Android side of the flutter_tts plugin.
 class FakeTtsPlatform {
@@ -56,6 +57,24 @@ void main() {
 
   setUp(() => platform = FakeTtsPlatform());
   tearDown(() => platform.detach());
+
+  test('the plugin is created on first use, not on construction', () async {
+    // Regression: building the service at the top of main() crashed on a
+    // real phone, because FlutterTts() registers a channel handler at once.
+    var created = 0;
+    final service = FlutterTtsService(
+      createTts: () {
+        created++;
+        return FlutterTts();
+      },
+    );
+    expect(created, 0);
+    expect(platform.calls, isEmpty);
+
+    await service.isAvailable();
+    await service.stop();
+    expect(created, 1);
+  });
 
   group('availability', () {
     test('uses US English when installed and configures the voice', () async {
