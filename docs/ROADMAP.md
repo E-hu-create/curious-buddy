@@ -91,7 +91,7 @@ See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
 - ✅ Device test: settings survive force-stop (confirmed on the Samsung
   SM-A516U, 29 Oct 2026).
 
-## Phase 4: Mystery Missions ✅ (awaiting review)
+## Phase 4: Mystery Missions ✅
 
 - ✅ Missions landing screen with drawn covers, points, badges and status.
 - ✅ Three offline missions with different mechanics: The Missing Moonstone
@@ -105,7 +105,7 @@ See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
 - ✅ Transparent points (never reduced by hints or mistakes), badges, best
   score saved on the device, replay.
 - ✅ Content validated; invalid missions are left out.
-- ⏳ Device test on the Samsung.
+- ✅ Device test on the Samsung SM-A516U (confirmed 29 Oct 2026).
 - Later: more missions; partial progress inside a mission is not saved
   (leaving restarts the case).
 
