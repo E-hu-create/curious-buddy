@@ -82,7 +82,7 @@ built; Home's cards come from the `HomeDestination` enum.
 | Living Stories ✅ | `ui/stories/`, `domain/stories/` | story repository, progress repository, BuddyVoice |
 | Creative Island | `ui/creative/` | local storage only |
 | Saved progress | `domain/models/`, `data/repositories/` | KeyValueStore |
-| Parent Zone | `ui/parent_zone/` | progress repository; behind a parent gate |
+| Parent Zone ✅ | `ui/parent_zone/`, `domain/parent/`, `domain/settings/` | progress repository, BuddyVoice, BuddyListener, DisplaySettings; behind `ParentGate` |
 
 Features must not import each other's internals. Shared pieces move to
 `ui/core/` or `domain/`.

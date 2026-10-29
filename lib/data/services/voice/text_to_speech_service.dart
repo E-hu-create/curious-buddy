@@ -1,5 +1,16 @@
 import 'voice_failure.dart';
 
+/// How fast Buddy talks, relative to the engine's normal speed.
+enum SpeechSpeed {
+  slower(0.8),
+  normal(1),
+  faster(1.2);
+
+  const SpeechSpeed(this.factor);
+
+  final double factor;
+}
+
 sealed class SpeakResult {
   const SpeakResult();
 }
@@ -32,6 +43,9 @@ abstract interface class TextToSpeechService {
 
   /// Stops any current playback. Must be safe to call when idle.
   Future<void> stop();
+
+  /// Changes the speaking speed for later lines. Must not throw.
+  Future<void> setSpeed(SpeechSpeed speed);
 }
 
 /// Default until a real engine is approved. Never pretends to speak.
@@ -47,4 +61,7 @@ class UnavailableTextToSpeechService implements TextToSpeechService {
 
   @override
   Future<void> stop() async {}
+
+  @override
+  Future<void> setSpeed(SpeechSpeed speed) async {}
 }

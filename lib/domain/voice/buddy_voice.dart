@@ -10,8 +10,9 @@ enum VoiceStatus { checking, available, unavailable }
 /// only one line can ever play at a time.
 ///
 /// Adds app-level rules on top of [Narrator]:
-/// * The on/off setting, saved through [KeyValueStore] so it survives
-///   restarts once a persistent store is used.
+/// * The grown-up voice settings, saved through [KeyValueStore] so they
+///   survive restarts: on/off, speaking speed, and whether Buddy reads new
+///   text automatically or only when the child taps a read button.
 /// * The welcome is spoken at most once per app session.
 /// * [stop] also cancels speech that is still waiting for the engine.
 class BuddyVoice extends ChangeNotifier {
@@ -23,6 +24,8 @@ class BuddyVoice extends ChangeNotifier {
        _narrator = Narrator(textToSpeech);
 
   static const mutedKey = 'voice.muted';
+  static const speedKey = 'voice.speed';
+  static const autoReadKey = 'voice.autoRead';
 
   final TextToSpeechService _tts;
   final KeyValueStore _settings;
@@ -36,6 +39,13 @@ class BuddyVoice extends ChangeNotifier {
 
   bool get isMuted => _muted;
   bool _muted = false;
+
+  SpeechSpeed get speed => _speed;
+  SpeechSpeed _speed = SpeechSpeed.normal;
+
+  /// When false, Buddy only speaks when asked (Hear again, read buttons).
+  bool get autoRead => _autoRead;
+  bool _autoRead = true;
 
   /// True when Buddy will actually speak if asked.
   bool get canSpeak => _status == VoiceStatus.available && !_muted;
@@ -54,9 +64,16 @@ class BuddyVoice extends ChangeNotifier {
   Future<void> _init() async {
     try {
       _muted = await _settings.read(mutedKey) == 'true';
+      _autoRead = await _settings.read(autoReadKey) != 'false';
+      final speed = await _settings.read(speedKey);
+      _speed = SpeechSpeed.values.firstWhere(
+        (s) => s.name == speed,
+        orElse: () => SpeechSpeed.normal,
+      );
     } on Exception {
-      _muted = false;
+      // Safe defaults: voice on, normal speed, reads automatically.
     }
+    await _tts.setSpeed(_speed);
     bool available;
     try {
       available = await _tts.isAvailable();
@@ -69,11 +86,20 @@ class BuddyVoice extends ChangeNotifier {
 
   /// Speaks [text] unless muted or unavailable. The text must already be on
   /// screen; speech only adds to it.
-  Future<NarrationOutcome> say(String text) async {
+  ///
+  /// [requested] is true when the child tapped something to hear it (Hear
+  /// again, a read button). Other lines are automatic narration, which a
+  /// grown-up can turn off; then an automatic line silences anything still
+  /// playing, so old speech never runs on over a new page.
+  Future<NarrationOutcome> say(String text, {bool requested = false}) async {
     final stops = _stops;
     await ready;
     if (_disposed || stops != _stops) return NarrationOutcome.interrupted;
     if (_muted) return NarrationOutcome.muted;
+    if (!requested && !_autoRead) {
+      await stop();
+      return NarrationOutcome.skipped;
+    }
     if (_status != VoiceStatus.available) return NarrationOutcome.textOnly;
 
     final line = _speakingLine = ++_lines;
@@ -107,6 +133,31 @@ class BuddyVoice extends ChangeNotifier {
     _notify();
     try {
       await _settings.write(mutedKey, '$muted');
+    } on Exception {
+      // Setting still applies for this session.
+    }
+  }
+
+  Future<void> setSpeed(SpeechSpeed speed) async {
+    await ready;
+    if (speed == _speed) return;
+    _speed = speed;
+    _notify();
+    await _tts.setSpeed(speed);
+    await _save(speedKey, speed.name);
+  }
+
+  Future<void> setAutoRead(bool autoRead) async {
+    await ready;
+    if (autoRead == _autoRead) return;
+    _autoRead = autoRead;
+    _notify();
+    await _save(autoReadKey, '$autoRead');
+  }
+
+  Future<void> _save(String key, String value) async {
+    try {
+      await _settings.write(key, value);
     } on Exception {
       // Setting still applies for this session.
     }

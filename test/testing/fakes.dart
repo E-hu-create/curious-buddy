@@ -17,6 +17,7 @@ class FakeTextToSpeechService implements TextToSpeechService {
 
   final List<String> spoken = [];
   int stopCalls = 0;
+  SpeechSpeed speed = SpeechSpeed.normal;
   Completer<SpeakResult>? _playing;
 
   bool get isSpeaking => _playing != null;
@@ -35,6 +36,9 @@ class FakeTextToSpeechService implements TextToSpeechService {
   }
 
   void finishSpeaking() => _end(const SpeakCompleted());
+
+  @override
+  Future<void> setSpeed(SpeechSpeed speed) async => this.speed = speed;
 
   @override
   Future<void> stop() async {

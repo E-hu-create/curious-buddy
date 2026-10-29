@@ -55,7 +55,12 @@ and ask first.
 | `test/ui/home/home_talk_test.dart` | No recogniser calls at launch or in normal use; explanation before prompt; Not now / OK; denied notice and no re-prompt; listening UI, live words, draft for checking (not auto-sent), Done keeps / Cancel discards; Hear again, typing and ideas disabled while listening; Buddy stops talking first; cancelled on navigation, interruption and close; nothing heard / network / error / unavailable notices; on-device default, offline-unavailable notice, online when a grown-up allows |
 | `test/domain/voice/buddy_listener_test.dart` | Touches nothing when created; one session at a time; live words; stops voice first; stop vs cancel; dispose; allow-online default, save, restore, unreadable |
 | `test/data/services/voice/speech_to_text_recognition_service_test.dart` | Fake plugin engine: check never prompts, request via initialize, denied, no recogniser, unsupported platform; final/partial results, done status, no match, network, stop/cancel, idle safety, one session, safety timer; refuses without on-device unless online allowed; language pack missing; lazy plugin creation |
-| `test/ui/parent_zone/parent_zone_screen_test.dart` | Settings hidden behind the parent check; wrong answer; online setting off by default, explanation, toggling saves; on-device status; reached from Grown-ups |
+| `test/domain/parent/parent_gate_test.dart` | Numbers in words; questions vary; right/wrong answers; new question after a wrong one; pause after three wrong answers and its end; right answer resets the count |
+| `test/domain/voice/buddy_voice_settings_test.dart` | Speed applied, saved, restored; unknown speed; automatic reading off speaks only requested lines and still silences old speech; restored after restart; storage failure defaults |
+| `test/domain/settings/display_settings_test.dart` | Calmer animations default, saved, restored, storage failure |
+| `test/ui/parent_zone/parent_zone_view_model_test.dart` | Summary counts; backup detection; storage error; reset deletes every record and keeps settings; reset with default settings; nothing restored afterwards; failed delete reported |
+| `test/ui/parent_zone/parent_zone_screen_test.dart` | Gate: hidden settings, nothing personal asked, wrong answer, pause survives reopening, asked every time, relocks when hidden, Back to Buddy. Settings: voice, speed, automatic reading, online recognition (explained, off by default), calmer animations applied app-wide, all survive restart, automatic reading off in a story, no microphone. Overview from real storage. Reset: step 1 lists counts, cancel at either step, DELETE required, deletes all and keeps settings, optional defaults, Home/missions/stories cleared, app restart, storage failure |
+| `test/ui/parent_zone/parent_zone_accessibility_test.dart` | Guidelines on the check, settings and both reset dialogs; no overflow on small phones and 2x text |
 | `test/data/services/shared_preferences_key_value_store_test.dart` | Save / read / delete, survives a new store ("restart"), keys independent, lazy creation, plugin errors become `StorageException`, real app uses device storage |
 | `test/ui/home/home_restart_test.dart` | Voice off and back on remembered across app restarts; saved progress shown after restart; grown-up online setting remembered |
 | `test/domain/missions/mission_content_test.dart` | Three valid missions; every step solvable; mixed mechanics; wrong choices explain; content safe; puzzle logic computed (shift code, decoys, doubling, beep pattern, word-order uniqueness, timeline, garden clues) |
@@ -97,7 +102,7 @@ user-visible change:
       eyes squeezed) and then he settles.
 - [ ] Each Home card opens its "coming soon" page; the back arrow and
       "Back to Home" both return to Home.
-- [ ] "Grown-ups" opens the Parent Zone placeholder.
+- [ ] "Grown-ups" opens the Parent Zone.
 - [ ] **Voice** (media volume up, phone not on silent-media):
   - [ ] Buddy says the welcome once on a fresh start (force-stop first).
   - [ ] Visiting a card and coming back does not repeat it.
@@ -153,10 +158,37 @@ user-visible change:
         Google → Search, Assistant & Voice → Voice → Offline speech
         recognition, or the phone's equivalent) or allow online in the
         Parent Zone.
-- [ ] **Parent Zone:** Grown-ups → times-table question; a wrong answer stays
-      locked; the right one shows "Allow online voice recognition" (off) and
-      whether this phone recognises speech on-device. The question is asked
-      again each time.
+- [ ] **Parent Zone (Phase 6):**
+  - [ ] Grown-ups → "For grown-ups", a question in words ("What is nineteen
+        times six?") and "About this check". Only one field; nothing
+        personal asked.
+  - [ ] A wrong answer: "That's not right..." with tries left and a new
+        question. Three wrong: "Please wait 60 seconds"; Back to Buddy and
+        reopen: still waiting; after a minute it asks again.
+  - [ ] The right answer opens the settings at the top of the page.
+  - [ ] Buddy talks off: Home is silent. Speed Slower / Faster: Hear again
+        on Home sounds slower / faster.
+  - [ ] Read aloud automatically off: open a story; Buddy is quiet until
+        Hear again or the speaker is tapped. Turn it back on.
+  - [ ] Listening: online recognition off by default, with the
+        explanation; the on-device line matches this phone.
+  - [ ] Calmer animations on: Buddy no longer waves on Home.
+  - [ ] "What's saved on this phone" shows the real counts (play a mission
+        and part of a story first).
+  - [ ] Press Home (the app goes to the background) and come back: the
+        check is asked again.
+  - [ ] Force-stop and reopen: all Parent Zone settings are as you left
+        them.
+  - [ ] Delete all progress: step 1 lists the counts and what is kept;
+        Cancel keeps everything. Continue → step 2: Delete is disabled until
+        DELETE is typed. Delete: "Done..." and the counts show 0.
+  - [ ] Back to Buddy: Home shows 0 missions / 0 stories; Missions show no
+        "Solved"; Stories show no "Continue" and 0 of 12 endings. Settings
+        are unchanged.
+  - [ ] Force-stop and reopen: progress is still gone.
+  - [ ] Repeat the reset with "Also restore default settings" ticked:
+        voice on, normal speed, reads automatically, online off, normal
+        animations.
 - [ ] Settings → Apps → Curious Buddy → Permissions shows only Microphone
       (and nothing else that asks the user).
   - [ ] Largest font size: ideas wrap onto two lines rather than being cut.

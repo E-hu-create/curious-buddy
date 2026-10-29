@@ -108,7 +108,7 @@ class BuddyChatViewModel extends ChangeNotifier {
   }
 
   /// Speaks the bubble's current text again.
-  Future<NarrationOutcome> replay() => _voice.say(_message);
+  Future<NarrationOutcome> replay() => _voice.say(_message, requested: true);
 
   Future<void> stopSpeaking() => _voice.stop();
 

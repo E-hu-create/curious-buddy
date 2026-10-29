@@ -17,17 +17,37 @@ is built.
 
 ## Data we store (locally only)
 
-| Data | Why | Where |
-| --- | --- | --- |
-| IDs of completed missions and stories, best mission points, story ending IDs found, and the scene IDs of an unfinished story | Show progress, badges, endings found, and let the child continue a story | `LearnerProgress` via `ProgressRepository` |
-| Voice on/off (`voice.muted`) | Respect the choice to keep Buddy quiet | `BuddyVoice` via `KeyValueStore` |
-| Allow online voice recognition (`voice.allowOnlineRecognition`), off by default | Grown-up choice about where speech is recognised | `BuddyListener` via `KeyValueStore` |
-| *Future:* Creative Island creations | Child's own work | Local storage, deletable from Parent Zone |
+This is the complete list of stored keys (audited in Phase 6). The Parent
+Zone shows the same list to parents, with live values read from storage.
+
+| Key | Data | Why | Reset by "Delete all progress" |
+| --- | --- | --- | --- |
+| `progress` | `LearnerProgress` JSON: IDs of completed missions and stories, best mission points, story ending IDs found, and the scene IDs of an unfinished story | Show progress, badges, endings found, and let the child continue a story | Deleted |
+| `progress.corrupt_backup` | A copy of saved progress that could not be read (only exists if that ever happened) | Not silently losing a child's progress | Deleted |
+| `voice.muted` | Voice on/off | Respect the choice to keep Buddy quiet | Kept, unless "Also restore default settings" is ticked |
+| `voice.speed` | Speaking speed (slower / normal / faster) | Grown-up choice | Same as above |
+| `voice.autoRead` | Read aloud automatically, or only when asked | Grown-up choice | Same as above |
+| `voice.allowOnlineRecognition` | Allow online voice recognition, off by default | Grown-up choice about where speech is recognised | Same as above |
+| `display.reduceMotion` | Calmer animations | Accessibility | Same as above |
+| *Future:* Creative Island creations | Child's own work | | Must be added to the reset |
+
+**Only in memory, never saved:** questions asked on Home and Buddy's
+answers; words heard while talking (shown in the text box to check); a
+mission in progress; the parent check and its pause after wrong answers;
+whether the welcome was spoken this session; the last line Buddy said.
+
+**Reset** (`ParentZoneViewModel.reset`) deletes `progress` and
+`progress.corrupt_backup` through `ProgressRepository.clear`, then reads
+storage back and only reports success if nothing is left. Optionally it
+writes every setting back to its default. Any new stored data must be added
+to this table, the Parent Zone overview and the reset.
 
 Saved **on this phone only**, in the app's private storage
 (`shared_preferences`). Android cloud backup is turned off for the app
 (`allowBackup="false"`), so it is not copied to Google Drive or a new phone;
-uninstalling the app deletes it. Conversations are never saved.
+uninstalling the app deletes it. Conversations are never saved. The app
+does not add its own encryption; it relies on Android keeping app-private
+storage away from other apps.
 
 ## Data we do not collect
 
@@ -117,6 +137,28 @@ Release builds request exactly (verified in the merged manifest):
 
 These are design principles, not a legal compliance claim. A proper
 privacy and legal review is needed before release.
+
+## Parent check
+
+- A multiplication written in words ("What is nineteen times six?"), new
+  every attempt; answers are 39 to 261. Three wrong answers in a row pause
+  it for 60 seconds (in memory only, so restarting the app clears the
+  pause).
+- Asked every time the Parent Zone opens, and again if the app is hidden
+  while it is open.
+- Asks for nothing personal; no passwords or accounts.
+- **Limits (shown to parents):** it stops younger children by accident; it
+  cannot prove age or identity, and an older child who can multiply may
+  pass. Destructive actions add a second step: typing DELETE.
+
+## Still to resolve before external testers
+
+- Privacy and legal review (for example COPPA, GDPR-K / UK Age Appropriate
+  Design Code), including online voice recognition and the phone's
+  text-to-speech engine. No compliance is claimed in the app.
+- A privacy policy and parent-facing notice.
+- The permanent application ID.
+- Whether a stronger parent check is needed for stores' kids categories.
 
 ## No accounts, backend or AI yet
 

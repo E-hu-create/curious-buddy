@@ -140,10 +140,10 @@ class MissionPlayViewModel extends ChangeNotifier {
   void readClue(String clueId) {
     if (!_current.inspected.contains(clueId)) return;
     final clue = stage.clues.firstWhere((c) => c.id == clueId);
-    _say('${clue.title}. ${clue.text}');
+    _say('${clue.title}. ${clue.text}', requested: true);
   }
 
-  void readPrompt() => _say(stage.prompt);
+  void readPrompt() => _say(stage.prompt, requested: true);
 
   void pickChoice(String choiceId) {
     if (_current.solved) return;
@@ -239,7 +239,7 @@ class MissionPlayViewModel extends ChangeNotifier {
 
   void hearAgain() {
     final text = _lastSpoken;
-    if (text != null) _sayNow(text);
+    if (text != null) _sayNow(text, requested: true);
   }
 
   Future<void> stopSpeaking() => _voice.stop();
@@ -284,14 +284,17 @@ class MissionPlayViewModel extends ChangeNotifier {
     _feedback = null;
   }
 
-  void _say(String text) {
+  void _say(String text, {bool requested = false}) {
+    final first = _lastSpoken == null;
     _lastSpoken = text;
-    _sayNow(text);
+    // Enables "Hear again" even when nothing is read aloud automatically.
+    if (first) _notify();
+    _sayNow(text, requested: requested);
   }
 
-  void _sayNow(String text) {
+  void _sayNow(String text, {bool requested = false}) {
     if (_disposed) return;
-    unawaited(_voice.say(text));
+    unawaited(_voice.say(text, requested: requested));
   }
 
   void _notify() {

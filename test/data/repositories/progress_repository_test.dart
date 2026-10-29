@@ -51,4 +51,29 @@ void main() {
       expect(failing.writes, 0);
     },
   );
+
+  test('clear deletes saved progress and any backup of bad data', () async {
+    await repository.save(
+      LearnerProgress.empty
+          .withMissionResult('moon', 100)
+          .withStoryEnding('forest', 'mist')
+          .withStoryBookmark('luma', ['camp']),
+    );
+    await store.write(LocalProgressRepository.corruptBackupKey, 'junk');
+    expect(await repository.hasCorruptBackup(), isTrue);
+
+    await repository.clear();
+
+    expect(await store.read(LocalProgressRepository.storageKey), isNull);
+    expect(await store.read(LocalProgressRepository.corruptBackupKey), isNull);
+    expect(await repository.hasCorruptBackup(), isFalse);
+    expect(await LocalProgressRepository(store).load(), LearnerProgress.empty);
+  });
+
+  test('clear leaves settings alone', () async {
+    await store.write('voice.muted', 'true');
+    await repository.clear();
+
+    expect(await store.read('voice.muted'), 'true');
+  });
 }

@@ -129,10 +129,25 @@ See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
   passed (confirmed 29 Oct 2026).
 - Later: more stories; a "go back one page" button.
 
-## Phase 6: Parent Zone
+## Phase 6: Parent Zone ✅ (awaiting device test)
 
-- Fuller parent gate, more settings (voice on/off), progress reset, data
-  overview. (A minimal gate and the online-recognition setting exist.)
+- ✅ Parent check: a multiplication in words, new every try, a 60-second
+  pause after three wrong answers, asked every time and again after the app
+  is hidden; its limits are explained; nothing personal asked.
+- ✅ Settings: Buddy talks, speaking speed, read aloud automatically,
+  online voice recognition (explained as online, not on-device), calmer
+  animations; all saved on the phone; Back to Buddy.
+- ✅ "What's saved on this phone": every stored record with live values,
+  why it is kept and whether reset deletes it; what is only in memory;
+  what is never collected; where it is kept; what leaves the phone.
+- ✅ Delete all progress: two steps (what is deleted and kept, then type
+  DELETE), optional restore of default settings, storage checked
+  afterwards, failure reported honestly.
+- ✅ Fixed on the way: saved settings now load at start-up, so the Parent
+  Zone never shows a default before the saved value.
+- ⏳ Device test on the Samsung SM-A516U.
+- ⏳ Before external testers: privacy/legal review, privacy policy,
+  permanent application ID (see CHILD_SAFETY.md).
 
 ## Phase 7: Creative Island
 

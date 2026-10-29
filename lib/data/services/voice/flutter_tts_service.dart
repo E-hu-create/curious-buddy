@@ -44,6 +44,7 @@ class FlutterTtsService implements TextToSpeechService {
   final Duration Function(String text) _timeoutFor;
 
   Future<bool>? _availability;
+  SpeechSpeed _speed = SpeechSpeed.normal;
   Completer<SpeakResult>? _current;
   Timer? _timeout;
 
@@ -77,7 +78,7 @@ class FlutterTtsService implements TextToSpeechService {
       for (final language in languages) {
         if (await _tts.isLanguageAvailable(language) == true) {
           await _tts.setLanguage(language);
-          await _tts.setSpeechRate(speechRate);
+          await _tts.setSpeechRate(speechRate * _speed.factor);
           await _tts.setPitch(pitch);
           await _tts.setVolume(1.0);
           _language = language;
@@ -131,6 +132,18 @@ class FlutterTtsService implements TextToSpeechService {
   Future<void> stop() async {
     _finish(const SpeakInterrupted());
     await _stopEngine();
+  }
+
+  @override
+  Future<void> setSpeed(SpeechSpeed speed) async {
+    _speed = speed;
+    // Before setup, the speed is applied when the engine is set up.
+    if (_availability == null || !await isAvailable()) return;
+    try {
+      await _tts.setSpeechRate(speechRate * speed.factor);
+    } on Exception catch (error) {
+      debugPrint('TTS: could not change speed ($error)');
+    }
   }
 
   Future<void> _stopEngine() async {

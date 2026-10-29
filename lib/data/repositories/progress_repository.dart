@@ -12,6 +12,13 @@ abstract interface class ProgressRepository {
   Future<LearnerProgress> load();
 
   Future<void> save(LearnerProgress progress);
+
+  /// Deletes all saved progress, including any backup of unreadable data.
+  /// Storage failures are rethrown so the caller can say it did not work.
+  Future<void> clear();
+
+  /// Whether a copy of unreadable progress is being kept.
+  Future<bool> hasCorruptBackup();
 }
 
 class LocalProgressRepository implements ProgressRepository {
@@ -45,4 +52,14 @@ class LocalProgressRepository implements ProgressRepository {
   @override
   Future<void> save(LearnerProgress progress) =>
       _store.write(storageKey, jsonEncode(progress.toJson()));
+
+  @override
+  Future<void> clear() async {
+    await _store.delete(storageKey);
+    await _store.delete(corruptBackupKey);
+  }
+
+  @override
+  Future<bool> hasCorruptBackup() async =>
+      await _store.read(corruptBackupKey) != null;
 }

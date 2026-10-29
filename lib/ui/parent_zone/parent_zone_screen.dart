@@ -1,91 +1,118 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../../data/repositories/progress_repository.dart';
+import '../../domain/parent/parent_gate.dart';
+import '../../domain/settings/display_settings.dart';
 import '../../domain/voice/buddy_listener.dart';
+import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
-import '../core/themes/app_theme.dart';
+import 'parent_zone_view_model.dart';
+import 'widgets/data_overview.dart';
+import 'widgets/parent_gate_view.dart';
+import 'widgets/parent_section.dart';
+import 'widgets/parent_settings.dart';
+import 'widgets/reset_dialogs.dart';
 
-/// Grown-ups only. A simple parent check, then settings.
+/// Grown-ups only: a parent check, then settings, an overview of everything
+/// saved on the phone, and a two-step reset.
 ///
-/// The check is asked again every time the screen opens. It is a light
-/// gate for younger children, not a security control. More settings arrive
-/// with the full Parent Zone (see docs/ROADMAP.md).
+/// The check is asked every time the screen opens, and again if the app is
+/// hidden (for example, the phone is handed back to the child).
 class ParentZoneScreen extends StatefulWidget {
-  const ParentZoneScreen({super.key, required this.listener, this.random});
+  const ParentZoneScreen({
+    super.key,
+    required this.gate,
+    required this.voice,
+    required this.listener,
+    required this.display,
+    required this.progressRepository,
+  });
 
+  final ParentGate gate;
+  final BuddyVoice voice;
   final BuddyListener listener;
-
-  /// Injected in tests for a predictable question.
-  final Random? random;
+  final DisplaySettings display;
+  final ProgressRepository progressRepository;
 
   static const title = 'Parent Zone';
-  static const gateIntro = 'Grown-ups only. Please answer to continue.';
-  static const checkLabel = 'Continue';
-  static const wrongAnswer = "That's not right. Please ask a grown-up.";
-  static const onlineTitle = 'Allow online voice recognition';
-  static const onlineExplanation =
-      'Off (recommended): Buddy only listens if this phone can turn speech '
-      'into text on the device. Your child\'s voice does not leave the phone.\n\n'
-      "On: if the phone can't do that, its speech recognition service "
-      '(often Google) may send the audio to its servers to turn it into text, '
-      "under that provider's privacy terms.\n\n"
-      'Either way, Curious Buddy only listens after your child taps Talk, '
-      'and never saves or uploads recordings itself. This setting is '
-      'remembered on this phone until you change it.';
-  static const onDeviceAvailable =
-      'This phone can recognise speech on the device.';
-  static const onDeviceUnavailable =
-      "This phone can't recognise speech on the device, so talking to Buddy "
-      'only works if online recognition is allowed.';
+  static const backToBuddy = 'Back to Buddy';
+  static const resetTitle = 'Delete progress';
+  static const resetHelp =
+      "Deletes your child's mission results, story endings and places in "
+      'unfinished stories from this phone. Missions and stories stay '
+      'playable. You will see exactly what is deleted and confirm twice.';
+  static const resetLabel = 'Delete all progress...';
+  static const resetting = 'Deleting...';
+  static const resetDone =
+      'Done. All progress was deleted from this phone. Missions and stories '
+      'are ready to start fresh.';
+  static const resetDoneSettings = 'Settings were restored to their defaults.';
+  static const resetFailed =
+      'Something went wrong, so some progress may still be saved. Please try '
+      'again.';
+  static const legalNote =
+      'Curious Buddy is still in testing. Its privacy approach has not yet '
+      'been reviewed by a lawyer, so it makes no claim of legal compliance.';
 
   @override
   State<ParentZoneScreen> createState() => _ParentZoneScreenState();
 }
 
 class _ParentZoneScreenState extends State<ParentZoneScreen> {
-  late final Random _random = widget.random ?? Random();
-  final _answer = TextEditingController();
-  late int _a;
-  late int _b;
+  late final ParentZoneViewModel _vm = ParentZoneViewModel(
+    progressRepository: widget.progressRepository,
+    voice: widget.voice,
+    listener: widget.listener,
+    display: widget.display,
+  );
+  late final AppLifecycleListener _lifecycle;
+  final _scroll = ScrollController();
   bool _unlocked = false;
-  bool _wrong = false;
-  bool? _onDevice;
 
   @override
   void initState() {
     super.initState();
-    _newQuestion();
-    unawaited(_checkOnDevice());
-  }
-
-  void _newQuestion() {
-    _a = 6 + _random.nextInt(4);
-    _b = 6 + _random.nextInt(4);
-  }
-
-  Future<void> _checkOnDevice() async {
-    final onDevice = await widget.listener.supportsOnDevice();
-    if (mounted) setState(() => _onDevice = onDevice);
-  }
-
-  void _check() {
-    if (int.tryParse(_answer.text.trim()) == _a * _b) {
-      setState(() => _unlocked = true);
-    } else {
-      setState(() {
-        _wrong = true;
-        _answer.clear();
-        _newQuestion();
-      });
-    }
+    // Lock again when the app is hidden, so a phone handed back to a child
+    // does not stay unlocked.
+    _lifecycle = AppLifecycleListener(onHide: _lock);
   }
 
   @override
   void dispose() {
-    _answer.dispose();
+    _lifecycle.dispose();
+    _vm.dispose();
+    _scroll.dispose();
     super.dispose();
+  }
+
+  void _lock() {
+    if (mounted && _unlocked) setState(() => _unlocked = false);
+  }
+
+  void _unlock() {
+    setState(() => _unlocked = true);
+    // Start the settings from the top, not where the check was scrolled.
+    if (_scroll.hasClients) _scroll.jumpTo(0);
+    unawaited(_vm.load());
+  }
+
+  void _backToBuddy() =>
+      Navigator.of(context).popUntil((route) => route.isFirst);
+
+  Future<void> _reset() async {
+    final settingsToo = await showDialog<bool>(
+      context: context,
+      builder: (_) => ResetExplainDialog(summary: _vm.summary),
+    );
+    if (settingsToo == null || !mounted) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => ResetConfirmDialog(settingsToo: settingsToo),
+    );
+    if (confirmed != true || !mounted) return;
+    await _vm.reset(settingsToo: settingsToo);
   }
 
   @override
@@ -95,11 +122,12 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
       appBar: AppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
+          controller: _scroll,
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
           child: Align(
             alignment: Alignment.topCenter,
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 600),
+              constraints: const BoxConstraints(maxWidth: 640),
               child: Column(
                 crossAxisAlignment: .stretch,
                 children: [
@@ -111,7 +139,19 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  if (_unlocked) _settings(textTheme) else _gate(textTheme),
+                  if (_unlocked)
+                    ListenableBuilder(
+                      listenable: _vm,
+                      builder: (context, _) => _unlockedBody(),
+                    )
+                  else
+                    ParentGateView(gate: widget.gate, onPassed: _unlock),
+                  const SizedBox(height: 20),
+                  OutlinedButton.icon(
+                    onPressed: _backToBuddy,
+                    icon: const Icon(Icons.home_rounded),
+                    label: const Text(ParentZoneScreen.backToBuddy),
+                  ),
                 ],
               ),
             ),
@@ -121,83 +161,55 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
     );
   }
 
-  Widget _gate(TextTheme textTheme) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: AppShapes.sticker(AppColors.white, depth: 4),
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          Text(ParentZoneScreen.gateIntro, style: textTheme.bodyLarge),
-          const SizedBox(height: 12),
-          Text('What is $_a × $_b?', style: textTheme.titleLarge),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _answer,
-            keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.done,
-            onSubmitted: (_) => _check(),
-            decoration: const InputDecoration(
-              labelText: 'Answer',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          if (_wrong) ...[
-            const SizedBox(height: 8),
-            Text(ParentZoneScreen.wrongAnswer, style: textTheme.bodyMedium),
-          ],
-          const SizedBox(height: 12),
-          FilledButton(
-            onPressed: _check,
-            child: const Text(ParentZoneScreen.checkLabel),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _unlockedBody() => Column(
+    crossAxisAlignment: .stretch,
+    children: [
+      VoiceSettingsSection(voice: widget.voice),
+      const SizedBox(height: 16),
+      ListeningSettingsSection(listener: widget.listener),
+      const SizedBox(height: 16),
+      DisplaySettingsSection(display: widget.display),
+      const SizedBox(height: 16),
+      DataOverviewSection(vm: _vm),
+      const SizedBox(height: 16),
+      _resetSection(),
+      const SizedBox(height: 16),
+      const ParentNote(ParentZoneScreen.legalNote),
+    ],
+  );
 
-  Widget _settings(TextTheme textTheme) {
-    final onDevice = _onDevice;
-    return ListenableBuilder(
-      listenable: widget.listener,
-      builder: (context, _) => Container(
-        padding: const EdgeInsets.all(8),
-        decoration: AppShapes.sticker(AppColors.white, depth: 4),
-        child: Column(
-          crossAxisAlignment: .stretch,
-          children: [
-            SwitchListTile(
-              title: Text(
-                ParentZoneScreen.onlineTitle,
-                style: textTheme.titleMedium,
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  ParentZoneScreen.onlineExplanation,
-                  style: textTheme.bodyMedium,
-                ),
-              ),
-              value: widget.listener.allowOnline,
-              onChanged: (allow) =>
-                  unawaited(widget.listener.setAllowOnline(allow)),
-            ),
-            if (onDevice != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
-                child: Text(
-                  onDevice
-                      ? ParentZoneScreen.onDeviceAvailable
-                      : ParentZoneScreen.onDeviceUnavailable,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: AppColors.ink,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-          ],
+  Widget _resetSection() {
+    final status = _vm.resetStatus;
+    return ParentSection(
+      icon: Icons.delete_outline_rounded,
+      title: ParentZoneScreen.resetTitle,
+      color: AppColors.coralTint,
+      children: [
+        const ParentNote(ParentZoneScreen.resetHelp),
+        if (status == ResetStatus.done) ...[
+          ParentNote(ParentZoneScreen.resetDone, bold: true),
+          if (_vm.lastResetIncludedSettings)
+            const ParentNote(ParentZoneScreen.resetDoneSettings, bold: true),
+        ],
+        if (status == ResetStatus.failed)
+          const ParentNote(ParentZoneScreen.resetFailed, bold: true),
+        const SizedBox(height: 4),
+        FilledButton.icon(
+          style: FilledButton.styleFrom(
+            backgroundColor: const Color(0xFFB3261E),
+            foregroundColor: Colors.white,
+          ),
+          onPressed: status == ResetStatus.resetting
+              ? null
+              : () => unawaited(_reset()),
+          icon: const Icon(Icons.delete_forever_rounded),
+          label: Text(
+            status == ResetStatus.resetting
+                ? ParentZoneScreen.resetting
+                : ParentZoneScreen.resetLabel,
+          ),
         ),
-      ),
+      ],
     );
   }
 }

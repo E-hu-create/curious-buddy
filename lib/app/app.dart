@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import '../domain/parent/parent_gate.dart';
+import '../domain/settings/display_settings.dart';
 import '../domain/voice/buddy_listener.dart';
 import '../domain/voice/buddy_voice.dart';
 import '../ui/core/themes/app_theme.dart';
@@ -38,6 +42,13 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
     settings: widget.dependencies.settingsStore,
     voice: _voice,
   );
+  late final DisplaySettings _display = DisplaySettings(
+    settings: widget.dependencies.settingsStore,
+  );
+
+  /// Kept for the whole session so its pause after wrong answers cannot be
+  /// skipped by leaving and reopening the Parent Zone.
+  final ParentGate _parentGate = ParentGate();
   late final VoiceNavigatorObserver _voiceObserver = VoiceNavigatorObserver(
     _voice,
     _listener,
@@ -47,6 +58,11 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
   @override
   void initState() {
     super.initState();
+    // Load saved settings now, so screens never show a default before the
+    // saved choice (e.g. the Parent Zone switches).
+    unawaited(_voice.ready);
+    unawaited(_listener.ready);
+    unawaited(_display.ready);
     _lifecycle = AppLifecycleListener(
       // Covers calls, the app switcher, the screen turning off, and leaving
       // the app.
@@ -65,6 +81,7 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
     _lifecycle.dispose();
     _listener.dispose();
     _voice.dispose();
+    _display.dispose();
     super.dispose();
   }
 
@@ -76,6 +93,20 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       navigatorObservers: [_voiceObserver],
+      // The grown-up "calmer animations" setting adds to the phone's own.
+      builder: (context, child) => ListenableBuilder(
+        listenable: _display,
+        builder: (context, _) {
+          final media = MediaQuery.of(context);
+          return MediaQuery(
+            data: media.copyWith(
+              disableAnimations:
+                  media.disableAnimations || _display.reduceMotion,
+            ),
+            child: child!,
+          );
+        },
+      ),
       initialRoute: Routes.home,
       routes: {
         Routes.home: (_) => HomeScreen(
@@ -110,8 +141,14 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
               'soon!',
           mood: BuddyMood.excited,
         ),
-        // Behind a parent check. Only the voice-recognition setting so far.
-        Routes.parentZone: (_) => ParentZoneScreen(listener: _listener),
+        // Behind a parent check.
+        Routes.parentZone: (_) => ParentZoneScreen(
+          gate: _parentGate,
+          voice: _voice,
+          listener: _listener,
+          display: _display,
+          progressRepository: dependencies.progressRepository,
+        ),
       },
       onUnknownRoute: (settings) => MaterialPageRoute<void>(
         settings: settings,

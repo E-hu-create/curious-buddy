@@ -120,17 +120,17 @@ class StoryPlayViewModel extends ChangeNotifier {
   }
 
   /// Read the current scene aloud again.
-  void readScene() => _say(_sceneNarration());
+  void readScene() => _say(_sceneNarration(), requested: true);
 
   /// Read the choices aloud, numbered as on screen.
   void readChoices() {
     if (_phase != StoryPhase.scene || scene.isEnding) return;
-    _say(choicesNarration(scene));
+    _say(choicesNarration(scene), requested: true);
   }
 
   void hearAgain() {
     final text = _lastSpoken;
-    if (text != null) _sayNow(text);
+    if (text != null) _sayNow(text, requested: true);
   }
 
   Future<void> stopSpeaking() => _voice.stop();
@@ -201,14 +201,17 @@ class StoryPlayViewModel extends ChangeNotifier {
     null => progress.withStoryBookmark(story.id, path),
   };
 
-  void _say(String text) {
+  void _say(String text, {bool requested = false}) {
+    final first = _lastSpoken == null;
     _lastSpoken = text;
-    _sayNow(text);
+    // Enables "Hear again" even when nothing is read aloud automatically.
+    if (first) _notify();
+    _sayNow(text, requested: requested);
   }
 
-  void _sayNow(String text) {
+  void _sayNow(String text, {bool requested = false}) {
     if (_disposed) return;
-    unawaited(_voice.say(text));
+    unawaited(_voice.say(text, requested: requested));
   }
 
   void _notify() {
