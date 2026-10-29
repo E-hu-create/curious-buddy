@@ -36,9 +36,7 @@ Swapped ahead of persistent progress at the product owner's request.
 - ✅ Speech stops on navigation, when the app is hidden or interrupted, and
   on close.
 - ✅ Text fallback when no engine or voice is installed, or speech fails.
-- ⏳ Voice on/off is remembered only for the current session until
-  Phase 3 adds persistent storage (the code already saves it through
-  `KeyValueStore`).
+- ✅ Voice on/off is remembered across restarts (Phase 3).
 
 ## Voice companion: Stage A, interface and interaction ✅
 
@@ -64,7 +62,7 @@ Swapped ahead of persistent progress at the product owner's request.
 - ✅ Minimal Parent Zone: parent check + "Allow online voice recognition".
 - ✅ Cancelled on navigation, interruptions and close.
 - ⏳ Privacy and legal review before external testers (agreed).
-- ⏳ Settings reset on restart until Phase 3 storage.
+- ✅ Settings remembered across restarts (Phase 3).
 
 Details: [STAGE_B_VOICE_INPUT.md](STAGE_B_VOICE_INPUT.md).
 
@@ -82,11 +80,15 @@ See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
   legal/privacy review, a provider and backend owner, and a parental
   consent approach are decided. Not started.
 
-## Phase 3: Persistent progress and settings
+## Phase 3: Persistent progress and settings ✅ (awaiting review)
 
-- Add `shared_preferences`; implement `KeyValueStore`.
-- Wire `ProgressRepository` into Home. Voice on/off then survives restarts.
-- Device test: progress and voice setting survive force-stop.
+- ✅ `shared_preferences` 2.5.6; `SharedPreferencesKeyValueStore` behind
+  `KeyValueStore`. No other code changed.
+- ✅ Progress, voice on/off and the grown-up "allow online" setting survive
+  restarts.
+- ✅ Android cloud backup off, so data stays on the phone.
+- ✅ Storage failures (even plugin errors) fall back safely.
+- ⏳ Device test: settings survive force-stop.
 
 ## Phase 4: Mystery missions and learning games
 

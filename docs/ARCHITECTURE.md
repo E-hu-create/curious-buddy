@@ -239,9 +239,16 @@ nothing; no keys in the app. Document and get approval first.
 - **Migrations:** bump `schemaVersion` and handle older versions in
   `tryFromJson`.
 
-Currently backed by `InMemoryKeyValueStore`, so **progress is not persisted
-across app restarts yet.** A persistent store needs a dependency (see
-DEPENDENCIES.md).
+Backed by `SharedPreferencesKeyValueStore`
+(`data/services/shared_preferences_key_value_store.dart`, Android
+DataStore), so progress and settings (`voice.muted`,
+`voice.allowOnlineRecognition`) **survive restarts**. Data stays in the
+app's private storage: Android cloud backup is off (`allowBackup="false"`),
+and uninstalling deletes it. Any storage failure, including plugin errors,
+becomes a `StorageException`, which every caller already handles: settings
+fall back to safe defaults (voice on, online off), and progress is hidden
+rather than overwritten. Tests use `InMemoryKeyValueStore` or the plugin's
+`InMemorySharedPreferencesAsync`.
 
 ## Platforms
 

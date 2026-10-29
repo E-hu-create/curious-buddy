@@ -1,5 +1,6 @@
 import '../data/repositories/progress_repository.dart';
 import '../data/services/key_value_store.dart';
+import '../data/services/shared_preferences_key_value_store.dart';
 import '../data/services/voice/flutter_tts_service.dart';
 import '../data/services/voice/speech_recognition_service.dart';
 import '../data/services/voice/speech_to_text_recognition_service.dart';
@@ -23,9 +24,9 @@ class AppDependencies {
   /// Speech output uses the device's built-in engine. Speech input is
   /// tap-to-talk on Android's recogniser, on-device only unless a grown-up
   /// allows online recognition. Answers come from reviewed offline content.
-  /// Storage is in memory only until a persistent store is approved.
+  /// Progress and settings are saved on the device only.
   factory AppDependencies.defaults() {
-    final store = InMemoryKeyValueStore();
+    final store = SharedPreferencesKeyValueStore();
     return AppDependencies(
       textToSpeech: FlutterTtsService(),
       speechRecognition: SpeechToTextRecognitionService(),

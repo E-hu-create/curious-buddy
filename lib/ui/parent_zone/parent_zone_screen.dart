@@ -32,8 +32,8 @@ class ParentZoneScreen extends StatefulWidget {
       '(often Google) may send the audio to its servers to turn it into text, '
       "under that provider's privacy terms.\n\n"
       'Either way, Curious Buddy only listens after your child taps Talk, '
-      'and never saves or uploads recordings itself. This setting goes back '
-      'to Off when the app restarts.';
+      'and never saves or uploads recordings itself. This setting is '
+      'remembered on this phone until you change it.';
   static const onDeviceAvailable =
       'This phone can recognise speech on the device.';
   static const onDeviceUnavailable =

@@ -24,7 +24,10 @@ is built.
 | Allow online voice recognition (`voice.allowOnlineRecognition`), off by default | Grown-up choice about where speech is recognised | `BuddyListener` via `KeyValueStore` |
 | *Future:* Creative Island creations | Child's own work | Local storage, deletable from Parent Zone |
 
-Currently held **in memory only**; nothing is written to disk yet.
+Saved **on this phone only**, in the app's private storage
+(`shared_preferences`). Android cloud backup is turned off for the app
+(`allowBackup="false"`), so it is not copied to Google Drive or a new phone;
+uninstalling the app deletes it. Conversations are never saved.
 
 ## Data we do not collect
 

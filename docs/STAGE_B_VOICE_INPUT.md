@@ -81,8 +81,8 @@ denied message always mentions Settings.
 time; a light gate for young children, not a security control), then one
 setting: **Allow online voice recognition**, off by default, with a plain
 explanation of where audio may go, and whether this phone can recognise
-speech on the device. The setting resets to off on restart until saved
-settings arrive (Phase 3).
+speech on the device. The setting is saved on the phone and survives
+restarts (Phase 3).
 
 ## Privacy summary
 

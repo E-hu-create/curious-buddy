@@ -56,6 +56,8 @@ and ask first.
 | `test/domain/voice/buddy_listener_test.dart` | Touches nothing when created; one session at a time; live words; stops voice first; stop vs cancel; dispose; allow-online default, save, restore, unreadable |
 | `test/data/services/voice/speech_to_text_recognition_service_test.dart` | Fake plugin engine: check never prompts, request via initialize, denied, no recogniser, unsupported platform; final/partial results, done status, no match, network, stop/cancel, idle safety, one session, safety timer; refuses without on-device unless online allowed; language pack missing; lazy plugin creation |
 | `test/ui/parent_zone/parent_zone_screen_test.dart` | Settings hidden behind the parent check; wrong answer; online setting off by default, explanation, toggling saves; on-device status; reached from Grown-ups |
+| `test/data/services/shared_preferences_key_value_store_test.dart` | Save / read / delete, survives a new store ("restart"), keys independent, lazy creation, plugin errors become `StorageException`, real app uses device storage |
+| `test/ui/home/home_restart_test.dart` | Voice off and back on remembered across app restarts; saved progress shown after restart; grown-up online setting remembered |
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
 | `test/domain/conversation/child_safety_filter_test.dart` | Personal info, self-harm, bullying, medical and off-limits detection; ordinary questions (incl. big numbers, look-alike words) pass |
 | `test/domain/conversation/curated_response_provider_test.dart` | Starter prompts, brief example, matching, rotation, quiz/adventure actions, honesty about being a computer, fallback, safety precedence; content rules over every answer |
@@ -158,5 +160,9 @@ user-visible change:
       restarts cleanly; media volume at 0 does not break the flow; a call or
       alarm during narration does not crash; denying the microphone leaves a
       working tap alternative.
-- [ ] *Once progress persists:* force-stop and reopen; progress is kept.
+- [ ] **Saved settings (Phase 3):** turn Voice off, then force-stop the app
+      (Settings → Apps → Curious Buddy → Force stop) and reopen: Buddy stays
+      quiet and shows "Voice on". Turn it back on, force-stop, reopen: the
+      welcome plays. In the Parent Zone, allow online recognition,
+      force-stop, reopen the Parent Zone: still on.
 - [ ] No new warnings in `flutter run` console output.
