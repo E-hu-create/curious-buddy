@@ -1,30 +1,65 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+import 'dart:async';
 
+import 'package:curious_buddy/app/app.dart';
+import 'package:curious_buddy/app/app_dependencies.dart';
+import 'package:curious_buddy/data/repositories/progress_repository.dart';
+import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:curious_buddy/main.dart';
+import 'testing/fakes.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  late FakeSpeechRecognitionService speech;
+  late FakeTextToSpeechService tts;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  Widget buildApp() => CuriousBuddyApp(
+    dependencies: AppDependencies(
+      textToSpeech: tts,
+      speechRecognition: speech,
+      progressRepository: LocalProgressRepository(InMemoryKeyValueStore()),
+    ),
+  );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  setUp(() {
+    speech = FakeSpeechRecognitionService();
+    tts = FakeTextToSpeechService();
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('app launches to the home route', (tester) async {
+    await tester.pumpWidget(buildApp());
+
+    expect(find.text('Curious Buddy'), findsOneWidget);
+  });
+
+  testWidgets('launch does not touch the microphone or speak', (tester) async {
+    await tester.pumpWidget(buildApp());
+    await tester.pumpAndSettle();
+
+    expect(speech.totalCalls, 0);
+    expect(speech.permissionRequests, 0);
+    expect(tts.spoken, isEmpty);
+  });
+
+  testWidgets('unknown routes show a friendly page instead of crashing', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildApp());
+
+    final navigator = tester.state<NavigatorState>(find.byType(Navigator));
+    unawaited(navigator.pushNamed('/does-not-exist'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Oops!'), findsOneWidget);
+  });
+
+  testWidgets('default dependencies build without platform plugins', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      CuriousBuddyApp(dependencies: AppDependencies.defaults()),
+    );
+
+    expect(find.text('Curious Buddy'), findsOneWidget);
   });
 }
