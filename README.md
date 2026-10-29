@@ -1,7 +1,9 @@
 # Curious Buddy
 
-A Flutter learning app for children. **Current state: engineering foundation
-only.** No product features (Home, missions, stories, voice) are built yet.
+A Flutter learning app for children aged 8–14. **Current state: Phase 1.**
+The app shell and Home screen are built; missions, stories, Creative Island,
+progress details and the Parent Zone are "coming soon" placeholders. There is
+no speech, microphone or network functionality.
 
 ## Requirements
 

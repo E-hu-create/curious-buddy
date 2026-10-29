@@ -2,4 +2,9 @@
 /// docs/ARCHITECTURE.md for the planned feature list.
 abstract final class Routes {
   static const home = '/';
+  static const missions = '/missions';
+  static const stories = '/stories';
+  static const creative = '/creative';
+  static const discoveries = '/discoveries';
+  static const parentZone = '/parent-zone';
 }

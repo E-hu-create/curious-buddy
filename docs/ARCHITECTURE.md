@@ -14,8 +14,13 @@ lib/
     routes.dart             Named route constants
     app_dependencies.dart   Composition root: chooses concrete services
   ui/                       UI layer
-    core/themes/            Theme
+    core/themes/            Colours (app_colors.dart), theme and sticker shapes
     core/widgets/           Reusable widgets shared across features
+      buddy/                Buddy the robot (CustomPainter, no image assets)
+      placeholder_screen.dart   Buddy + message; "coming soon" and unknown routes
+    home/                   Home and exploration (Phase 1)
+      home_screen.dart, home_view_model.dart, home_destination.dart
+      widgets/              Greeting bubble, explorer log, destination grid
     <feature>/              One folder per feature (see below)
       <feature>_screen.dart
       <feature>_view_model.dart   ChangeNotifier holding screen state/logic
@@ -57,7 +62,9 @@ guards (e.g. the Parent Zone gate) that become awkward without it.
 ## Planned feature boundaries
 
 Each becomes a folder under `lib/ui/` (and `lib/domain/` / `lib/data/` only if
-it needs its own logic or data). None exist yet.
+it needs its own logic or data). Only Home exists. The other destinations
+are routes in `routes.dart` that show `PlaceholderScreen` until built; Home's
+cards come from the `HomeDestination` enum.
 
 | Feature | UI folder | Depends on |
 | --- | --- | --- |
@@ -71,6 +78,28 @@ it needs its own logic or data). None exist yet.
 
 Features must not import each other's internals. Shared pieces move to
 `ui/core/` or `domain/`.
+
+## Visual design and accessibility
+
+- **Style:** flat "sticker" look: solid fills, 2.5px dark ink outlines and a
+  hard offset shadow (`AppShapes.sticker`). No gradients, no photographic or
+  AI-generated imagery. Colours live only in `app_colors.dart`.
+- **Buddy** is drawn in code (`BuddyPainter`) with moods `cheerful`, `happy`
+  and `curious`. He waves once when shown and reacts when tapped. Animations
+  are one-shot and are skipped when the system "remove animations" setting
+  is on.
+- **Touch targets:** buttons are at least 56dp tall (`AppTheme.minTouchTarget`)
+  and destination cards at least 150dp.
+- **Text:** layouts reflow for large system text (one column at 1.5x and
+  above) and narrow screens. Tests cover 320dp width, 2x text, landscape
+  and tablet sizes.
+- **Screen readers:** cards are single labelled buttons, headings are marked
+  as headers, and Buddy has a label.
+- **Voice-friendly:** all child-facing text is short and on screen. The
+  "Hear Buddy" button appears only when a speech engine reports it is
+  available, and only speaks when tapped.
+- Automated checks: Flutter's tap target, labelled tap target and text
+  contrast guidelines (`test/ui/home/home_accessibility_test.dart`).
 
 ## Voice system
 

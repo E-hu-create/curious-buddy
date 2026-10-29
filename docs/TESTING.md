@@ -46,6 +46,16 @@ and ask first.
 | `test/domain/models/learner_progress_test.dart` | Progress JSON validation and versioning |
 | `test/data/repositories/progress_repository_test.dart` | Save/load, corrupt-data backup and recovery, storage errors |
 | `test/domain/voice/narrator_test.dart` | Narration, interruption, replay, unavailable and failing engines |
+| `test/ui/home/home_view_model_test.dart` | Loading progress, storage failure, speech availability, never speaking on load |
+| `test/ui/home/home_screen_test.dart` | Destinations, explorer log, navigation to each page and back, Parent Zone, "Hear Buddy" button |
+| `test/ui/home/home_accessibility_test.dart` | Tap target, label and contrast guidelines; screen-reader labels; no overflow at small/large/landscape/tablet sizes and 2x text; reduced motion |
+| `test/ui/core/widgets/buddy_test.dart` | Buddy label, one-shot wave, tap reaction, reduced motion, every mood paints |
+
+Shared helpers in `test/testing/test_app.dart`: `buildTestApp`,
+`usePhoneScreen`, `useTextScale`, `useReducedMotion`.
+
+Widget tests render text with Flutter's test font (solid blocks), so they
+check layout and behaviour, not appearance. Check appearance on a device.
 
 ## Real-device checklist
 
@@ -55,6 +65,13 @@ user-visible change:
 
 - [ ] App installs and opens without crashing.
 - [ ] No permission prompt appears at launch.
+- [ ] Home: Buddy waves once; tapping Buddy makes him smile and wave again.
+- [ ] Each Home card opens its "coming soon" page; the back arrow and
+      "Back to Home" both return to Home.
+- [ ] "Grown-ups" opens the Parent Zone placeholder.
+- [ ] No "Hear Buddy" button is shown (no speech engine yet).
+- [ ] With Settings → Accessibility → "Remove animations" on, Buddy does
+      not move.
 - [ ] Text is readable at the largest system font size.
 - [ ] Layout works in portrait and landscape (or orientation is locked on
       purpose).

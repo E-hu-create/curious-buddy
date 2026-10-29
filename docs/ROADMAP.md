@@ -4,18 +4,23 @@ Each phase ends with `tool\verify.ps1` passing, the real-device checklist in
 TESTING.md completed, and a commit. Do not start a phase until the previous
 one is approved.
 
-## Phase 0: Engineering foundation ✅ (awaiting approval)
+## Phase 0: Engineering foundation ✅
 
 Git, lint and analysis rules, layered folder structure, voice and progress
-interfaces, tests, documentation.
+interfaces, tests, documentation. Gradle heap set to 3 GB. Verified on a
+Samsung SM-A516U.
 
-## Phase 1: App shell and Home
+## Phase 1: App shell and Home ✅ (awaiting review)
 
-- Decide the real application ID (replace `com.example.curious_buddy`) and
-  app name/icon before anything is installed by testers.
-- Home and exploration screen with view model and tests.
-- Navigation to placeholder feature screens.
-- Theme: child-friendly colours, typography, large touch targets.
+- ✅ Home and exploration screen with view model and tests.
+- ✅ Navigation to placeholder feature screens and a Parent Zone placeholder
+  (no settings yet; the parent gate comes in Phase 6).
+- ✅ Theme: flat sticker style, child-friendly colours, 56dp touch targets.
+- ✅ Buddy drawn in code with three moods and a one-shot wave.
+- ✅ Android app label "Curious Buddy".
+- ⏳ Permanent application ID: still `com.example.curious_buddy` by choice.
+  Must be decided before anyone outside the team installs a build.
+- ⏳ Launcher icon: still the Flutter default. Planned: a Buddy icon.
 
 ## Phase 2: Persistent progress
 
