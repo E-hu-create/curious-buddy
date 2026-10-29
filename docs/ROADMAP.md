@@ -152,7 +152,7 @@ See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
 - ⏳ Before external testers: privacy/legal review, privacy policy,
   permanent application ID (see CHILD_SAFETY.md).
 
-## Quiz Time ✅ (awaiting device test)
+## Quiz Time ✅
 
 Built before Creative Island at the product owner's request.
 
@@ -166,7 +166,8 @@ Built before Creative Island at the product owner's request.
 - ✅ Buddy reads questions, answers, results and the summary; follows the
   Parent Zone voice settings; stops on leaving; no microphone.
 - ✅ Quiz results in the Parent Zone overview and deleted by its reset.
-- ⏳ Device test on the Samsung SM-A516U.
+- ✅ Device test on the Samsung SM-A516U: the Quiz Time checks in TESTING.md
+  passed (confirmed 29 Oct 2026).
 - ⏳ Grown-up review of the quiz questions before external testers.
 - Later: more questions per level, so replays vary more.
 
