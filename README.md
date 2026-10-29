@@ -87,7 +87,7 @@ Avoid `git reset --hard` and `git clean`: they discard uncommitted work.
 - [Roadmap](docs/ROADMAP.md)
 - [Buddy character model](docs/MASCOT.md)
 - [Stage B voice input](docs/STAGE_B_VOICE_INPUT.md)
-- [Stage C smarter answers proposal](docs/STAGE_C_SMARTER_ANSWERS.md)
+- [Stage C smarter answers](docs/STAGE_C_SMARTER_ANSWERS.md) and [decision guide](docs/STAGE_C_DECISION_GUIDE.md)
 
 To regenerate the Android launcher icons after changing Buddy:
 `flutter test tool/generate_launcher_icons_test.dart`

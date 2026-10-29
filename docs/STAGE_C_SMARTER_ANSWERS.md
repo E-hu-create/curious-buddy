@@ -117,4 +117,7 @@ Shown with "AI answer, it can be wrong" label, then spoken
 4. How will verifiable parental consent be handled for C (needed before
    any child's question leaves the phone)?
 
+Next: see [STAGE_C_DECISION_GUIDE.md](STAGE_C_DECISION_GUIDE.md) for the
+provider, hosting and consent decisions.
+
 This is an engineering proposal, not legal advice or a compliance claim.
