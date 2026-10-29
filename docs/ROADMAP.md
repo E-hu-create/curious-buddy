@@ -109,7 +109,7 @@ See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
 - Later: more missions; partial progress inside a mission is not saved
   (leaving restarts the case).
 
-## Phase 5: Living Stories ✅ (awaiting review)
+## Phase 5: Living Stories ✅
 
 - ✅ Stories shelf with drawn covers, endings found per story and overall.
 - ✅ Three original branching stories, 8 or 9 scenes and 4 endings each:
@@ -125,7 +125,8 @@ See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
 - ✅ Endings found and the place in an unfinished story saved on the device
   (progress schema 3); Continue / Start again / Try a different path.
 - ✅ Invalid stories are left out.
-- ⏳ Device test on the Samsung SM-A516U.
+- ✅ Device test on the Samsung SM-A516U: all 11 checks in TESTING.md
+  passed (confirmed 29 Oct 2026).
 - Later: more stories; a "go back one page" button.
 
 ## Phase 6: Parent Zone
