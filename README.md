@@ -20,6 +20,11 @@ Run `flutter doctor -v` to confirm your environment.
 > JDK 21). If you must run `android\gradlew` directly, first set
 > `JAVA_HOME=C:\Program Files\Android\Android Studio\jbr`.
 
+> **Memory note:** the Gradle heap is set to 3 GB (`org.gradle.jvmargs` in
+> `android/gradle.properties`, down from the template's 8 GB) because the
+> development machine has 6.4 GB RAM. Raise it only if a build fails with
+> `OutOfMemoryError`.
+
 ## Setup
 
 ```powershell
