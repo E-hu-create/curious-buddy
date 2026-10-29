@@ -129,7 +129,7 @@ See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
   passed (confirmed 29 Oct 2026).
 - Later: more stories; a "go back one page" button.
 
-## Phase 6: Parent Zone ✅ (awaiting device test)
+## Phase 6: Parent Zone ✅
 
 - ✅ Parent check: a multiplication in words, new every try, a 60-second
   pause after three wrong answers, asked every time and again after the app
@@ -145,7 +145,8 @@ See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
   afterwards, failure reported honestly.
 - ✅ Fixed on the way: saved settings now load at start-up, so the Parent
   Zone never shows a default before the saved value.
-- ⏳ Device test on the Samsung SM-A516U.
+- ✅ Device test on the Samsung SM-A516U: all 13 Parent Zone checks in
+  TESTING.md passed (confirmed 29 Oct 2026).
 - ⏳ Before external testers: privacy/legal review, privacy policy,
   permanent application ID (see CHILD_SAFETY.md).
 
