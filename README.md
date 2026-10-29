@@ -44,6 +44,14 @@ Run `flutter doctor -v` to confirm your environment.
 flutter pub get
 ```
 
+## Android application ID
+
+`io.github.e_hu_create.curiousbuddy` (in `android/app/build.gradle.kts`,
+with `MainActivity.kt` in the matching Kotlin package). The Dart package
+name stays `curious_buddy`. Do not change the ID after the app is
+published: Android treats a different ID as a different app, so existing
+installs would not update and would keep their own saved data.
+
 ## Run
 
 ```powershell

@@ -1,4 +1,4 @@
-package com.example.curious_buddy
+package io.github.e_hu_create.curiousbuddy
 
 import android.os.Build
 import android.speech.SpeechRecognizer

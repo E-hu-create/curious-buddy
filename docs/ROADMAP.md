@@ -19,8 +19,10 @@ Samsung SM-A516U.
 - ✅ Buddy redesigned per the mascot brief: a teal creature with a golden
   backpack, drawn in code with six moods (interim, see MASCOT.md).
 - ✅ Android app label "Curious Buddy".
-- ⏳ Permanent application ID: still `com.example.curious_buddy` by choice.
-  Must be decided before anyone outside the team installs a build.
+- ✅ Permanent Android application ID: `io.github.e_hu_create.curiousbuddy`
+  (based on the developer's GitHub account; replaces the template's
+  `com.example.curious_buddy`). Never change it after publishing. iOS,
+  macOS, Linux and Windows still use template IDs (not built yet).
 - ✅ Launcher icon generated from Buddy (Android legacy + adaptive).
 - ⏳ Final mascot art (premium 3D renders) from an artist or a tool with
   clear usage rights; see MASCOT.md for the spec and integration plan.
