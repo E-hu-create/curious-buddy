@@ -109,9 +109,24 @@ See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
 - Later: more missions; partial progress inside a mission is not saved
   (leaving restarts the case).
 
-## Phase 5: Living Stories
+## Phase 5: Living Stories ✅ (awaiting review)
 
-- Narrated stories with replay and page controls.
+- ✅ Stories shelf with drawn covers, endings found per story and overall.
+- ✅ Three original branching stories, 8 or 9 scenes and 4 endings each:
+  The Forest That Forgot Its Colours (light and rainbows), The Lost Signal
+  from Planet Luma (signals, prime numbers, solar power, gravity), The Tiny
+  Inventor's Big Idea (testing, pulleys, counterweights, teamwork).
+- ✅ Consequence line after each choice; every ending is a good one, just
+  different; no loops, every path ends (validated and tested).
+- ✅ Buddy reads the intro, each page, and the choices on request; Hear
+  again / Stop talking; a new page interrupts the old one; speech stops on
+  leaving; microphone never used; all text on screen.
+- ✅ 12 scenes drawn in code with three characters and a look per story.
+- ✅ Endings found and the place in an unfinished story saved on the device
+  (progress schema 3); Continue / Start again / Try a different path.
+- ✅ Invalid stories are left out.
+- ⏳ Device test on the Samsung SM-A516U.
+- Later: more stories; a "go back one page" button.
 
 ## Phase 6: Parent Zone
 

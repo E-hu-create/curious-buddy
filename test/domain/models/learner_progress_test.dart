@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:curious_buddy/domain/models/learner_progress.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -102,6 +104,110 @@ void main() {
           .withMissionResult('a', 80);
 
       expect(progress.totalMissionPoints, 150);
+    });
+  });
+
+  group('story endings and bookmarks (schema 3)', () {
+    test('round-trips endings and bookmarks through JSON', () {
+      final progress = LearnerProgress.empty
+          .withStoryEnding('forest', 'mist')
+          .withStoryEnding('forest', 'rain')
+          .withStoryBookmark('luma', ['camp', 'ridge']);
+
+      final json = jsonDecode(jsonEncode(progress.toJson()));
+      expect(LearnerProgress.tryFromJson(json), progress);
+    });
+
+    test('an ending marks the story finished and clears its bookmark', () {
+      final progress = LearnerProgress.empty
+          .withStoryBookmark('forest', ['a', 'b'])
+          .withStoryEnding('forest', 'mist');
+
+      expect(progress.completedStoryIds, {'forest'});
+      expect(progress.storyEndings['forest'], {'mist'});
+      expect(progress.storyBookmarks, isEmpty);
+    });
+
+    test('finding the same ending twice counts once', () {
+      final progress = LearnerProgress.empty
+          .withStoryEnding('forest', 'mist')
+          .withStoryEnding('forest', 'mist');
+
+      expect(progress.storyEndings['forest'], {'mist'});
+    });
+
+    test('bookmarks can be replaced and removed', () {
+      final progress = LearnerProgress.empty
+          .withStoryBookmark('forest', ['a'])
+          .withStoryBookmark('forest', ['a', 'b']);
+      expect(progress.storyBookmarks['forest'], ['a', 'b']);
+      expect(progress.withoutStoryBookmark('forest').storyBookmarks, isEmpty);
+    });
+
+    test('bookmark order matters for equality; ending order does not', () {
+      expect(
+        LearnerProgress.empty.withStoryBookmark('s', ['a', 'b']),
+        isNot(LearnerProgress.empty.withStoryBookmark('s', ['b', 'a'])),
+      );
+      expect(
+        LearnerProgress.empty
+            .withStoryEnding('s', 'x')
+            .withStoryEnding('s', 'y'),
+        LearnerProgress.empty
+            .withStoryEnding('s', 'y')
+            .withStoryEnding('s', 'x'),
+      );
+    });
+
+    test('older saved data is read without story details', () {
+      final progress = LearnerProgress.tryFromJson({
+        'schemaVersion': 2,
+        'completedStoryIds': ['forest'],
+        'storyEndings': {
+          'forest': ['mist'],
+        },
+      });
+
+      expect(progress!.completedStoryIds, {'forest'});
+      expect(progress.storyEndings, isEmpty);
+      expect(progress.storyBookmarks, isEmpty);
+    });
+
+    test('drops malformed endings and bookmarks but keeps valid ones', () {
+      final progress = LearnerProgress.tryFromJson({
+        'schemaVersion': 3,
+        'storyEndings': {
+          'ok': ['mist', 'Bad Id', 7],
+          'empty': <Object>[],
+          'Bad Key': ['mist'],
+          'text': 'mist',
+        },
+        'storyBookmarks': {
+          'ok': ['a', 'b'],
+          'partly_bad': ['a', 'Bad Id'],
+          'empty': <Object>[],
+          'not_list': 'a',
+          'too_long': List.filled(LearnerProgress.maxBookmarkLength + 1, 'a'),
+        },
+      });
+
+      expect(progress!.storyEndings, {
+        'ok': {'mist'},
+      });
+      expect(progress.storyBookmarks, {
+        'ok': ['a', 'b'],
+      });
+    });
+
+    test('unexpected shapes for the story maps are ignored', () {
+      final progress = LearnerProgress.tryFromJson({
+        'schemaVersion': 3,
+        'storyEndings': ['mist'],
+        'storyBookmarks': 42,
+      });
+
+      expect(progress!.storyEndings, isEmpty);
+      expect(progress.storyBookmarks, isEmpty);
     });
   });
 }

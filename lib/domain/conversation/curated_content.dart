@@ -239,8 +239,8 @@ const curatedTopics = <CuratedTopic>[
       ['mystery'],
     ],
     answers: [
-      "Let's go! Adventures will live in Mystery Missions. "
-          "They're still being built, but you can take a look.",
+      "Let's go! Mystery Missions has three detective cases to crack. "
+          'Inspect the clues, and ask me for a hint if you get stuck.',
     ],
     action: BuddyAction.openMissions,
     actionLabel: 'Open Mystery Missions',
@@ -253,8 +253,8 @@ const curatedTopics = <CuratedTopic>[
       ['stories'],
     ],
     answers: [
-      'I love stories! Living Stories are where they will be. '
-          "They're coming soon, but you can have a look now.",
+      'I love stories! In Living Stories, you choose what happens next, '
+          'and every choice leads somewhere different. I will read it to you.',
     ],
     action: BuddyAction.openStories,
     actionLabel: 'Open Living Stories',

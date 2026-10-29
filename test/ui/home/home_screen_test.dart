@@ -4,6 +4,7 @@ import 'package:curious_buddy/domain/models/learner_progress.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
 import 'package:curious_buddy/ui/home/home_view_model.dart';
 import 'package:curious_buddy/ui/missions/missions_screen.dart';
+import 'package:curious_buddy/ui/stories/stories_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../testing/fakes.dart';
@@ -67,6 +68,9 @@ void main() {
       if (destination == HomeDestination.missions) {
         // Built in Phase 4: the real Missions screen, not a placeholder.
         expect(find.text(MissionsScreen.title), findsOneWidget);
+      } else if (destination == HomeDestination.stories) {
+        // Built in Phase 5: the real Living Stories screen.
+        expect(find.text(StoriesScreen.title), findsOneWidget);
       } else {
         expect(find.text(destination.comingSoonMessage), findsOneWidget);
       }
@@ -80,9 +84,9 @@ void main() {
   testWidgets('"Back to Home" button returns to Home', (tester) async {
     await openHome(tester);
     // A destination that is still a "coming soon" page.
-    await tester.ensureVisible(find.text(HomeDestination.stories.title));
+    await tester.ensureVisible(find.text(HomeDestination.creative.title));
     await tester.pumpAndSettle();
-    await tester.tap(find.text(HomeDestination.stories.title));
+    await tester.tap(find.text(HomeDestination.creative.title));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Back to Home'));

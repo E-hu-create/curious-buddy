@@ -1,5 +1,6 @@
 import '../data/repositories/mission_repository.dart';
 import '../data/repositories/progress_repository.dart';
+import '../data/repositories/story_repository.dart';
 import '../data/services/key_value_store.dart';
 import '../data/services/shared_preferences_key_value_store.dart';
 import '../data/services/voice/flutter_tts_service.dart';
@@ -21,6 +22,7 @@ class AppDependencies {
     required this.settingsStore,
     required this.responseProvider,
     required this.missionRepository,
+    required this.storyRepository,
   });
 
   /// Speech output uses the device's built-in engine. Speech input is
@@ -36,6 +38,7 @@ class AppDependencies {
       settingsStore: store,
       responseProvider: CuratedResponseProvider(),
       missionRepository: BundledMissionRepository(),
+      storyRepository: BundledStoryRepository(),
     );
   }
 
@@ -52,4 +55,7 @@ class AppDependencies {
 
   /// Mystery Missions content: the reviewed missions bundled in the app.
   final MissionRepository missionRepository;
+
+  /// Living Stories content: the reviewed stories bundled in the app.
+  final StoryRepository storyRepository;
 }

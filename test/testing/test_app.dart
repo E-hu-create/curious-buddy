@@ -2,6 +2,7 @@ import 'package:curious_buddy/app/app.dart';
 import 'package:curious_buddy/app/app_dependencies.dart';
 import 'package:curious_buddy/data/repositories/mission_repository.dart';
 import 'package:curious_buddy/data/repositories/progress_repository.dart';
+import 'package:curious_buddy/data/repositories/story_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/domain/conversation/curated_response_provider.dart';
 import 'package:curious_buddy/domain/voice/educational_response_provider.dart';
@@ -19,6 +20,7 @@ Widget buildTestApp({
   KeyValueStore? store,
   EducationalResponseProvider? responder,
   MissionRepository? missions,
+  StoryRepository? stories,
 }) {
   final keyValueStore = store ?? InMemoryKeyValueStore();
   return CuriousBuddyApp(
@@ -29,6 +31,7 @@ Widget buildTestApp({
       settingsStore: keyValueStore,
       responseProvider: responder ?? CuratedResponseProvider(),
       missionRepository: missions ?? BundledMissionRepository(),
+      storyRepository: stories ?? BundledStoryRepository(),
     ),
   );
 }

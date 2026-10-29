@@ -1,11 +1,13 @@
 # Curious Buddy
 
-A Flutter learning app for children aged 8–14. **Current state: Phase 4
-(Mystery Missions).** Home is built around Buddy: children type a question or
+A Flutter learning app for children aged 8–14. **Current state: Phase 5
+(Living Stories).** Home is built around Buddy: children type a question or
 tap an idea, Buddy answers from reviewed offline content and reads the answer
 aloud with the phone's built-in text-to-speech engine. **Mystery Missions**
 has three playable, offline detective cases with clues, hints, narration,
-points and badges. Other activities are
+points and badges. **Living Stories** has three narrated branching stories
+where the child's choices lead to different endings, and the place in a
+story is remembered. Other activities are
 "coming soon" placeholders. Children can also tap **Talk to Buddy** to ask
 out loud: on-device recognition only unless a grown-up allows online in the
 Parent Zone, and the words are shown for checking before sending. There is

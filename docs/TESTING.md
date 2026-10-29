@@ -43,7 +43,7 @@ and ask first.
 | File | Covers |
 | --- | --- |
 | `test/widget_test.dart` | App launches; launch speaks only the welcome and makes no microphone calls; unknown routes; real dependencies fall back to text with no engine |
-| `test/domain/models/learner_progress_test.dart` | Progress JSON validation and versioning |
+| `test/domain/models/learner_progress_test.dart` | Progress JSON validation and versioning; story endings and bookmarks (schema 3), older data, malformed entries |
 | `test/data/repositories/progress_repository_test.dart` | Save/load, corrupt-data backup and recovery, storage errors |
 | `test/domain/voice/narrator_test.dart` | Narration, interruption, replay, unavailable and failing engines |
 | `test/domain/voice/buddy_voice_test.dart` | Availability, welcome once, replay, interrupting, stop, dispose, mute stops/silences/saves/restores, storage failures |
@@ -64,6 +64,12 @@ and ask first.
 | `test/ui/missions/mission_play_view_model_test.dart` | Intro narration; clues; hints; check/retry; locking; next; order editing; shuffle never pre-solved; each mission finished, scored and saved; finishing with mistakes; replay keeps best; failed save; Hear again / Stop; dispose stops speech; voice off |
 | `test/ui/missions/missions_screen_test.dart` | Home opens real Missions; loading, empty, error; full play-throughs; hints and wrong answers; saved, solved, best score, replay; Play again; leaving and Stop silence Buddy; no microphone; Home shows new points |
 | `test/ui/missions/missions_accessibility_test.dart` | Tap target, label and contrast guidelines on list and step; every step of a mission without overflow on small phones and 2x text |
+| `test/domain/stories/story_content_test.dart` | Three valid stories; several scenes and at least two endings each; every ending reachable; every path ends without repeating a scene; distinct pictures per story; consequence lines without lecturing; no personal questions |
+| `test/domain/stories/story_rules_test.dart` | Validator rejects missing text, missing start, missing targets, duplicate ids, invalid ids, fewer than two endings, fake branching, dead ends, endings with choices, self-loops, multi-scene loops, unreachable scenes and endings, over-long text; graph reachability, path count, saved-path checks |
+| `test/data/repositories/story_repository_test.dart` | Loads three stories offline; leaves out invalid and duplicate stories; empty catalogue |
+| `test/ui/stories/story_play_view_model_test.dart` | Intro and scene narration; choices and consequences; invalid and out-of-place choices ignored; ending recorded, new vs found before; bookmark saved each page; resume; invalid saved paths start fresh; restart; replay finds other endings; every ending reachable by choosing; read the choices; Hear again / Stop; new page interrupts; dispose stops speech; voice off; failed save; saves in order |
+| `test/ui/stories/stories_screen_test.dart` | Home opens real Stories; loading, empty, error, broken content left out; full read to an ending; endings on the card; different path; found before; continue after leaving and after an app restart; Start again; stale bookmark ignored; leaving, page turns and Stop silence Buddy; Read the choices; no speech engine; no microphone; Home shows the finished story |
+| `test/ui/stories/stories_accessibility_test.dart` | Tap target, label and contrast guidelines on the shelf, intro, a choice page and an ending; numbered choice labels; picture descriptions; every page of every story without overflow on small phones and 2x text |
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
 | `test/domain/conversation/child_safety_filter_test.dart` | Personal info, self-harm, bullying, medical and off-limits detection; ordinary questions (incl. big numbers, look-alike words) pass |
 | `test/domain/conversation/curated_response_provider_test.dart` | Starter prompts, brief example, matching, rotation, quiz/adventure actions, honesty about being a computer, fallback, safety precedence; content rules over every answer |
@@ -183,6 +189,26 @@ user-visible change:
   - [ ] Go back to Home: the explorer log shows the mission and points.
   - [ ] Force-stop and reopen: solved missions and points are still there.
   - [ ] Voice off: missions still fully playable with text only.
+- [ ] **Living Stories (Phase 5):**
+  - [ ] Home → Living Stories: three stories with pictures, "New story",
+        "0 of 12 endings found".
+  - [ ] Start a story: Buddy reads the intro; "Begin the story" reads
+        page 1; "Stop talking" silences him; "Hear again" repeats.
+  - [ ] "Read the choices" reads "Choice 1 ... Choice 2 ..."; the speaker
+        next to the title rereads the page.
+  - [ ] Tap a choice: the next page starts with what happened; Buddy stops
+        the old page and reads the new one (no overlap).
+  - [ ] Reach an ending: "The End", "New ending!", the discovery,
+        "1 of 4 endings"; "Try a different path" returns to page 1.
+  - [ ] Reach the same ending again: "You found this ending before".
+  - [ ] Back to stories: ending chips on the card; "Find another ending".
+  - [ ] Leave mid-story (back button) mid-narration: Buddy stops at once;
+        the card shows "Reading", "Continue the story" and "Start again".
+  - [ ] Force-stop and reopen: Continue opens the same page with "Welcome
+        back!"; found endings are still there.
+  - [ ] Home explorer log counts the finished story.
+  - [ ] Voice off: stories fully readable with text only.
+  - [ ] Each story looks different (green wood, purple Luma, warm garden).
 - [ ] **Saved settings (Phase 3):** turn Voice off, then force-stop the app
       (Settings → Apps → Curious Buddy → Force stop) and reopen: Buddy stays
       quiet and shows "Voice on". Turn it back on, force-stop, reopen: the

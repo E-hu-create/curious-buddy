@@ -9,6 +9,7 @@ import '../ui/home/home_destination.dart';
 import '../ui/home/home_screen.dart';
 import '../ui/missions/missions_screen.dart';
 import '../ui/parent_zone/parent_zone_screen.dart';
+import '../ui/stories/stories_screen.dart';
 import 'app_dependencies.dart';
 import 'routes.dart';
 import 'voice_navigator_observer.dart';
@@ -88,9 +89,15 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
           progressRepository: dependencies.progressRepository,
           voice: _voice,
         ),
+        Routes.stories: (_) => StoriesScreen(
+          storyRepository: dependencies.storyRepository,
+          progressRepository: dependencies.progressRepository,
+          voice: _voice,
+        ),
         // Destinations not built yet still show a "coming soon" page.
         for (final destination in HomeDestination.values)
-          if (destination.route != Routes.missions)
+          if (destination.route != Routes.missions &&
+              destination.route != Routes.stories)
             destination.route: (_) => PlaceholderScreen(
               title: destination.title,
               message: destination.comingSoonMessage,

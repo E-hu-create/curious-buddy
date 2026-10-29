@@ -25,6 +25,10 @@ lib/
       missions_screen.dart, missions_view_model.dart        Case list
       mission_play_screen.dart, mission_play_view_model.dart  Playing a case
       widgets/              Drawn covers, clue cards, choices, order builder
+    stories/                Living Stories (Phase 5)
+      stories_screen.dart, stories_view_model.dart          Story shelf
+      story_play_screen.dart, story_play_view_model.dart    Reading a story
+      widgets/              Drawn scene pictures, choice cards, tags
     <feature>/              One folder per feature (see below)
       <feature>_screen.dart
       <feature>_view_model.dart   ChangeNotifier holding screen state/logic
@@ -66,7 +70,7 @@ guards (e.g. the Parent Zone gate) that become awkward without it.
 ## Planned feature boundaries
 
 Each becomes a folder under `lib/ui/` (and `lib/domain/` / `lib/data/` only if
-it needs its own logic or data). Home and Mystery Missions exist. The other
+it needs its own logic or data). Home, Mystery Missions and Living Stories exist. The other
 destinations are routes in `routes.dart` that show `PlaceholderScreen` until
 built; Home's cards come from the `HomeDestination` enum.
 
@@ -75,7 +79,7 @@ built; Home's cards come from the `HomeDestination` enum.
 | Home and exploration | `ui/home/` | progress repository |
 | Mystery missions and learning games ✅ | `ui/missions/`, `domain/missions/` | mission repository, progress repository, BuddyVoice |
 | Buddy voice narration and speech input | `domain/voice/`, `data/services/voice/` | (shared service; no own screen) |
-| Living Stories | `ui/stories/` | Narrator, progress repository |
+| Living Stories ✅ | `ui/stories/`, `domain/stories/` | story repository, progress repository, BuddyVoice |
 | Creative Island | `ui/creative/` | local storage only |
 | Saved progress | `domain/models/`, `data/repositories/` | KeyValueStore |
 | Parent Zone | `ui/parent_zone/` | progress repository; behind a parent gate |
@@ -273,6 +277,57 @@ option for multi-select; at least three unique pieces for order stages; and
 texts of at most 70 words. Tests also check the puzzles' logic by computing
 the answers (for example decoding the shift code).
 
+## Living Stories (Phase 5)
+
+```
+StoriesScreen ─► StoriesViewModel ─► StoryRepository (BundledStoryRepository)
+      │                    └───────► ProgressRepository (endings, bookmarks)
+      └─ push ─► StoryPlayScreen ─► StoryPlayViewModel ─► StoryGraph
+                                           ├─► BuddyVoice (narration)
+                                           └─► ProgressRepository (save every page)
+```
+
+| Piece | File | Job |
+| --- | --- | --- |
+| Models | `domain/stories/story.dart` | `Story`, `StoryScene` (a decision point with `choices`, or an ending with a `StoryEnding`), `StoryChoice` (text, target scene, consequence line), `ScenePicture`. |
+| Rules | `domain/stories/story_rules.dart` | `StoryValidator` (playability checks) and `StoryGraph` (reachability, loop detection, path counting, checking saved paths). Both are safe on broken, looping content. |
+| Content | `domain/stories/story_content.dart` | The three starter stories as data: The Forest That Forgot Its Colours, The Lost Signal from Planet Luma, The Tiny Inventor's Big Idea. Each has 8 or 9 scenes and 4 endings. |
+| Repository | `data/repositories/story_repository.dart` | Loads bundled stories offline; leaves out invalid or duplicate ones. |
+| Reading flow | `ui/stories/story_play_view_model.dart` | Intro → scenes → ending; choose; restart; resume; save; narration. |
+| Pictures | `ui/stories/widgets/story_picture.dart` | 12 scenes drawn with `CustomPainter` in the sticker style, four per story, with the characters Fennel (hedgehog), Dot (rover) and Pim (mouse). Each has a spoken description. |
+
+**Branching.** A story is a graph of scenes: choices point at scene ids.
+The child's path is the list of scenes from the start. A choice is ignored
+if it is not on the current scene or would revisit a scene, so there are no
+loops even with bad data. Every ending is a good outcome that differs
+naturally from the others; each choice shows a short consequence line on the
+next page ("You followed the stream..."), never a judgement.
+
+**Validation.** `StoryValidator` requires: valid unique ids for the story,
+scenes, choices and endings; an existing start scene; at least two endings;
+every non-ending scene has a choice, every ending none; choices point at
+existing, different scenes and never at their own scene; no cycles; every
+scene reachable; every path ends at an ending; every ending reachable; scene
+text of at most 110 words.
+
+**Narration.** Buddy reads the intro when a story opens (or the saved page
+when continuing), then each page as it opens: consequence, scene text, and
+at an ending the ending's name and discovery. "Read the choices" reads them
+numbered as on screen; a speaker button rereads the page; "Hear again" and
+"Stop talking" work as in missions. A new page interrupts the last one
+through the shared `BuddyVoice`; leaving the story stops speech
+(`StoryPlayViewModel.dispose` and `VoiceNavigatorObserver`). With the voice
+off or no speech engine, every word is still on screen. The microphone is
+never used.
+
+**Saving.** After every page the path is saved as a bookmark; reaching an
+ending records it (`storyEndings`), marks the story finished
+(`completedStoryIds`) and clears the bookmark. Saves run one after another so
+a quick tap cannot let an older save overwrite a newer one. A failed save is
+shown in a small note and the story carries on. On the shelf, a bookmark is
+offered as "Continue the story" only if it is still a real route through the
+current story; otherwise it is ignored.
+
 ## Saved progress
 
 `LearnerProgress` (domain model) is stored as versioned JSON by
@@ -287,6 +342,10 @@ the answers (for example decoding the shift code).
   temporary failure cannot lead to valid data being overwritten.
 - **Schema 2** adds `missionBestPoints` (best score per mission, 0 to
   100,000). Version 1 data is still read, with no scores.
+- **Schema 3** adds `storyEndings` (ending ids found per story) and
+  `storyBookmarks` (the scene path of an unfinished story, at most 64
+  entries; a bookmark with any bad entry is dropped whole). Older data is
+  still read, with no story details.
 - **Migrations:** bump `schemaVersion` and handle older versions in
   `tryFromJson`.
 
