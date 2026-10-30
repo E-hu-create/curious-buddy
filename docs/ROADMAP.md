@@ -200,7 +200,7 @@ Built before Creative Island at the product owner's request.
 - ✅ Device test on the Samsung SM-A516U: the My Discoveries checks in
   TESTING.md passed (confirmed 30 Oct 2026).
 
-## Look and feel ✅ (awaiting device test)
+## Look and feel ✅
 
 - ✅ Bundled rounded font (Nunito), with its licence.
 - ✅ Gentle page changes, sliding story pages and quiz questions, stickers
@@ -211,7 +211,8 @@ Built before Creative Island at the product owner's request.
 - ✅ Splash: Buddy and the app name on the app's own colour, the same in dark
   mode, with no flash into the app.
 - ✅ All of it follows Calmer animations and the phone's Remove animations.
-- ⏳ Device test on the Samsung SM-A516U.
+- ✅ Device test on the Samsung SM-A516U: motion, font and splash confirmed
+  as good by the product owner (30 Oct 2026).
 - Later: sound effects (needs an audio package, sounds with clear rights and
   a Parent Zone setting).
 
