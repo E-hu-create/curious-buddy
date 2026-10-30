@@ -1,19 +1,21 @@
 # Curious Buddy
 
-A Flutter learning app for children aged 8–14. **Current state: Phase 6
-(Parent Zone).** Home is built around Buddy: children type a question or
+A Flutter learning app for children aged 8–14. **Current state: Phase 7
+(Creative Island).** Home is built around Buddy: children type a question or
 tap an idea, Buddy answers from reviewed offline content and reads the answer
 aloud with the phone's built-in text-to-speech engine. **Mystery Missions**
 has three playable, offline detective cases with clues, hints, narration,
 points and badges. **Living Stories** has three narrated branching stories
 where the child's choices lead to different endings, and the place in a
 story is remembered. **Quiz Time** has 60 questions in four topics and
-three levels, with stars and explanations. Creative Island and My
-Discoveries are still "coming soon" placeholders. Children can also tap **Talk to Buddy** to ask
+three levels, with stars and explanations. **Creative Island** has a
+Drawing Studio and a Creature Maker, with creations saved on the phone only.
+My Discoveries is still a "coming soon" placeholder. Children can also tap **Talk to Buddy** to ask
 out loud: on-device recognition only unless a grown-up allows online in the
 Parent Zone, and the words are shown for checking before sending. The **Parent
 Zone** (behind a grown-up check) has voice, listening and display settings,
-an overview of everything saved on the phone, and a two-step progress reset.
+an overview of everything saved on the phone, and a two-step reset of
+progress and creations.
 There is
 no AI service, backend or analytics.
 

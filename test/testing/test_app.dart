@@ -1,5 +1,6 @@
 import 'package:curious_buddy/app/app.dart';
 import 'package:curious_buddy/app/app_dependencies.dart';
+import 'package:curious_buddy/data/repositories/creations_repository.dart';
 import 'package:curious_buddy/data/repositories/mission_repository.dart';
 import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/repositories/quiz_repository.dart';
@@ -23,6 +24,7 @@ Widget buildTestApp({
   MissionRepository? missions,
   StoryRepository? stories,
   QuizRepository? quizzes,
+  CreationsRepository? creations,
 }) {
   final keyValueStore = store ?? InMemoryKeyValueStore();
   return CuriousBuddyApp(
@@ -35,6 +37,7 @@ Widget buildTestApp({
       missionRepository: missions ?? BundledMissionRepository(),
       storyRepository: stories ?? BundledStoryRepository(),
       quizRepository: quizzes ?? BundledQuizRepository(),
+      creationsRepository: creations ?? LocalCreationsRepository(keyValueStore),
     ),
   );
 }

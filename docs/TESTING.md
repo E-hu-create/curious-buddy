@@ -80,6 +80,11 @@ and ask first.
 | `test/ui/quiz/quiz_play_view_model_test.dart` | Question narration; shuffling keeps every answer and never the written order; right and wrong feedback; one pick only; next; stars for every score; save and best kept; next level opens and is announced once; last level; play again; failed save; read question/answers; automatic reading off; voice off; dispose stops speech |
 | `test/ui/quiz/quiz_screen_test.dart` | Home card; four topics with locks; loading, empty, error; right/wrong answers; no second try; perfect round, summary, Next level; stars and open levels back on Quiz Time; not passing; Play again; app restart; explorer log; Parent Zone shows and deletes quiz results; leaving and Stop silence Buddy; Read the answers; no speech engine; no microphone |
 | `test/ui/quiz/quiz_accessibility_test.dart` | Guidelines on Quiz Time, a question, its result and the summary; lettered answer labels; every question of every level without overflow on small phones and 2x text |
+| `test/domain/creative/creation_shelf_test.dart` | Saving and reading drawings and creatures; unusable data; bad entries, unlisted names, out-of-range points and over-cap drawings dropped; shelf limit; ids never reused; creature names (unique, short, word list); a fact for every creature |
+| `test/data/repositories/creations_repository_test.dart` | Add, ids, remove, full shelf, backup of unreadable data, clear leaves other data, storage errors |
+| `test/ui/creative/creative_view_models_test.dart` | Strokes, tiny moves dropped, canvas bounds, dots, colours and sizes, eraser, undo, clear, point cap, save and lock, Draw another, full shelf, failed save; creature parts, facts, Surprise me, New name, save, Make another; narration, automatic reading off, voice off, dispose stops speech; shelf order, remove, storage error |
+| `test/ui/creative/creative_screen_test.dart` | Real Creative Island from Home; storage error; vertical strokes draw instead of scrolling; Save enabled only with a drawing; tools; Undo and Start over; saved flow; leaving stops speech; building and saving a creature; no text boxes anywhere; New name, Surprise me; view and remove with confirmation; full shelf; app restart; explorer log; Buddy's button; Parent Zone shows and deletes creations; no speech engine; no microphone |
+| `test/ui/creative/creative_accessibility_test.dart` | Guidelines on the page, both activities and the viewer; canvas and creation labels; every creature described and painted; no overflow on small phones and 2x text |
 | `test/ui/stories/stories_accessibility_test.dart` | Tap target, label and contrast guidelines on the shelf, intro, a choice page and an ending; numbered choice labels; picture descriptions; every page of every story without overflow on small phones and 2x text |
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
 | `test/domain/conversation/child_safety_filter_test.dart` | Personal info, self-harm, bullying, medical and off-limits detection; ordinary questions (incl. big numbers, look-alike words) pass |
@@ -106,8 +111,8 @@ user-visible change:
       "Curious Buddy".
 - [ ] Home: Buddy waves once; tapping Buddy makes him excited (arms up,
       eyes squeezed) and then he settles.
-- [ ] Creative Island and My Discoveries open their "coming soon" page; the
-      back arrow and "Back to Home" both return to Home.
+- [ ] My Discoveries opens its "coming soon" page; the back arrow and "Back
+      to Home" both return to Home.
 - [ ] "Grown-ups" opens the Parent Zone.
 - [ ] **Voice** (media volume up, phone not on silent-media):
   - [ ] Buddy says the welcome once on a fresh start (force-stop first).
@@ -227,6 +232,28 @@ user-visible change:
   - [ ] Go back to Home: the explorer log shows the mission and points.
   - [ ] Force-stop and reopen: solved missions and points are still there.
   - [ ] Voice off: missions still fully playable with text only.
+- [ ] **Creative Island (Phase 7):**
+  - [ ] Home → Creative Island: Drawing Studio, Creature Maker, an empty
+        shelf, "0 of 12".
+  - [ ] Drawing Studio: Buddy gives instructions. Draw straight up and down
+        on the canvas: it draws and the page does not scroll. Scroll by
+        swiping below the canvas.
+  - [ ] Try colours, Thin/Medium/Thick, Eraser, Undo. Start over asks first.
+  - [ ] Save stays off until something is drawn. Save: "Saved to My
+        Creations!", Draw another, Back to Creative Island.
+  - [ ] Creature Maker: every choice changes the picture; extras, patterns
+        and eyes get a fact from Buddy; Surprise me; New name; Save.
+  - [ ] Shelf shows both, newest first. Tap one: big view and a description;
+        Remove asks first; Keep it keeps it; Yes removes it.
+  - [ ] Save 12 creations: the shelf says it is full and the Start buttons
+        turn off; removing one turns them back on.
+  - [ ] Home explorer log: "n creations".
+  - [ ] Force-stop and reopen: creations are all there and look the same.
+  - [ ] Parent Zone: "Creative Island creations" shows the counts; Delete all
+        progress lists and deletes them; still gone after a restart.
+  - [ ] Press back while Buddy talks: he stops. Voice off and automatic
+        reading off: everything still works.
+  - [ ] No permission prompts appear, and nothing can be typed.
 - [ ] **Quiz Time:**
   - [ ] Home → Quiz Time card: four topics, "0 of 36 stars", Starter open,
         Explorer and Expert locked ("Get 3 right in ... to open").

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../app/routes.dart';
+import '../../data/repositories/creations_repository.dart';
 import '../../data/repositories/progress_repository.dart';
 import '../../domain/voice/buddy_listener.dart';
 import '../../domain/voice/buddy_voice.dart';
@@ -24,12 +25,14 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
     required this.progressRepository,
+    this.creationsRepository,
     required this.responseProvider,
     required this.voice,
     required this.listener,
   });
 
   final ProgressRepository progressRepository;
+  final CreationsRepository? creationsRepository;
   final EducationalResponseProvider responseProvider;
   final BuddyVoice voice;
   final BuddyListener listener;
@@ -50,6 +53,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late final HomeViewModel _home = HomeViewModel(
     progressRepository: widget.progressRepository,
+    creationsRepository: widget.creationsRepository,
     voice: widget.voice,
   );
   late final BuddyChatViewModel _chat = BuddyChatViewModel(
@@ -201,6 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           storiesFinished: progress.completedStoryIds.length,
                           points: progress.totalMissionPoints,
                           quizLevels: progress.quizBest.length,
+                          creations: _home.creations,
                         ),
                       ],
                       const SizedBox(height: 28),

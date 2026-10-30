@@ -272,8 +272,8 @@ const curatedTopics = <CuratedTopic>[
       ['creative'],
     ],
     answers: [
-      'Creative Island is where you will build and invent. '
-          "It's still being made, but you can visit.",
+      'Creative Island is open! You can draw a picture or build your own '
+          'creature, and save them on your shelf.',
     ],
     action: BuddyAction.openCreative,
     actionLabel: 'Visit Creative Island',

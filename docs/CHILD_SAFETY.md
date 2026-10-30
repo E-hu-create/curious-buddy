@@ -29,22 +29,25 @@ Zone shows the same list to parents, with live values read from storage.
 | `voice.autoRead` | Read aloud automatically, or only when asked | Grown-up choice | Same as above |
 | `voice.allowOnlineRecognition` | Allow online voice recognition, off by default | Grown-up choice about where speech is recognised | Same as above |
 | `display.reduceMotion` | Calmer animations | Accessibility | Same as above |
-| *Future:* Creative Island creations | Child's own work | | Must be added to the reset |
+| `creations` | Creative Island drawings (brush strokes as numbers) and creatures (chosen parts and a name from a fixed list). No typed text, no photos | The child's own work, shown on their shelf | Deleted (the child can also remove one at a time) |
+| `creations.corrupt_backup` | A copy of the shelf that could not be read (only exists if that ever happened) | Not silently losing a child's work | Deleted |
 
 **Only in memory, never saved:** questions asked on Home and Buddy's
 answers; words heard while talking (shown in the text box to check); a
 mission in progress; the parent check and its pause after wrong answers;
 whether the welcome was spoken this session; the last line Buddy said.
 
-**Reset** (`ParentZoneViewModel.reset`) deletes `progress` and
-`progress.corrupt_backup` through `ProgressRepository.clear`, then reads
-storage back and only reports success if nothing is left. Optionally it
+**Reset** (`ParentZoneViewModel.reset`) deletes `progress`,
+`progress.corrupt_backup`, `creations` and `creations.corrupt_backup`
+through `ProgressRepository.clear` and `CreationsRepository.clear`, then
+reads storage back and only reports success if nothing is left. Optionally it
 writes every setting back to its default. Any new stored data must be added
 to this table, the Parent Zone overview and the reset.
 
 Saved **on this phone only**, in the app's private storage
 (`shared_preferences`). Android cloud backup is turned off for the app
-(`allowBackup="false"`), so it is not copied to Google Drive or a new phone;
+(`allowBackup="false"`), so it is not copied to Google Drive (phone-to-phone
+transfer is still open; see "Still to resolve before external testers");
 uninstalling the app deletes it. Conversations are never saved. The app
 does not add its own encryption; it relies on Android keeping app-private
 storage away from other apps.
@@ -151,6 +154,15 @@ privacy and legal review is needed before release.
   cannot prove age or identity, and an older child who can multiply may
   pass. Destructive actions add a second step: typing DELETE.
 
+## Creative Island
+
+- Nothing can be typed: creature names come from a reviewed list, tested
+  against a word list. A creation cannot hold personal information.
+- No camera, photos, file access, export or sharing, so no new permissions.
+  Creations stay in the app.
+- Drawings are the child's own and are not reviewed or filtered. They stay
+  on the phone, and a grown-up can delete them from the Parent Zone.
+
 ## Still to resolve before external testers
 
 - Privacy and legal review (for example COPPA, GDPR-K / UK Age Appropriate
@@ -159,6 +171,9 @@ privacy and legal review is needed before release.
 - A privacy policy and parent-facing notice.
 - The permanent application ID.
 - Whether a stronger parent check is needed for stores' kids categories.
+- Phone-to-phone transfer: `allowBackup="false"` may not stop it on Android
+  12+, so saved data, now including children's creations, could move to a
+  new phone. Add data-extraction rules and confirm on a device.
 
 ## No accounts, backend or AI yet
 
@@ -177,8 +192,7 @@ service. Adding any of them requires:
 
 - **Parent gate** before the Parent Zone, external links, purchases or
   settings (e.g. an adult-level question, not a simple tap).
-- **Parental controls:** turn voice input on/off, reset progress, delete
-  creations, view what is stored.
+- **Parental controls:** turn voice input on/off.
 - **Content safety:** all narration and responses come from reviewed scripts.
   Any future generated response (`EducationalResponseProvider`) must be
   filtered, age-appropriate, on-topic, and fall back to a safe reply.

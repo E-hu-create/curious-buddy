@@ -33,6 +33,11 @@ lib/
       quiz_hub_screen.dart, quiz_hub_view_model.dart        Topics and levels
       quiz_play_screen.dart, quiz_play_view_model.dart      Playing a round
       widgets/              Topic badges, stars, answer tiles, result panel
+    creative/               Creative Island (Phase 7)
+      creative_hub_screen.dart   Activities, My Creations shelf, viewer
+      drawing_screen.dart, creature_screen.dart             The two activities
+      creative_view_models.dart  Shelf, drawing and creature logic
+      widgets/              Painters, palette, descriptions, shared controls
     <feature>/              One folder per feature (see below)
       <feature>_screen.dart
       <feature>_view_model.dart   ChangeNotifier holding screen state/logic
@@ -74,7 +79,8 @@ guards (e.g. the Parent Zone gate) that become awkward without it.
 ## Planned feature boundaries
 
 Each becomes a folder under `lib/ui/` (and `lib/domain/` / `lib/data/` only if
-it needs its own logic or data). Home, Mystery Missions, Living Stories and Quiz Time exist. The other
+it needs its own logic or data). Home, Mystery Missions, Living Stories, Quiz Time and Creative Island exist.
+The other
 destinations are routes in `routes.dart` that show `PlaceholderScreen` until
 built; Home's cards come from the `HomeDestination` enum.
 
@@ -85,7 +91,7 @@ built; Home's cards come from the `HomeDestination` enum.
 | Buddy voice narration and speech input | `domain/voice/`, `data/services/voice/` | (shared service; no own screen) |
 | Living Stories ✅ | `ui/stories/`, `domain/stories/` | story repository, progress repository, BuddyVoice |
 | Quiz Time ✅ | `ui/quiz/`, `domain/quiz/` | quiz repository, progress repository, BuddyVoice |
-| Creative Island | `ui/creative/` | local storage only |
+| Creative Island ✅ | `ui/creative/`, `domain/creative/` | creations repository (local only), BuddyVoice |
 | Saved progress | `domain/models/`, `data/repositories/` | KeyValueStore |
 | Parent Zone ✅ | `ui/parent_zone/`, `domain/parent/`, `domain/settings/` | progress repository, BuddyVoice, BuddyListener, DisplaySettings; behind `ParentGate` |
 
@@ -213,8 +219,8 @@ AskBuddyPanel (text box, ideas) ─► BuddyChatViewModel ─► EducationalResp
 | `routeForAction` | `ui/home/buddy_action_routes.dart` | Exhaustive map from `BuddyAction` to an in-app route. Actions only run when the child taps the button. |
 
 **Actions.** `openMissions`, `openStories`, `openCreative`,
-`openDiscoveries` open existing feature pages (Creative Island and My
-Discoveries are still placeholders); `startQuiz` opens Quiz Time. No action
+`openDiscoveries` open existing feature pages (My Discoveries is still a
+placeholder); `startQuiz` opens Quiz Time. No action
 can open the web, files or device features.
 
 **Talk button (Stage B).** `HomeScreen._startTalking` →
@@ -366,6 +372,40 @@ varied positions and that key facts match Buddy's curated answers.
 **Narration.** Buddy reads each question with lettered answers, then the
 result and explanation, then the summary. "Read the question", "Read the
 answers", Hear again and Stop talking; automatic reading follows the Parent
+Zone setting. Speech stops on leaving; the microphone is never used.
+
+## Creative Island (Phase 7)
+
+```
+CreativeHubScreen ─► CreativeHubViewModel ─► CreationsRepository
+      ├─ push ─► DrawingScreen ─► DrawingViewModel ─┐
+      ├─ push ─► CreatureScreen ─► CreatureViewModel ┴─► CreationsRepository, BuddyVoice
+      └─ push ─► CreationViewScreen (view, remove)
+```
+
+| Piece | File | Job |
+| --- | --- | --- |
+| Models | `domain/creative/creation.dart` | `Drawing` (strokes of points in 0–1000 canvas units), `Creature` (chosen parts and a listed name), `CreativeLimits`, the reviewed `creatureNames`, and Buddy's `creatureFact`s. |
+| Saved shape | `domain/creative/creation_shelf.dart` | Versioned JSON with tolerant parsing: invalid or oversized entries are dropped, unlisted names are refused, ids are never reused. |
+| Repository | `data/repositories/creations_repository.dart` | Load, add (refuses when full), remove, clear; unreadable data is copied to a backup key. |
+| Activities | `ui/creative/creative_view_models.dart` | Tools, undo, point cap, parts, Surprise me, New name, saving, narration. |
+| Art | `ui/creative/widgets/creative_art.dart` | `DrawingPainter`, `CreaturePainter`, the palette, and descriptions in words for screen readers. |
+
+**No free text.** Creatures take their names from a fixed list and nothing
+can be typed anywhere on Creative Island, so a creation cannot hold personal
+information. There is no camera, photo access, export or sharing.
+
+**Size limits.** 12 creations, 4,000 points and 300 strokes per drawing, and
+points closer than 6 canvas units are dropped. Creations have their own key
+(`creations`), separate from `progress`, because they are larger.
+
+**Drawing.** The canvas claims the finger on touch (`_ImmediatePanRecognizer`)
+so strokes draw instead of scrolling the page. The eraser paints with the
+paper colour.
+
+**Narration.** Buddy gives instructions when an activity opens, shares a real
+fact when a creature's extra, pattern or eyes change, and confirms saving.
+Hear again / Stop talking as elsewhere; automatic reading follows the Parent
 Zone setting. Speech stops on leaving; the microphone is never used.
 
 ## Saved progress

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../data/repositories/creations_repository.dart';
 import '../../data/repositories/progress_repository.dart';
 import '../../domain/parent/parent_gate.dart';
 import '../../domain/settings/display_settings.dart';
@@ -28,6 +29,7 @@ class ParentZoneScreen extends StatefulWidget {
     required this.listener,
     required this.display,
     required this.progressRepository,
+    required this.creationsRepository,
   });
 
   final ParentGate gate;
@@ -35,14 +37,15 @@ class ParentZoneScreen extends StatefulWidget {
   final BuddyListener listener;
   final DisplaySettings display;
   final ProgressRepository progressRepository;
+  final CreationsRepository creationsRepository;
 
   static const title = 'Parent Zone';
   static const backToBuddy = 'Back to Buddy';
   static const resetTitle = 'Delete progress';
   static const resetHelp =
-      "Deletes your child's mission results, story endings, quiz results "
-      'and places in unfinished stories from this phone. Everything stays '
-      'playable. You will see exactly what is deleted and confirm twice.';
+      "Deletes your child's mission results, story endings, quiz results, "
+      'places in unfinished stories and Creative Island creations from this '
+      'phone. Everything stays playable. You will see exactly what is deleted and confirm twice.';
   static const resetLabel = 'Delete all progress...';
   static const resetting = 'Deleting...';
   static const resetDone =
@@ -63,6 +66,7 @@ class ParentZoneScreen extends StatefulWidget {
 class _ParentZoneScreenState extends State<ParentZoneScreen> {
   late final ParentZoneViewModel _vm = ParentZoneViewModel(
     progressRepository: widget.progressRepository,
+    creationsRepository: widget.creationsRepository,
     voice: widget.voice,
     listener: widget.listener,
     display: widget.display,

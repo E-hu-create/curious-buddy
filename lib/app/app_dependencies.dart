@@ -1,3 +1,4 @@
+import '../data/repositories/creations_repository.dart';
 import '../data/repositories/mission_repository.dart';
 import '../data/repositories/progress_repository.dart';
 import '../data/repositories/quiz_repository.dart';
@@ -25,6 +26,7 @@ class AppDependencies {
     required this.missionRepository,
     required this.storyRepository,
     required this.quizRepository,
+    required this.creationsRepository,
   });
 
   /// Speech output uses the device's built-in engine. Speech input is
@@ -42,6 +44,7 @@ class AppDependencies {
       missionRepository: BundledMissionRepository(),
       storyRepository: BundledStoryRepository(),
       quizRepository: BundledQuizRepository(),
+      creationsRepository: LocalCreationsRepository(store),
     );
   }
 
@@ -64,4 +67,7 @@ class AppDependencies {
 
   /// Quiz Time questions: the reviewed quizzes bundled in the app.
   final QuizRepository quizRepository;
+
+  /// Creative Island creations, saved on the device only.
+  final CreationsRepository creationsRepository;
 }

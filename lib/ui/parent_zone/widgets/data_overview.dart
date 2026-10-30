@@ -37,6 +37,11 @@ class DataOverviewSection extends StatelessWidget {
   static const quizTitle = 'Quiz Time results';
   static const quizWhy =
       'Shows stars and best scores, and which quiz levels are open.';
+  static const creationsTitle = 'Creative Island creations';
+  static const creationsWhy =
+      'Your child\'s drawings and creatures, shown on their shelf. Creatures '
+      'only have names from a fixed list; nothing is typed in.';
+  static const creationsBackupTitle = 'Backup of unreadable creations';
   static const placesTitle = 'Place in unfinished stories';
   static const placesWhy =
       'Lets your child continue a story from the page they stopped on.';
@@ -91,6 +96,8 @@ class DataOverviewSection extends StatelessWidget {
   static String quizValue(ActivitySummary s) =>
       '${_count(s.quizLevelsDone, 'level')} played, '
       '${_count(s.quizBestCorrect, 'right answer')} at best';
+  static String creationsValue(ActivitySummary s) =>
+      '${_count(s.drawings, 'drawing')}, ${_count(s.creatures, 'creature')}';
   static String placesValue(ActivitySummary s) =>
       '${_count(s.storiesInProgress, 'story', 'stories')} in progress';
   static String backupValue(ActivitySummary s) =>
@@ -158,11 +165,24 @@ class DataOverviewSection extends StatelessWidget {
               reset: deleted,
             ),
             _Record(
+              title: creationsTitle,
+              value: creationsValue(summary),
+              why: creationsWhy,
+              reset: deleted,
+            ),
+            _Record(
               title: backupTitle,
               value: backupValue(summary),
               why: backupWhy,
               reset: deleted,
             ),
+            if (summary.hasCreationsBackup)
+              const _Record(
+                title: creationsBackupTitle,
+                value: 'One copy kept',
+                why: backupWhy,
+                reset: deleted,
+              ),
           ],
           _Record(
             title: settingsTitle,

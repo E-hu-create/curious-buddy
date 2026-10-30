@@ -11,6 +11,7 @@ class ExplorerLog extends StatelessWidget {
     required this.storiesFinished,
     this.points = 0,
     this.quizLevels = 0,
+    this.creations = 0,
   });
 
   final int missionsSolved;
@@ -21,6 +22,9 @@ class ExplorerLog extends StatelessWidget {
 
   /// Quiz levels finished at least once. Shown once there are any.
   final int quizLevels;
+
+  /// Saved Creative Island creations. Shown once there are any.
+  final int creations;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +47,12 @@ class ExplorerLog extends StatelessWidget {
             icon: Icons.quiz_rounded,
             color: AppColors.brandBlue,
             label: _count(quizLevels, 'quiz level done', 'quiz levels done'),
+          ),
+        if (creations > 0)
+          _Stat(
+            icon: Icons.palette_rounded,
+            color: AppColors.leaf,
+            label: _count(creations, 'creation', 'creations'),
           ),
         if (points > 0)
           _Stat(

@@ -1,3 +1,4 @@
+import 'package:curious_buddy/data/repositories/creations_repository.dart';
 import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/data/services/voice/text_to_speech_service.dart';
@@ -34,6 +35,7 @@ void main() {
   ParentZoneViewModel build([KeyValueStore? progressStore]) =>
       ParentZoneViewModel(
         progressRepository: LocalProgressRepository(progressStore ?? store),
+        creationsRepository: LocalCreationsRepository(progressStore ?? store),
         voice: voice,
         listener: listener,
         display: display,
@@ -88,6 +90,7 @@ void main() {
   test('a storage error shows an error, not empty progress', () async {
     final vm = ParentZoneViewModel(
       progressRepository: LocalProgressRepository(FailingKeyValueStore()),
+      creationsRepository: LocalCreationsRepository(FailingKeyValueStore()),
       voice: voice,
       listener: listener,
       display: display,

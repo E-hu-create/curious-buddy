@@ -17,7 +17,8 @@ class ResetExplainDialog extends StatefulWidget {
   static const deletesHeading = 'This deletes from this phone:';
   static const keepsHeading = 'This keeps:';
   static const keeps = [
-    'All missions, stories and quizzes, ready to play again from the start.',
+    'All missions, stories, quizzes and activities, ready to play again '
+        'from the start.',
     'Your settings, unless you tick the box below.',
   ];
   static const settingsToo = 'Also restore default settings';
@@ -42,7 +43,11 @@ class ResetExplainDialog extends StatefulWidget {
         ? 'The place in any unfinished story.'
         : 'Place in unfinished stories: '
               '${DataOverviewSection.placesValue(s)}.',
-    'Any backup of unreadable progress.',
+    s == null
+        ? 'Creative Island drawings and creatures.'
+        : 'Creative Island creations: '
+              '${DataOverviewSection.creationsValue(s)}.',
+    'Any backup of unreadable progress or creations.',
   ];
 
   @override

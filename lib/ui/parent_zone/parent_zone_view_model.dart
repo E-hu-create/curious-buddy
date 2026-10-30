@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../data/repositories/creations_repository.dart';
 import '../../data/repositories/progress_repository.dart';
 import '../../data/services/voice/text_to_speech_service.dart';
 import '../../domain/models/learner_progress.dart';
@@ -13,12 +14,25 @@ enum ResetStatus { idle, resetting, done, failed }
 
 /// What is saved about the child's activity right now, read from storage.
 class ActivitySummary {
-  const ActivitySummary({required this.progress, required this.hasBackup});
+  const ActivitySummary({
+    required this.progress,
+    required this.hasBackup,
+    this.drawings = 0,
+    this.creatures = 0,
+    this.hasCreationsBackup = false,
+  });
 
   final LearnerProgress progress;
 
   /// A copy of saved progress that could not be read, kept for recovery.
   final bool hasBackup;
+
+  /// Creative Island creations on the shelf.
+  final int drawings;
+  final int creatures;
+
+  /// A copy of a creations shelf that could not be read.
+  final bool hasCreationsBackup;
 
   int get missionsSolved => progress.completedMissionIds.length;
   int get missionPoints => progress.totalMissionPoints;
@@ -30,19 +44,27 @@ class ActivitySummary {
   int get quizBestCorrect =>
       progress.quizBest.values.fold(0, (sum, n) => sum + n);
 
-  bool get isEmpty => progress == LearnerProgress.empty && !hasBackup;
+  bool get isEmpty =>
+      progress == LearnerProgress.empty &&
+      !hasBackup &&
+      drawings == 0 &&
+      creatures == 0 &&
+      !hasCreationsBackup;
 }
 
 /// The unlocked Parent Zone: settings, the saved-data overview and reset.
 class ParentZoneViewModel extends ChangeNotifier {
   ParentZoneViewModel({
     required ProgressRepository progressRepository,
+    required CreationsRepository creationsRepository,
     required this.voice,
     required this.listener,
     required this.display,
-  }) : _progress = progressRepository;
+  }) : _progress = progressRepository,
+       _creations = creationsRepository;
 
   final ProgressRepository _progress;
+  final CreationsRepository _creations;
   final BuddyVoice voice;
   final BuddyListener listener;
   final DisplaySettings display;
@@ -63,15 +85,23 @@ class ParentZoneViewModel extends ChangeNotifier {
 
   Future<void> load() async {
     try {
-      _summary = ActivitySummary(
-        progress: await _progress.load(),
-        hasBackup: await _progress.hasCorruptBackup(),
-      );
+      _summary = await _read();
       _status = SummaryStatus.ready;
     } on Exception {
       _status = SummaryStatus.error;
     }
     _notify();
+  }
+
+  Future<ActivitySummary> _read() async {
+    final shelf = await _creations.load();
+    return ActivitySummary(
+      progress: await _progress.load(),
+      hasBackup: await _progress.hasCorruptBackup(),
+      drawings: shelf.drawings,
+      creatures: shelf.creatures,
+      hasCreationsBackup: await _creations.hasCorruptBackup(),
+    );
   }
 
   /// Deletes all saved activity, then reads storage back to make sure
@@ -84,11 +114,9 @@ class ParentZoneViewModel extends ChangeNotifier {
     _notify();
     try {
       await _progress.clear();
+      await _creations.clear();
       if (settingsToo) await restoreDefaultSettings();
-      final left = ActivitySummary(
-        progress: await _progress.load(),
-        hasBackup: await _progress.hasCorruptBackup(),
-      );
+      final left = await _read();
       _summary = left;
       _status = SummaryStatus.ready;
       _resetStatus = left.isEmpty ? ResetStatus.done : ResetStatus.failed;

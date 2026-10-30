@@ -9,6 +9,7 @@ import '../domain/voice/buddy_voice.dart';
 import '../ui/core/themes/app_theme.dart';
 import '../ui/core/widgets/buddy/buddy.dart';
 import '../ui/core/widgets/placeholder_screen.dart';
+import '../ui/creative/creative_hub_screen.dart';
 import '../ui/home/home_destination.dart';
 import '../ui/home/home_screen.dart';
 import '../ui/missions/missions_screen.dart';
@@ -112,6 +113,7 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
       routes: {
         Routes.home: (_) => HomeScreen(
           progressRepository: dependencies.progressRepository,
+          creationsRepository: dependencies.creationsRepository,
           responseProvider: dependencies.responseProvider,
           voice: _voice,
           listener: _listener,
@@ -130,11 +132,16 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
         for (final destination in HomeDestination.values)
           if (destination.route != Routes.missions &&
               destination.route != Routes.stories &&
-              destination.route != Routes.quiz)
+              destination.route != Routes.quiz &&
+              destination.route != Routes.creative)
             destination.route: (_) => PlaceholderScreen(
               title: destination.title,
               message: destination.comingSoonMessage,
             ),
+        Routes.creative: (_) => CreativeHubScreen(
+          creationsRepository: dependencies.creationsRepository,
+          voice: _voice,
+        ),
         // Reached from Home and from Buddy's "Let's play a quiz" answer.
         Routes.quiz: (_) => QuizHubScreen(
           quizRepository: dependencies.quizRepository,
@@ -148,6 +155,7 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
           listener: _listener,
           display: _display,
           progressRepository: dependencies.progressRepository,
+          creationsRepository: dependencies.creationsRepository,
         ),
       },
       onUnknownRoute: (settings) => MaterialPageRoute<void>(
