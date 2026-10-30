@@ -8,6 +8,7 @@ import '../../data/repositories/progress_repository.dart';
 import '../../domain/voice/buddy_listener.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../../domain/voice/educational_response_provider.dart';
+import '../core/widgets/app_logo.dart';
 import '../core/widgets/buddy/buddy.dart';
 import 'buddy_action_routes.dart';
 import 'buddy_chat_view_model.dart';
@@ -246,13 +247,7 @@ class _Header extends StatelessWidget {
       spacing: 12,
       runSpacing: 12,
       children: [
-        Semantics(
-          header: true,
-          child: Text(
-            'Curious Buddy',
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-        ),
+        const AppLogo(),
         OutlinedButton.icon(
           onPressed: onGrownUps,
           icon: const Icon(Icons.lock_rounded, size: 20),

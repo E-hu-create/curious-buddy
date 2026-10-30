@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Matches AppColors.sunTint. -->
-    <color name="ic_launcher_background">#FFFFEDB8</color>
+    <!-- Matches AppColors.arcade, the Game Zone night sky. -->
+    <color name="ic_launcher_background">#FF2B2A6B</color>
     <!-- Matches AppColors.paper, so the splash melts into the app. -->
     <color name="splash_background">#FFFFF8EE</color>
 </resources>

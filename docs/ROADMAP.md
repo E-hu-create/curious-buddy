@@ -292,6 +292,14 @@ Built before Creative Island at the product owner's request.
 - ⏳ Grown-up review of the facts.
 - ⏳ Device test on the Samsung SM-A516U.
 
+## Stronger logo ✅ (awaiting device test)
+
+- ✅ App icon: Buddy on a golden sun, on the Game Zone night sky.
+- ✅ Home: `AppLogo` replaces the plain name.
+- ✅ Splash: the sun behind Buddy, and a two-colour name.
+- ⏳ Device test on the Samsung SM-A516U, including how the icon looks on the
+  phone's home screen.
+
 ## Game Zone: six more Arena games
 
 - ✅ Four in a Row against Buddy (awaiting device test).

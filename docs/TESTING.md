@@ -288,6 +288,10 @@ user-visible change:
   - [ ] Second game of that kind: it doesn't open by itself.
   - [ ] During a game, the ? at the top opens it. Got it returns to the game
         with nothing lost.
+- [ ] **Logo:**
+  - [ ] Phone home screen: the icon stands out, and nothing is cut off.
+  - [ ] Opening the app: the splash shows Buddy on the sun, and the name.
+  - [ ] Home: the logo sits at the top, with Grown-ups still working.
 - [ ] **Number Pop:**
   - [ ] Arena → Number Pop: How to play opens on the first game.
   - [ ] Pop the bubbles that make the target; right ones pop away.

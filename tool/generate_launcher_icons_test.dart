@@ -33,7 +33,11 @@ void main() {
       await _writePng(
         '$dir/ic_launcher_foreground.png',
         (108 * scale).round(),
-        (canvas, size) => _buddy(canvas, size, fit: size * 66 / 108),
+        (canvas, size) {
+          // The sun fills the part of the icon every phone shows.
+          _sun(canvas, size, radius: size * 36 / 108);
+          _buddy(canvas, size, fit: size * 66 / 108);
+        },
       );
     }
   });
@@ -46,8 +50,17 @@ void _legacy(Canvas canvas, double size) {
   );
   canvas
     ..clipRRect(shape)
-    ..drawRRect(shape, Paint()..color = AppColors.sunTint);
-  _buddy(canvas, size, fit: size * 0.9);
+    ..drawRRect(shape, Paint()..color = AppColors.arcade);
+  _sun(canvas, size, radius: size * 0.46);
+  _buddy(canvas, size, fit: size * 0.84);
+}
+
+void _sun(Canvas canvas, double size, {required double radius}) {
+  canvas.drawCircle(
+    Offset(size / 2, size / 2),
+    radius,
+    Paint()..color = AppColors.sun,
+  );
 }
 
 void _buddy(Canvas canvas, double size, {required double fit}) {

@@ -12,7 +12,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const _res = 'android/app/src/main/res';
-const _name = 'Curious Buddy';
 const _densities = {
   'mdpi': 1.0,
   'hdpi': 1.5,
@@ -43,6 +42,7 @@ void main() {
         w,
         h,
       ) {
+        _sun(c, Offset(w / 2, h / 2), radius: 92 * scale);
         _buddy(c, Offset(w / 2, h / 2), height: 150 * scale);
       });
 
@@ -52,7 +52,7 @@ void main() {
         w,
         h,
       ) {
-        _nameText(c, Offset(w / 2, h / 2), fontSize: 26 * scale);
+        _nameText(c, Offset(w / 2, h / 2), fontSize: 28 * scale);
       });
 
       // Android 11 and older: Buddy with the name below, centred.
@@ -61,11 +61,16 @@ void main() {
         w,
         h,
       ) {
+        _sun(c, Offset(w / 2, h * 0.42), radius: 96 * scale);
         _buddy(c, Offset(w / 2, h * 0.42), height: 160 * scale);
-        _nameText(c, Offset(w / 2, h * 0.9), fontSize: 26 * scale);
+        _nameText(c, Offset(w / 2, h * 0.92), fontSize: 28 * scale);
       });
     }
   });
+}
+
+void _sun(Canvas canvas, Offset center, {required double radius}) {
+  canvas.drawCircle(center, radius, Paint()..color = AppColors.sun);
 }
 
 void _buddy(Canvas canvas, Offset center, {required double height}) {
@@ -86,8 +91,11 @@ void _nameText(Canvas canvas, Offset center, {required double fontSize}) {
       ui.ParagraphBuilder(
           ui.ParagraphStyle(fontFamily: 'SplashFont', fontSize: fontSize),
         )
-        ..pushStyle(ui.TextStyle(color: AppColors.ink))
-        ..addText(_name);
+        ..pushStyle(ui.TextStyle(color: AppColors.arcade))
+        ..addText('Curious ')
+        ..pop()
+        ..pushStyle(ui.TextStyle(color: AppColors.buddyTealDeep))
+        ..addText('Buddy');
   final paragraph = builder.build()
     ..layout(const ui.ParagraphConstraints(width: double.infinity));
   canvas.drawParagraph(

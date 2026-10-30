@@ -24,7 +24,7 @@ void main() {
   testWidgets('app launches to the home route', (tester) async {
     await tester.pumpWidget(buildApp());
 
-    expect(find.text('Curious Buddy'), findsOneWidget);
+    expect(find.bySemanticsLabel('Curious Buddy'), findsOneWidget);
   });
 
   testWidgets('launch speaks only the welcome and never touches the mic', (
@@ -64,7 +64,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Curious Buddy'), findsOneWidget);
+      expect(find.bySemanticsLabel('Curious Buddy'), findsOneWidget);
       expect(find.text(BuddyGreeting.unavailableMessage), findsOneWidget);
       expect(find.text(BuddyGreeting.replayLabel), findsNothing);
     },
