@@ -301,14 +301,12 @@ void main() {
       expect(find.text(ArenaScreen.quickTitle), findsOneWidget);
     });
 
-    testWidgets('the other games are honestly marked coming soon', (
-      tester,
-    ) async {
+    testWidgets('the game still to come is honestly marked', (tester) async {
       await startApp(tester);
       await tapText(tester, HomeDestination.games.title);
 
-      expect(find.text(GameZoneScreen.dinoTitle), findsOneWidget);
-      expect(find.text(GameZoneScreen.comingSoon), findsNWidgets(2));
+      expect(find.text(GameZoneScreen.soundTitle), findsOneWidget);
+      expect(find.text(GameZoneScreen.comingSoon), findsOneWidget);
     });
 
     testWidgets('Buddy opens the Game Zone from his answer', (tester) async {

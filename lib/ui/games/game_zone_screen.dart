@@ -27,6 +27,9 @@ class GameZoneScreen extends StatelessWidget {
   static const arenaLabel = 'Enter the Arena';
   static const comingSoon = 'Coming soon';
   static const dinoTitle = 'Dino Discovery';
+  static const dinoText =
+      'Explore prehistoric places and name their creatures.';
+  static const dinoLabel = 'Start exploring';
   static const soundTitle = "What's That Sound?";
 
   @override
@@ -59,35 +62,71 @@ class GameZoneScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: AppShapes.sticker(AppColors.brandBlueTint),
-                    child: Column(
-                      crossAxisAlignment: .stretch,
-                      children: [
-                        Text(arenaTitle, style: textTheme.titleLarge),
-                        const SizedBox(height: 4),
-                        Text(arenaText, style: textTheme.bodyLarge),
-                        const SizedBox(height: 12),
-                        FilledButton.icon(
-                          onPressed: () => unawaited(
-                            Navigator.of(context).pushNamed(Routes.arena),
-                          ),
-                          icon: const Icon(Icons.sports_esports_rounded),
-                          label: const Text(arenaLabel),
-                        ),
-                      ],
-                    ),
+                  const _ZoneCard(
+                    color: AppColors.leafTint,
+                    title: dinoTitle,
+                    text: dinoText,
+                    icon: Icons.explore_rounded,
+                    label: dinoLabel,
+                    route: Routes.dino,
                   ),
                   const SizedBox(height: 14),
-                  const _ComingSoon(title: dinoTitle),
-                  const SizedBox(height: 10),
+                  const _ZoneCard(
+                    color: AppColors.brandBlueTint,
+                    title: arenaTitle,
+                    text: arenaText,
+                    icon: Icons.sports_esports_rounded,
+                    label: arenaLabel,
+                    route: Routes.arena,
+                  ),
+                  const SizedBox(height: 14),
                   const _ComingSoon(title: soundTitle),
                 ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _ZoneCard extends StatelessWidget {
+  const _ZoneCard({
+    required this.color,
+    required this.title,
+    required this.text,
+    required this.icon,
+    required this.label,
+    required this.route,
+  });
+
+  final Color color;
+  final String title;
+  final String text;
+  final IconData icon;
+  final String label;
+  final String route;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: AppShapes.sticker(color),
+      child: Column(
+        crossAxisAlignment: .stretch,
+        children: [
+          Text(title, style: textTheme.titleLarge),
+          const SizedBox(height: 4),
+          Text(text, style: textTheme.bodyLarge),
+          const SizedBox(height: 12),
+          FilledButton.icon(
+            onPressed: () => unawaited(Navigator.of(context).pushNamed(route)),
+            icon: Icon(icon),
+            label: Text(label),
+          ),
+        ],
       ),
     );
   }

@@ -243,10 +243,16 @@ Built before Creative Island at the product owner's request.
   shown and cleared in the Parent Zone; Champion cap in the Wardrobe.
 - ⏳ Device test on the Samsung SM-A516U.
 
-## Game Zone: Dino Discovery (next)
+## Game Zone: Dino Discovery ✅ (awaiting device test)
 
-Three prehistoric places, about 9 drawn creatures, clue-based identifying,
-short missions and a Field Guide. Facts need a grown-up review.
+- ✅ Three prehistoric places with drawn scenes and nine drawn creatures.
+- ✅ Search spots, identifying from clues, and a short mission for each place.
+- ✅ Field Guide, filled in by finishing each place, read aloud on request.
+- ✅ Stars saved on the device, counted in My Discoveries, cleared by Delete
+  all progress.
+- ✅ Memory Match cards now show 12 drawn pictures.
+- ⏳ Grown-up review of the creature facts.
+- ⏳ Device test on the Samsung SM-A516U.
 
 ## Game Zone: What's That Sound?
 

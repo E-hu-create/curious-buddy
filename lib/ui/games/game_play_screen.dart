@@ -87,19 +87,23 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => GameShell(
-    vm: _vm,
-    nextLevel: _nextOf(widget.level),
-    child: ListenableBuilder(
-      listenable: _vm,
-      builder: (context, _) => switch (_vm) {
-        final MemoryViewModel vm => _MemoryBoard(vm: vm),
-        final PatternViewModel vm => _PatternBoard(vm: vm),
-        final SpotViewModel vm => _SpotBoard(vm: vm),
-        _ => const SizedBox.shrink(),
-      },
-    ),
-  );
+  Widget build(BuildContext context) {
+    final next = _nextOf(widget.level);
+    return GameShell(
+      vm: _vm,
+      nextButton: next == null ? null : '${GameShell.nextLabel}: ${next.name}',
+      nextResult: next,
+      child: ListenableBuilder(
+        listenable: _vm,
+        builder: (context, _) => switch (_vm) {
+          final MemoryViewModel vm => _MemoryBoard(vm: vm),
+          final PatternViewModel vm => _PatternBoard(vm: vm),
+          final SpotViewModel vm => _SpotBoard(vm: vm),
+          _ => const SizedBox.shrink(),
+        },
+      ),
+    );
+  }
 }
 
 // -------------------------------------------------------------- Memory Match
@@ -195,8 +199,8 @@ class _MemoryCard extends StatelessWidget {
             ),
             child: faceUp
                 ? FractionallySizedBox(
-                    widthFactor: 0.6,
-                    heightFactor: 0.6,
+                    widthFactor: 0.78,
+                    heightFactor: 0.78,
                     child: FittedBox(child: TokenView(token: token)),
                   )
                 : const Icon(Icons.question_mark_rounded, color: AppColors.ink),

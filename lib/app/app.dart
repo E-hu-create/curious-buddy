@@ -13,6 +13,7 @@ import '../ui/core/widgets/buddy/buddy_look_scope.dart';
 import '../ui/core/widgets/placeholder_screen.dart';
 import '../ui/creative/creative_hub_screen.dart';
 import '../ui/discoveries/discoveries_screen.dart';
+import '../ui/games/dino_hub_screen.dart';
 import '../ui/games/game_zone_screen.dart';
 import '../ui/home/home_screen.dart';
 import '../ui/missions/missions_screen.dart';
@@ -143,6 +144,10 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
         Routes.arena: (_) => ArenaScreen(
           progressRepository: dependencies.progressRepository,
           creationsRepository: dependencies.creationsRepository,
+          voice: _voice,
+        ),
+        Routes.dino: (_) => DinoHubScreen(
+          progressRepository: dependencies.progressRepository,
           voice: _voice,
         ),
         Routes.wardrobe: (_) => WardrobeScreen(

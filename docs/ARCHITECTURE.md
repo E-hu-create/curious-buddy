@@ -93,7 +93,7 @@ only used for unknown routes.
 | Living Stories ✅ | `ui/stories/`, `domain/stories/` | story repository, progress repository, BuddyVoice |
 | Quiz Time ✅ | `ui/quiz/`, `domain/quiz/` | quiz repository, progress repository, BuddyVoice |
 | Creative Island ✅ | `ui/creative/`, `domain/creative/` | creations repository (local only), BuddyVoice |
-| Game Zone ✅ (Challenge Arena) | `ui/games/`, `domain/games/` | progress and creations repositories, BuddyVoice |
+| Game Zone ✅ (Challenge Arena, Dino Discovery) | `ui/games/`, `domain/games/` | progress and creations repositories, BuddyVoice |
 | Buddy's Wardrobe ✅ | `ui/wardrobe/`, `domain/wardrobe/` | progress and content repositories, BuddyWardrobe, BuddyVoice |
 | My Discoveries ✅ | `ui/discoveries/`, `domain/discoveries/` | reads progress, mission, story, quiz and creations repositories; BuddyVoice |
 | Saved progress | `domain/models/`, `data/repositories/` | KeyValueStore |
@@ -444,14 +444,14 @@ Saved items that are unknown or in the wrong slot are ignored.
 ## Game Zone
 
 The Home card opens `GameZoneScreen`, the way into every game. Buddy's
-Challenge Arena is built; Dino Discovery and What's That Sound? are shown as
+Challenge Arena and Dino Discovery are built; What's That Sound? is shown as
 coming soon.
 
 - **Logic:** `domain/games/games.dart` holds `MemoryGame`, `SpotGame`, pattern
   rounds and `ArenaRules`, with no Flutter. `game_content.dart` holds the
   patterns and Quick Create ideas.
-- **Screens:** `GamePlayViewModel` is shared by the three scored games
-  (voice, finish, saving); `GameShell` is the shared frame and finish panel.
+- **Screens:** `GamePlayViewModel` is shared by every scored game (voice,
+  finish, saving); `GameShell` is the shared frame and finish panel.
 - **Levels:** three per game, opened by any star on the level before.
 - **Kind by design:** no timers (a mismatched pair stays showing until the
   next tap), a wrong move never loses anything, and finishing Memory Match or
@@ -459,6 +459,22 @@ coming soon.
   the Drawing Studio with an idea.
 - **Saved:** `gameBest` in `LearnerProgress` (schema 6). Game stars count in
   My Discoveries and unlock the Champion cap.
+- **Art:** `InkPen` draws the sticker style in code. `PictureArt` holds the 12
+  Memory Match pictures and `DinoArt` the creatures and scenes, so there are
+  no image files or licences to manage.
+
+### Dino Discovery
+
+`domain/games/dino.dart` holds the creatures, places, missions and
+`DinoExpedition`, with no Flutter. A trip moves through explore (tap search
+spots), identify (pick from three pictures using clues; a wrong pick brings the
+second clue), discovered (the creature joins the scene), then a three-question
+mission. `dinoProblems()` checks that the content is fair.
+
+Places use the saved ids `dino_fern_forest`, `dino_open_plains` and
+`dino_ancient_sea` in `gameBest`, so no new schema was needed. The Field Guide
+is worked out from those results: finishing a place adds its three creatures.
+A trip left halfway is not saved.
 
 ## Sound effects
 

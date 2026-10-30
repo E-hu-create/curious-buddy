@@ -10,5 +10,6 @@ abstract final class Routes {
   static const wardrobe = '/wardrobe';
   static const games = '/games';
   static const arena = '/games/arena';
+  static const dino = '/games/dino';
   static const parentZone = '/parent-zone';
 }

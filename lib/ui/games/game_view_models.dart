@@ -11,11 +11,10 @@ import '../../domain/voice/buddy_voice.dart';
 
 enum GameSaveStatus { notSaved, saved, failed }
 
-/// Shared by every Arena game: Buddy's voice, the finish, saving the best
-/// stars. Nothing is timed, and the microphone is never used.
+/// Shared by every game: Buddy's voice, the finish, saving the best stars.
+/// Nothing is timed, and the microphone is never used.
 abstract class GamePlayViewModel extends ChangeNotifier {
   GamePlayViewModel({
-    required this.level,
     required BuddyVoice voice,
     required ProgressRepository progressRepository,
   }) : _voice = voice,
@@ -23,7 +22,6 @@ abstract class GamePlayViewModel extends ChangeNotifier {
     _voice.addListener(notify);
   }
 
-  final GameLevel level;
   final BuddyVoice _voice;
   final ProgressRepository _progress;
   bool _disposed = false;
@@ -43,6 +41,12 @@ abstract class GamePlayViewModel extends ChangeNotifier {
   /// Stars earned this round (once finished).
   int get stars => _stars;
   int _stars = 0;
+
+  /// The key the best stars are saved under.
+  String get gameId;
+
+  /// The game's name, for the top of the screen.
+  String get gameTitle;
 
   /// How to play, read when the game opens.
   String get introLine;
@@ -78,7 +82,7 @@ abstract class GamePlayViewModel extends ChangeNotifier {
     say(finishLine, lead: stars > 0 ? SoundEffect.cheer : null);
     try {
       final saved = await _progress.load();
-      await _progress.save(saved.withGameResult(level.id, stars));
+      await _progress.save(saved.withGameResult(gameId, stars));
       _saveStatus = GameSaveStatus.saved;
     } on Exception {
       // The child still sees the result; it just could not be kept.
@@ -126,7 +130,24 @@ abstract class GamePlayViewModel extends ChangeNotifier {
   }
 }
 
-class MemoryViewModel extends GamePlayViewModel {
+/// A game with levels in the Arena.
+abstract class ArenaViewModel extends GamePlayViewModel {
+  ArenaViewModel({
+    required this.level,
+    required super.voice,
+    required super.progressRepository,
+  });
+
+  final GameLevel level;
+
+  @override
+  String get gameId => level.id;
+
+  @override
+  String get gameTitle => '${level.kind.title}: ${level.name}';
+}
+
+class MemoryViewModel extends ArenaViewModel {
   MemoryViewModel({
     required super.level,
     required super.voice,
@@ -173,7 +194,7 @@ class MemoryViewModel extends GamePlayViewModel {
   void reset() => _deal();
 }
 
-class PatternViewModel extends GamePlayViewModel {
+class PatternViewModel extends ArenaViewModel {
   PatternViewModel({
     required super.level,
     required super.voice,
@@ -241,7 +262,7 @@ class PatternViewModel extends GamePlayViewModel {
   }
 }
 
-class SpotViewModel extends GamePlayViewModel {
+class SpotViewModel extends ArenaViewModel {
   SpotViewModel({
     required super.level,
     required super.voice,

@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'dino.dart';
+
 /// Buddy's Challenge Arena: quick games for memory, logic and observation.
 /// Pure logic: no Flutter, no storage. Nothing here is timed, and a wrong
 /// move never loses anything already earned.
@@ -39,34 +41,70 @@ enum GameColor {
   final String label;
 }
 
-/// Something shown in a game: a coloured shape or a number. It always has a
-/// word for it, so screen readers and Buddy can say it.
+/// A drawn picture for the Memory Match cards.
+enum GamePicture {
+  rocket('rocket'),
+  planet('planet'),
+  fish('fish'),
+  turtle('turtle'),
+  butterfly('butterfly'),
+  flower('flower'),
+  tree('tree'),
+  whale('whale'),
+  volcano('volcano'),
+  owl('owl'),
+  mushroom('mushroom'),
+  sailboat('sailboat');
+
+  const GamePicture(this.label);
+
+  final String label;
+}
+
+/// Something shown in a game: a coloured shape, a number or a picture. It
+/// always has a word for it, so screen readers and Buddy can say it.
 class GameToken {
   const GameToken.shape(GameShape this.shape, GameColor this.color)
-    : number = null;
-  const GameToken.number(int this.number) : shape = null, color = null;
+    : number = null,
+      picture = null;
+  const GameToken.number(int this.number)
+    : shape = null,
+      color = null,
+      picture = null;
+  const GameToken.picture(GamePicture this.picture)
+    : shape = null,
+      color = null,
+      number = null;
 
   final GameShape? shape;
   final GameColor? color;
   final int? number;
+  final GamePicture? picture;
 
-  String get label => number?.toString() ?? '${color!.label} ${shape!.label}';
+  String get label =>
+      picture?.label ?? number?.toString() ?? '${color!.label} ${shape!.label}';
 
   @override
   bool operator ==(Object other) =>
       other is GameToken &&
       other.shape == shape &&
       other.color == color &&
-      other.number == number;
+      other.number == number &&
+      other.picture == picture;
 
   @override
-  int get hashCode => Object.hash(shape, color, number);
+  int get hashCode => Object.hash(shape, color, number, picture);
 }
 
 /// All the shape and colour mixes, for the games that need many.
 final List<GameToken> allShapeTokens = [
   for (final shape in GameShape.values)
     for (final color in GameColor.values) GameToken.shape(shape, color),
+];
+
+/// Every picture, for dealing Memory Match cards.
+final List<GameToken> allPictureTokens = [
+  for (final picture in GamePicture.values) GameToken.picture(picture),
 ];
 
 /// One level of a game: `memory_1`, `pattern_2`, and so on.
@@ -93,9 +131,11 @@ abstract final class ArenaRules {
     for (var n = 1; n <= levelsPerGame; n++) GameLevel(kind, n),
   ];
 
+  /// Everything that earns game stars, including Dino Discovery's places.
   static final allLevelIds = {
     for (final kind in GameKind.values)
       for (final level in levelsOf(kind)) level.id,
+    ...DinoRules.allIds,
   };
 
   /// Level 1 is always open; each later one opens with any star on the one
@@ -167,7 +207,7 @@ class MemoryGame {
   }
 
   static List<GameToken> _deal(int pairs, Random random) {
-    final tokens = [...allShapeTokens]..shuffle(random);
+    final tokens = [...allPictureTokens]..shuffle(random);
     final chosen = tokens.take(pairs);
     return [...chosen, ...chosen]..shuffle(random);
   }

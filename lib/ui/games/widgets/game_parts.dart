@@ -10,6 +10,7 @@ import '../../core/widgets/motion.dart';
 import '../../missions/widgets/stage_widgets.dart';
 import '../../quiz/widgets/quiz_widgets.dart';
 import '../game_view_models.dart';
+import 'picture_art.dart';
 
 /// Draws a game token: a coloured shape, or a number.
 class TokenView extends StatelessWidget {
@@ -37,6 +38,10 @@ class TokenView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final picture = token.picture;
+    if (picture != null) {
+      return PictureArt(picture: picture, size: size);
+    }
     final number = token.number;
     if (number != null) {
       return SizedBox(
@@ -62,21 +67,30 @@ class TokenView extends StatelessWidget {
   }
 }
 
-/// The frame shared by the Arena games: voice controls, the game, and the
-/// finish panel.
+/// The frame shared by the games: voice controls, the game, and the finish
+/// panel.
 class GameShell extends StatelessWidget {
   const GameShell({
     super.key,
     required this.vm,
-    required this.nextLevel,
     required this.child,
+    this.nextButton,
+    this.nextResult,
+    this.backButton = backLabel,
+    this.finishExtra,
   });
 
   final GamePlayViewModel vm;
-
-  /// The next level, if there is one.
-  final GameLevel? nextLevel;
   final Widget child;
+
+  /// The label for moving on, if there is something to move on to. The screen
+  /// closes with [nextResult].
+  final String? nextButton;
+  final Object? nextResult;
+  final String backButton;
+
+  /// Shown under the stars when the game is finished.
+  final Widget? finishExtra;
 
   static const playAgainLabel = 'Play again';
   static const nextLabel = 'Next level';
@@ -94,12 +108,7 @@ class GameShell extends StatelessWidget {
       listenable: vm,
       celebrationKey: () => vm.isFinished && vm.stars == 3 ? 'stars' : null,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            '${vm.level.kind.title}: ${vm.level.name}',
-            style: textTheme.titleMedium,
-          ),
-        ),
+        appBar: AppBar(title: Text(vm.gameTitle, style: textTheme.titleMedium)),
         body: SafeArea(
           child: ListenableBuilder(
             listenable: vm,
@@ -149,7 +158,8 @@ class GameShell extends StatelessWidget {
 
   Widget _finish(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final next = nextLevel;
+    final next = nextButton;
+    final extra = finishExtra;
     return Column(
       crossAxisAlignment: .stretch,
       children: [
@@ -179,6 +189,7 @@ class GameShell extends StatelessWidget {
             ],
           ),
         ),
+        if (extra != null) ...[const SizedBox(height: 12), extra],
         if (vm.saveStatus == GameSaveStatus.failed) ...[
           const SizedBox(height: 12),
           Text(saveFailed, style: textTheme.bodyMedium),
@@ -186,9 +197,9 @@ class GameShell extends StatelessWidget {
         const SizedBox(height: 16),
         if (next != null && vm.stars > 0) ...[
           FilledButton.icon(
-            onPressed: () => Navigator.of(context).pop(next),
+            onPressed: () => Navigator.of(context).pop(nextResult),
             icon: const Icon(Icons.arrow_upward_rounded),
-            label: Text('$nextLabel: ${next.name}'),
+            label: Text(next),
           ),
           const SizedBox(height: 8),
         ],
@@ -201,7 +212,7 @@ class GameShell extends StatelessWidget {
         OutlinedButton.icon(
           onPressed: () => Navigator.of(context).maybePop(),
           icon: const Icon(Icons.arrow_back_rounded),
-          label: const Text(backLabel),
+          label: Text(backButton),
         ),
       ],
     );

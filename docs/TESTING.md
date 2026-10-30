@@ -96,6 +96,8 @@ and ask first.
 | `test/domain/voice/sound_effects_test.dart` | A sound plays before Buddy speaks; old speech stops first; stop and newer lines cancel the wait; works with voice off; sounds off; remembered; small effects skipped during speech; which moments play what; defaults; files exist and match their lengths in the code; native player knows every effect |
 | `test/domain/games/games_test.dart` | Levels and unlocking; star totals; Memory dealing, pairs, mismatches staying visible, stars; pattern content and number rules checked by calculation; validator; Spot differences, taps, stars; Quick Create ideas |
 | `test/ui/games/games_screens_test.dart` | View models for all three games, saving, best kept, failed save, speech stops; saved-data format; journal and Wardrobe link; Home to Arena; coming-soon labels; Buddy's button; all three games played through the screens; level opening; restart; Quick Create; full shelf; storage error; no typing or microphone; Parent Zone shows and deletes results; accessibility; no overflow at every level |
+| `test/domain/games/dino_test.dart` | Fairness checks on the content; places and saved ids; opening places; Field Guide; expedition stages, stars, clues, wrong picks, out-of-turn taps, missions; Memory pictures |
+| `test/ui/games/dino_screens_test.dart` | View model speech, sounds, saving, failed save, speech stops; hub; every place played through the screens; creatures appear in the scene; wrong picks; next place; Field Guide stays secret and reads aloud; storage error; no typing or microphone; accessibility; no overflow |
 | `test/ui/stories/stories_accessibility_test.dart` | Tap target, label and contrast guidelines on the shelf, intro, a choice page and an ending; numbered choice labels; picture descriptions; every page of every story without overflow on small phones and 2x text |
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
 | `test/domain/conversation/child_safety_filter_test.dart` | Personal info, self-harm, bullying, medical and off-limits detection; ordinary questions (incl. big numbers, look-alike words) pass |
@@ -248,9 +250,8 @@ user-visible change:
       with the phone in dark mode: the same.
 - [ ] **Game Zone:**
   - [ ] Home → Game Zone → Enter the Arena: three games, Starter open, others
-        locked; Quick Create with an idea. Dino Discovery and What's That
-        Sound? say Coming soon.
-  - [ ] Memory Match: flip cards; a wrong pair stays showing until your next
+        locked; Quick Create with an idea. What's That Sound? says Coming soon.
+  - [ ] Memory Match: drawn pictures on the cards; a wrong pair stays showing until your next
         tap; matches stay up; finish with stars; Next level opens.
   - [ ] Pattern Power: pick an answer; see right or wrong and why; finish
         with stars. 2 or fewer right: no star, next level stays closed.
@@ -262,6 +263,23 @@ user-visible change:
   - [ ] Force-stop and reopen: stars and open levels remain.
   - [ ] My Discoveries counts game stars; 6 stars earns the Champion cap.
   - [ ] Parent Zone: "Game Zone results" shows; Delete all progress clears it.
+- [ ] **Dino Discovery:**
+  - [ ] Game Zone → Start exploring: Fern Forest open, the other two say to
+        explore the place before.
+  - [ ] Field Guide at 0 of 9: dark shapes, no names or facts.
+  - [ ] Explore Fern Forest: tap a search spot; read the clue; each picture
+        really shows what the clue says.
+  - [ ] Pick wrong: a kind note, a second clue, and that card can't be tapped
+        again. Pick right: the creature, how to say it, and a fact.
+  - [ ] Keep exploring: the creature now stands in the scene.
+  - [ ] All three found: the mission, three questions. Finish with stars and
+        see the three creatures. Next place opens.
+  - [ ] Ancient Sea: each creature says Not a dinosaur!
+  - [ ] Field Guide: found creatures show facts; Hear about it reads aloud;
+        leaving stops Buddy.
+  - [ ] Leave a trip halfway, then reopen: it starts again, nothing is lost.
+  - [ ] Force-stop and reopen: stars and the Field Guide remain.
+  - [ ] Parent Zone: Delete all progress clears the stars and the Field Guide.
 - [ ] **Sound effects** (media volume up):
   - [ ] Right answer: a rising chime, then Buddy. Wrong answer: soft notes,
         never harsh, then Buddy. They never talk over each other.
