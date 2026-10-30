@@ -53,6 +53,11 @@ class DiscoveriesViewModel extends ChangeNotifier {
   List<Creation> get recentCreations => _recent;
   List<Creation> _recent = const [];
 
+  /// True when coming back from an activity with a higher rank. Nothing is
+  /// saved for this, so it only happens while the journal stays open.
+  bool get rankedUp => _rankedUp;
+  bool _rankedUp = false;
+
   /// True when one section could not be loaded and is left out.
   bool get isPartial => _partial;
   bool _partial = false;
@@ -80,13 +85,15 @@ class DiscoveriesViewModel extends ChangeNotifier {
     final shelf = await _attempt(_creations.load);
     _recent =
         shelf?.items.reversed.take(recentCount).toList() ?? const <Creation>[];
-    _journal = DiscoveryJournal.build(
+    final before = _journal?.rank;
+    final journal = _journal = DiscoveryJournal.build(
       progress: progress,
       missions: missions,
       stories: stories,
       topics: topics,
       creations: shelf?.items.length,
     );
+    _rankedUp = before != null && journal.rank.index > before.index;
     _status = DiscoveriesStatus.ready;
     _notify();
   }

@@ -9,6 +9,7 @@ import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
 import '../core/widgets/buddy/buddy.dart';
+import '../core/widgets/motion.dart';
 import 'mission_play_view_model.dart';
 import 'widgets/mission_cover.dart';
 import 'widgets/stage_widgets.dart';
@@ -79,28 +80,36 @@ class _MissionPlayScreenState extends State<MissionPlayScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.mission.title,
-          style: Theme.of(context).textTheme.titleMedium,
+    return CelebrationOverlay(
+      listenable: _vm,
+      celebrationKey: () =>
+          _vm.phase == MissionPhase.complete ? 'solved' : null,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            widget.mission.title,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
         ),
-      ),
-      body: SafeArea(
-        child: ListenableBuilder(
-          listenable: _vm,
-          builder: (context, _) => SingleChildScrollView(
-            controller: _scroll,
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 680),
-                child: switch (_vm.phase) {
-                  MissionPhase.intro => _intro(context),
-                  MissionPhase.stage => _stage(context),
-                  MissionPhase.complete => _complete(context),
-                },
+        body: SafeArea(
+          child: ListenableBuilder(
+            listenable: _vm,
+            builder: (context, _) => SingleChildScrollView(
+              controller: _scroll,
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 680),
+                  child: PageSwap(
+                    pageKey: '${_vm.phase.name}${_vm.stageIndex}',
+                    child: switch (_vm.phase) {
+                      MissionPhase.intro => _intro(context),
+                      MissionPhase.stage => _stage(context),
+                      MissionPhase.complete => _complete(context),
+                    },
+                  ),
+                ),
               ),
             ),
           ),

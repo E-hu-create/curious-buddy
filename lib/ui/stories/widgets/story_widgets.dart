@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../domain/stories/story.dart';
 import '../../core/themes/app_colors.dart';
 import '../../core/themes/app_theme.dart';
+import '../../core/widgets/motion.dart';
 
 /// Each story's own colour, so the three feel like different books.
 ({Color accent, Color tint}) storyColours(ScenePicture cover) =>
@@ -54,46 +55,48 @@ class StoryChoiceCard extends StatelessWidget {
       button: true,
       label: 'Choice $number: $text',
       excludeSemantics: true,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(18),
-          child: Ink(
-            decoration: AppShapes.sticker(tint, depth: 3, radius: 18),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                minHeight: AppTheme.minTouchTarget + 8,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: accent,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.ink, width: 2),
-                      ),
-                      child: Text(
-                        '$number',
-                        style: textTheme.titleMedium?.copyWith(
-                          color: AppColors.ink,
-                          fontWeight: FontWeight.w800,
+      child: StickerPress(
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(18),
+            child: Ink(
+              decoration: AppShapes.sticker(tint, depth: 3, radius: 18),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  minHeight: AppTheme.minTouchTarget + 8,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 36,
+                        height: 36,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: accent,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.ink, width: 2),
+                        ),
+                        child: Text(
+                          '$number',
+                          style: textTheme.titleMedium?.copyWith(
+                            color: AppColors.ink,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(child: Text(text, style: textTheme.titleMedium)),
-                    const SizedBox(width: 6),
-                    const Icon(
-                      Icons.arrow_forward_rounded,
-                      color: AppColors.ink,
-                    ),
-                  ],
+                      const SizedBox(width: 12),
+                      Expanded(child: Text(text, style: textTheme.titleMedium)),
+                      const SizedBox(width: 6),
+                      const Icon(
+                        Icons.arrow_forward_rounded,
+                        color: AppColors.ink,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

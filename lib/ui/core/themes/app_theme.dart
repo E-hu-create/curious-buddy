@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/motion.dart';
 import 'app_colors.dart';
 
 abstract final class AppTheme {
   /// Minimum height for anything a child taps. Above Android's 48dp guideline
   /// because younger hands are less precise.
   static const minTouchTarget = 56.0;
+
+  /// Bundled in the app (see pubspec.yaml), so nothing is downloaded.
+  static const fontFamily = 'Nunito';
 
   static ThemeData light() {
     final scheme = ColorScheme.fromSeed(
@@ -17,6 +21,7 @@ abstract final class AppTheme {
     );
     final base = ThemeData(
       colorScheme: scheme,
+      fontFamily: fontFamily,
       scaffoldBackgroundColor: AppColors.paper,
     );
     final text = base.textTheme
@@ -25,6 +30,10 @@ abstract final class AppTheme {
           headlineMedium: base.textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.w800,
             letterSpacing: -0.5,
+            color: AppColors.ink,
+          ),
+          headlineSmall: base.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w800,
             color: AppColors.ink,
           ),
           titleLarge: base.textTheme.titleLarge?.copyWith(
@@ -60,6 +69,9 @@ abstract final class AppTheme {
 
     return base.copyWith(
       textTheme: text,
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {TargetPlatform.android: GentlePageTransitions()},
+      ),
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.paper,
         foregroundColor: AppColors.ink,

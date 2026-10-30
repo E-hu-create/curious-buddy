@@ -89,6 +89,7 @@ and ask first.
 | `test/ui/discoveries/discoveries_screen_test.dart` | New and busy journals; narration; no spoilers; speaker reads a discovery; next adventure opens the right place and the journal updates; Buddy's button; saves nothing; retry; partial failure; parent reset, including after a restart; leaving and Stop silence Buddy; no speech engine; no microphone |
 | `test/ui/discoveries/discoveries_accessibility_test.dart` | Guidelines on new and busy journals; latest four creations; no overflow on small phones and 2x text |
 | `test/android/backup_rules_test.dart` | Manifest turns backup off and links the data-extraction rules; cloud backup and device transfer exclude every data location; the Parent Zone wording does not over-promise |
+| `test/ui/core/widgets/motion_test.dart` | Confetti and phone tap only at the right moments (perfect quiz, new ending, saved creation, new rank; not for mistakes or repeat endings); confetti ignores touch and screen readers, and ends by itself; calm settings skip everything; stars pop in; bundled font and licence; bold headings; last Home card fills its row |
 | `test/ui/stories/stories_accessibility_test.dart` | Tap target, label and contrast guidelines on the shelf, intro, a choice page and an ending; numbered choice labels; picture descriptions; every page of every story without overflow on small phones and 2x text |
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
 | `test/domain/conversation/child_safety_filter_test.dart` | Personal info, self-harm, bullying, medical and off-limits detection; ordinary questions (incl. big numbers, look-alike words) pass |
@@ -235,6 +236,20 @@ user-visible change:
   - [ ] Go back to Home: the explorer log shows the mission and points.
   - [ ] Force-stop and reopen: solved missions and points are still there.
   - [ ] Voice off: missions still fully playable with text only.
+- [ ] **Look and feel:**
+  - [ ] The rounded font appears everywhere, and text fits on every page.
+  - [ ] Page changes fade gently; story pages and quiz questions slide.
+  - [ ] Story choices, quiz answers and shelf tiles sink when pressed.
+  - [ ] Right answer: a small pop and Buddy hops. Wrong answer: a gentle
+        shake.
+  - [ ] Quiz stars appear one by one. A perfect quiz: confetti and a light
+        tap on the phone. 4 of 5: no confetti.
+  - [ ] Confetti also for a solved case, a new story ending (not a repeat)
+        and a saved creation. You can tap buttons during it.
+  - [ ] New rank: from My Discoveries, go and earn it, then come back.
+  - [ ] Parent Zone → Calmer animations on: no motion, confetti or phone
+        taps anywhere. Everything still works.
+  - [ ] Everything feels smooth on this phone.
 - [ ] **My Discoveries:**
   - [ ] Home → My Discoveries: your rank, a summary read by Buddy, totals,
         and Your next adventure.

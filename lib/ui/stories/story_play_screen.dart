@@ -8,6 +8,7 @@ import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
 import '../core/widgets/buddy/buddy.dart';
+import '../core/widgets/motion.dart';
 import '../missions/widgets/stage_widgets.dart';
 import 'story_play_view_model.dart';
 import 'widgets/story_picture.dart';
@@ -92,27 +93,36 @@ class _StoryPlayScreenState extends State<StoryPlayScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.story.title,
-          style: Theme.of(context).textTheme.titleMedium,
+    return CelebrationOverlay(
+      listenable: _vm,
+      celebrationKey: () => _vm.isNewEnding ? _vm.scene.id : null,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            widget.story.title,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
         ),
-      ),
-      body: SafeArea(
-        child: ListenableBuilder(
-          listenable: _vm,
-          builder: (context, _) => SingleChildScrollView(
-            controller: _scroll,
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 680),
-                child: switch (_vm.phase) {
-                  StoryPhase.intro => _intro(context),
-                  StoryPhase.scene => _scene(context),
-                },
+        body: SafeArea(
+          child: ListenableBuilder(
+            listenable: _vm,
+            builder: (context, _) => SingleChildScrollView(
+              controller: _scroll,
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 680),
+                  child: PageSwap(
+                    pageKey: _vm.phase == StoryPhase.intro
+                        ? 'intro'
+                        : _vm.scene.id,
+                    child: switch (_vm.phase) {
+                      StoryPhase.intro => _intro(context),
+                      StoryPhase.scene => _scene(context),
+                    },
+                  ),
+                ),
               ),
             ),
           ),
@@ -121,9 +131,15 @@ class _StoryPlayScreenState extends State<StoryPlayScreen> {
     );
   }
 
-  Widget _buddyRow(BuddyMood mood) => Row(
+  /// Buddy hops when [hopKey] is given, once per key.
+  Widget _buddyRow(BuddyMood mood, {Object? hopKey}) => Row(
     children: [
-      Buddy(height: 84, mood: mood, waveOnAppear: false),
+      Buddy(
+        key: hopKey == null ? null : ValueKey(hopKey),
+        height: 84,
+        mood: mood,
+        waveOnAppear: hopKey != null,
+      ),
       const SizedBox(width: 12),
       Expanded(
         child: MissionVoiceBar(
@@ -218,7 +234,10 @@ class _StoryPlayScreenState extends State<StoryPlayScreen> {
           ],
         ),
         const SizedBox(height: 8),
-        _buddyRow(scene.isEnding ? BuddyMood.excited : BuddyMood.thoughtful),
+        _buddyRow(
+          scene.isEnding ? BuddyMood.excited : BuddyMood.thoughtful,
+          hopKey: scene.isEnding ? scene.id : null,
+        ),
         const SizedBox(height: 12),
         Text(scene.text, style: textTheme.bodyLarge?.copyWith(height: 1.45)),
         const SizedBox(height: 20),

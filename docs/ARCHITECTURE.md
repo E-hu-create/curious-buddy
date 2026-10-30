@@ -429,6 +429,23 @@ its reset empties the journal.
 - **Narration:** Buddy reads the summary on opening, and a discovery when its
   speaker is tapped. Automatic reading follows the Parent Zone setting.
 
+## Look and feel
+
+- **Font:** Nunito, bundled in `assets/fonts/` with its licence (`OFL.txt`,
+  shipped inside the app). Four fixed weights made from the official variable
+  font, because Flutter's `fontWeight` does not drive a variable font by
+  itself. It is never fetched from the network.
+- **Motion:** `ui/core/widgets/motion.dart` holds `GentlePageTransitions`,
+  `StickerPress`, `PageSwap`, `PopIn`, `ReactOnce` and `CelebrationOverlay`.
+- **One-off only:** nothing loops forever. Endless animations would drain the
+  battery, distract readers and stop tests from settling.
+- **Calm settings:** every effect, and the phone tap, is skipped when the
+  phone's Remove animations or the Parent Zone's Calmer animations is on.
+- **Celebrations:** a solved case, a new story ending, a perfect quiz, a saved
+  creation, and a new rank while the journal is open. Rank-ups are noticed
+  only within a visit, because My Discoveries saves nothing.
+- Confetti is decorative: it ignores touches and screen readers skip it.
+
 ## Saved progress
 
 `LearnerProgress` (domain model) is stored as versioned JSON by

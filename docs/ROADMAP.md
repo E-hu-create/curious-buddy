@@ -200,6 +200,19 @@ Built before Creative Island at the product owner's request.
 - ✅ Device test on the Samsung SM-A516U: the My Discoveries checks in
   TESTING.md passed (confirmed 30 Oct 2026).
 
+## Look and feel ✅ (awaiting device test)
+
+- ✅ Bundled rounded font (Nunito), with its licence.
+- ✅ Gentle page changes, sliding story pages and quiz questions, stickers
+  that sink when pressed.
+- ✅ Pop for right answers, shake for wrong ones, stars one by one, Buddy
+  hops, and confetti for the big moments.
+- ✅ Bolder page titles; the last Home card fills its row.
+- ✅ All of it follows Calmer animations and the phone's Remove animations.
+- ⏳ Device test on the Samsung SM-A516U.
+- Later: sound effects (needs an audio package, sounds with clear rights and
+  a Parent Zone setting).
+
 ## Later, each needing an approved requirement
 
 - `EducationalResponseProvider` beyond scripted answers (AI backend).

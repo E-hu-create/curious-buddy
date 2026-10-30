@@ -8,6 +8,7 @@ import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
 import '../core/widgets/buddy/buddy.dart';
+import '../core/widgets/motion.dart';
 import '../missions/widgets/stage_widgets.dart';
 import 'quiz_play_view_model.dart';
 import 'widgets/quiz_widgets.dart';
@@ -87,27 +88,37 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
   @override
   Widget build(BuildContext context) {
     final levelName = quizLevelName(widget.level.difficulty);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          '${widget.topic.title}: $levelName',
-          style: Theme.of(context).textTheme.titleMedium,
+    return CelebrationOverlay(
+      listenable: _vm,
+      celebrationKey: () =>
+          _vm.phase == QuizPhase.summary && _vm.stars == 3 ? 'perfect' : null,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            '${widget.topic.title}: $levelName',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
         ),
-      ),
-      body: SafeArea(
-        child: ListenableBuilder(
-          listenable: _vm,
-          builder: (context, _) => SingleChildScrollView(
-            controller: _scroll,
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 680),
-                child: switch (_vm.phase) {
-                  QuizPhase.question => _question(context),
-                  QuizPhase.summary => _summary(context),
-                },
+        body: SafeArea(
+          child: ListenableBuilder(
+            listenable: _vm,
+            builder: (context, _) => SingleChildScrollView(
+              controller: _scroll,
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 680),
+                  child: PageSwap(
+                    pageKey: _vm.phase == QuizPhase.summary
+                        ? 'summary'
+                        : 'question${_vm.index}',
+                    child: switch (_vm.phase) {
+                      QuizPhase.question => _question(context),
+                      QuizPhase.summary => _summary(context),
+                    },
+                  ),
+                ),
               ),
             ),
           ),
@@ -116,9 +127,15 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
     );
   }
 
-  Widget _buddyRow(BuddyMood mood) => Row(
+  /// Buddy hops when [hopKey] is given, once per key.
+  Widget _buddyRow(BuddyMood mood, {Object? hopKey}) => Row(
     children: [
-      Buddy(height: 84, mood: mood, waveOnAppear: false),
+      Buddy(
+        key: hopKey == null ? null : ValueKey(hopKey),
+        height: 84,
+        mood: mood,
+        waveOnAppear: hopKey != null,
+      ),
       const SizedBox(width: 12),
       Expanded(
         child: MissionVoiceBar(
@@ -162,6 +179,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
               : _vm.pickedCorrect
               ? BuddyMood.happy
               : BuddyMood.thoughtful,
+          hopKey: _vm.hasPicked && _vm.pickedCorrect ? q.id : null,
         ),
         const SizedBox(height: 12),
         Container(
@@ -201,6 +219,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: QuizAnswerTile(
+              key: ValueKey('${q.id}-${option.id}'),
               letter: QuizPlayViewModel.letters[i],
               text: option.text,
               state: _stateFor(option, picked, q),
@@ -287,7 +306,7 @@ class _QuizPlayScreenState extends State<QuizPlayScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
-              QuizStars(stars: _vm.stars, size: 36),
+              QuizStars(stars: _vm.stars, size: 36, animate: true),
               const SizedBox(height: 8),
               Text(
                 _vm.summaryMessage(),

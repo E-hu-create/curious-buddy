@@ -8,6 +8,7 @@ import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
 import '../core/widgets/buddy/buddy.dart';
+import '../core/widgets/motion.dart';
 import 'creative_view_models.dart';
 import 'creature_screen.dart';
 import 'drawing_screen.dart';
@@ -338,33 +339,35 @@ class _ShelfTile extends StatelessWidget {
       button: true,
       label: 'Open ${CreationDescriptions.describe(creation)}',
       excludeSemantics: true,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(18),
-          child: Ink(
-            decoration: AppShapes.sticker(
-              AppColors.white,
-              depth: 3,
-              radius: 18,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: .stretch,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: CreationPicture(creation: creation),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    CreationDescriptions.title(creation),
-                    style: textTheme.titleSmall,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+      child: StickerPress(
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(18),
+            child: Ink(
+              decoration: AppShapes.sticker(
+                AppColors.white,
+                depth: 3,
+                radius: 18,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  crossAxisAlignment: .stretch,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: CreationPicture(creation: creation),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      CreationDescriptions.title(creation),
+                      style: textTheme.titleSmall,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

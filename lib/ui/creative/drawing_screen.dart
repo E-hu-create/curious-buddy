@@ -7,6 +7,7 @@ import '../../data/repositories/creations_repository.dart';
 import '../../domain/creative/creation.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
+import '../core/widgets/motion.dart';
 import 'creative_view_models.dart';
 import 'widgets/creative_art.dart';
 import 'widgets/creative_controls.dart';
@@ -91,53 +92,58 @@ class _DrawingScreenState extends State<DrawingScreen> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(DrawingScreen.title, style: textTheme.titleMedium),
-      ),
-      body: SafeArea(
-        child: ListenableBuilder(
-          listenable: _vm,
-          builder: (context, _) {
-            final saved = _vm.saveStatus == CreationSaveStatus.saved;
-            return SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 560),
-                  child: Column(
-                    crossAxisAlignment: .stretch,
-                    children: [
-                      CreativeBuddyRow(vm: _vm),
-                      const SizedBox(height: 10),
-                      _canvas(),
-                      if (_vm.pointsFull && !saved) ...[
-                        const SizedBox(height: 8),
-                        Text(
-                          DrawingScreen.fullText,
-                          style: textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.w700,
+    return CelebrationOverlay(
+      listenable: _vm,
+      celebrationKey: () =>
+          _vm.saveStatus == CreationSaveStatus.saved ? 'saved' : null,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(DrawingScreen.title, style: textTheme.titleMedium),
+        ),
+        body: SafeArea(
+          child: ListenableBuilder(
+            listenable: _vm,
+            builder: (context, _) {
+              final saved = _vm.saveStatus == CreationSaveStatus.saved;
+              return SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 560),
+                    child: Column(
+                      crossAxisAlignment: .stretch,
+                      children: [
+                        CreativeBuddyRow(vm: _vm),
+                        const SizedBox(height: 10),
+                        _canvas(),
+                        if (_vm.pointsFull && !saved) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            DrawingScreen.fullText,
+                            style: textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
-                        ),
-                      ],
-                      const SizedBox(height: 14),
-                      if (_vm.saveStatus != CreationSaveStatus.notSaved &&
-                          _vm.saveStatus != CreationSaveStatus.saving) ...[
-                        CreativeSaveNote(
-                          status: _vm.saveStatus,
-                          onAnother: _vm.startAgain,
-                          anotherLabel: DrawingScreen.drawAnother,
-                        ),
+                        ],
                         const SizedBox(height: 14),
+                        if (_vm.saveStatus != CreationSaveStatus.notSaved &&
+                            _vm.saveStatus != CreationSaveStatus.saving) ...[
+                          CreativeSaveNote(
+                            status: _vm.saveStatus,
+                            onAnother: _vm.startAgain,
+                            anotherLabel: DrawingScreen.drawAnother,
+                          ),
+                          const SizedBox(height: 14),
+                        ],
+                        if (!saved) ..._tools(),
                       ],
-                      if (!saved) ..._tools(),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

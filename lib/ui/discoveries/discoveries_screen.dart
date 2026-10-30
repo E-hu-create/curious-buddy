@@ -14,6 +14,7 @@ import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
 import '../core/widgets/buddy/buddy.dart';
+import '../core/widgets/motion.dart';
 import '../creative/widgets/creative_art.dart';
 import '../missions/widgets/stage_widgets.dart';
 import '../quiz/widgets/quiz_widgets.dart';
@@ -115,30 +116,34 @@ class _DiscoveriesScreenState extends State<DiscoveriesScreen> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-      appBar: AppBar(),
-      body: SafeArea(
-        child: ListenableBuilder(
-          listenable: _vm,
-          builder: (context, _) => SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 680),
-                child: Column(
-                  crossAxisAlignment: .stretch,
-                  children: [
-                    Semantics(
-                      header: true,
-                      child: Text(
-                        DiscoveriesScreen.title,
-                        style: textTheme.headlineMedium,
+    return CelebrationOverlay(
+      listenable: _vm,
+      celebrationKey: () => _vm.rankedUp ? _vm.journal?.rank : null,
+      child: Scaffold(
+        appBar: AppBar(),
+        body: SafeArea(
+          child: ListenableBuilder(
+            listenable: _vm,
+            builder: (context, _) => SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 680),
+                  child: Column(
+                    crossAxisAlignment: .stretch,
+                    children: [
+                      Semantics(
+                        header: true,
+                        child: Text(
+                          DiscoveriesScreen.title,
+                          style: textTheme.headlineMedium,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    ..._body(context),
-                  ],
+                      const SizedBox(height: 12),
+                      ..._body(context),
+                    ],
+                  ),
                 ),
               ),
             ),

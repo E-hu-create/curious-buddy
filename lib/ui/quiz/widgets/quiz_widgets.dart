@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../domain/quiz/quiz.dart';
 import '../../core/themes/app_colors.dart';
 import '../../core/themes/app_theme.dart';
+import '../../core/widgets/motion.dart';
 
 /// Each topic's icon and colour, in the app's sticker style.
 ({IconData icon, Color color, Color tint}) quizTopicStyle(String topicId) =>
@@ -65,12 +66,26 @@ class QuizTopicBadge extends StatelessWidget {
 
 /// 0 to 3 stars, read out as "2 of 3 stars".
 class QuizStars extends StatelessWidget {
-  const QuizStars({super.key, required this.stars, this.size = 24});
+  const QuizStars({
+    super.key,
+    required this.stars,
+    this.size = 24,
+    this.animate = false,
+  });
 
   final int stars;
   final double size;
 
+  /// Earned stars pop in one by one.
+  final bool animate;
+
   static String label(int stars) => '$stars of 3 stars';
+
+  Widget _star(int i) => Icon(
+    i < stars ? Icons.star_rounded : Icons.star_outline_rounded,
+    size: size,
+    color: i < stars ? AppColors.backpackShade : AppColors.inkSoft,
+  );
 
   @override
   Widget build(BuildContext context) => Semantics(
@@ -80,11 +95,13 @@ class QuizStars extends StatelessWidget {
       mainAxisSize: .min,
       children: [
         for (var i = 0; i < 3; i++)
-          Icon(
-            i < stars ? Icons.star_rounded : Icons.star_outline_rounded,
-            size: size,
-            color: i < stars ? AppColors.backpackShade : AppColors.inkSoft,
-          ),
+          if (animate && i < stars)
+            PopIn(
+              delay: Duration(milliseconds: 250 + i * 220),
+              child: _star(i),
+            )
+          else
+            _star(i),
       ],
     ),
   );
@@ -141,63 +158,76 @@ class QuizAnswerTile extends StatelessWidget {
       button: onTap != null,
       label: ['Answer $letter: $text', ?tag].join(', '),
       excludeSemantics: true,
-      child: Material(
-        type: MaterialType.transparency,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(18),
-          child: Container(
-            constraints: const BoxConstraints(
-              minHeight: AppTheme.minTouchTarget + 4,
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            decoration: BoxDecoration(
-              color: fill,
+      child: ReactOnce(
+        active:
+            state == QuizAnswerState.right || state == QuizAnswerState.wrong,
+        kind: state == QuizAnswerState.wrong
+            ? ReactionKind.shake
+            : ReactionKind.pop,
+        child: StickerPress(
+          enabled: onTap != null,
+          child: Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              onTap: onTap,
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(
-                color: AppColors.ink,
-                width: emphasis ? 3 : 1.5,
-              ),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 34,
-                  height: 34,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.ink, width: 2),
-                  ),
-                  child: Text(
-                    letter,
-                    style: textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+              child: Container(
+                constraints: const BoxConstraints(
+                  minHeight: AppTheme.minTouchTarget + 4,
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: fill,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: AppColors.ink,
+                    width: emphasis ? 3 : 1.5,
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: .start,
-                    children: [
-                      Text(text, style: textTheme.titleMedium),
-                      if (tag != null)
-                        Text(
-                          tag,
-                          style: textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 34,
+                      height: 34,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.ink, width: 2),
+                      ),
+                      child: Text(
+                        letter,
+                        style: textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
                         ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: .start,
+                        children: [
+                          Text(text, style: textTheme.titleMedium),
+                          if (tag != null)
+                            Text(
+                              tag,
+                              style: textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    if (icon != null) ...[
+                      const SizedBox(width: 8),
+                      Icon(icon, color: AppColors.ink),
                     ],
-                  ),
+                  ],
                 ),
-                if (icon != null) ...[
-                  const SizedBox(width: 8),
-                  Icon(icon, color: AppColors.ink),
-                ],
-              ],
+              ),
             ),
           ),
         ),

@@ -18,6 +18,11 @@ class DestinationGrid extends StatelessWidget {
 
   static const _spacing = 16.0;
 
+  int _rowEnd(int start, int columns) {
+    final end = start + columns;
+    return columns < 3 && end > destinations.length ? destinations.length : end;
+  }
+
   @override
   Widget build(BuildContext context) {
     final textScale = MediaQuery.textScalerOf(context).scale(1);
@@ -42,7 +47,8 @@ class DestinationGrid extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: .stretch,
                     children: [
-                      for (var i = start; i < start + columns; i++) ...[
+                      // On phones a card left alone in its row fills it.
+                      for (var i = start; i < _rowEnd(start, columns); i++) ...[
                         if (i > start) const SizedBox(width: _spacing),
                         Expanded(
                           child: i < destinations.length
