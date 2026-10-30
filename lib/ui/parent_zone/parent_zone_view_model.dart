@@ -42,6 +42,8 @@ class ActivitySummary {
   int get storiesInProgress => progress.storyBookmarks.length;
   int get quizLevelsDone => progress.quizBest.length;
   int get outfitItems => progress.buddyLook.length;
+  int get gameLevelsPlayed => progress.gameBest.length;
+  int get gameStars => progress.gameBest.values.fold(0, (sum, n) => sum + n);
   int get quizBestCorrect =>
       progress.quizBest.values.fold(0, (sum, n) => sum + n);
 

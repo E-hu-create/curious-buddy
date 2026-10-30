@@ -279,6 +279,22 @@ const curatedTopics = <CuratedTopic>[
     actionLabel: 'Visit Creative Island',
   ),
   CuratedTopic(
+    id: 'games',
+    triggers: [
+      ['game'],
+      ['games'],
+      ['challenge'],
+      ['arena'],
+    ],
+    answers: [
+      "Let's play! The Game Zone has quick games for your memory, your logic "
+          'and your eyes.',
+    ],
+    action: BuddyAction.openGames,
+    actionLabel: 'Open the Game Zone',
+    followUps: ["Let's play a quiz."],
+  ),
+  CuratedTopic(
     id: 'wardrobe',
     triggers: [
       ['wardrobe'],

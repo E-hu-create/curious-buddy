@@ -32,6 +32,14 @@ enum HomeDestination {
     color: AppColors.brandBlue,
     tint: AppColors.brandBlueTint,
   ),
+  games(
+    route: Routes.games,
+    title: 'Game Zone',
+    subtitle: 'Quick games and challenges',
+    icon: Icons.sports_esports_rounded,
+    color: AppColors.coral,
+    tint: AppColors.coralTint,
+  ),
   creative(
     route: Routes.creative,
     title: 'Creative Island',

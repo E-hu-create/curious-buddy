@@ -1,6 +1,7 @@
 import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/domain/discoveries/discovery_journal.dart';
+import 'package:curious_buddy/domain/games/games.dart';
 import 'package:curious_buddy/domain/missions/mission_content.dart';
 import 'package:curious_buddy/domain/models/learner_progress.dart';
 import 'package:curious_buddy/domain/quiz/quiz_content.dart';
@@ -34,6 +35,9 @@ LearnerProgress _everything() {
     for (final l in t.levels) {
       p = p.withQuizResult(l.id, l.questions.length);
     }
+  }
+  for (final id in ArenaRules.allLevelIds) {
+    p = p.withGameResult(id, 3);
   }
   return p;
 }

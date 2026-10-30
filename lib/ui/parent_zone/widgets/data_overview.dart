@@ -37,6 +37,10 @@ class DataOverviewSection extends StatelessWidget {
   static const quizTitle = 'Quiz Time results';
   static const quizWhy =
       'Shows stars and best scores, and which quiz levels are open.';
+  static const gamesTitle = 'Game Zone results';
+  static const gamesWhy =
+      'Shows stars, and which game levels are open. Quick Create drawings are '
+      'saved as creations.';
   static const outfitTitle = "Buddy's outfit";
   static const outfitWhy =
       'What your child chose for Buddy to wear. What they have earned is '
@@ -102,6 +106,9 @@ class DataOverviewSection extends StatelessWidget {
   static String quizValue(ActivitySummary s) =>
       '${_count(s.quizLevelsDone, 'level')} played, '
       '${_count(s.quizBestCorrect, 'right answer')} at best';
+  static String gamesValue(ActivitySummary s) =>
+      '${_count(s.gameLevelsPlayed, 'level')} played, '
+      '${_count(s.gameStars, 'star')}';
   static String outfitValue(ActivitySummary s) =>
       '${_count(s.outfitItems, 'item')} worn';
   static String creationsValue(ActivitySummary s) =>
@@ -171,6 +178,12 @@ class DataOverviewSection extends StatelessWidget {
               title: placesTitle,
               value: placesValue(summary),
               why: placesWhy,
+              reset: deleted,
+            ),
+            _Record(
+              title: gamesTitle,
+              value: gamesValue(summary),
+              why: gamesWhy,
               reset: deleted,
             ),
             _Record(

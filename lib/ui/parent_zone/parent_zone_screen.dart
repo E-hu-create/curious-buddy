@@ -49,8 +49,8 @@ class ParentZoneScreen extends StatefulWidget {
   static const resetTitle = 'Delete progress';
   static const resetHelp =
       "Deletes your child's mission results, story endings, quiz results, "
-      "places in unfinished stories, Buddy's outfit and Creative Island "
-      'creations from this phone. Everything stays playable. You will see exactly what is deleted and confirm twice.';
+      "places in unfinished stories, game stars, Buddy's outfit and Creative "
+      'Island creations from this phone. Everything stays playable. You will see exactly what is deleted and confirm twice.';
   static const resetLabel = 'Delete all progress...';
   static const resetting = 'Deleting...';
   static const resetDone =

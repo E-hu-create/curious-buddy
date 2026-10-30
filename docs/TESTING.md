@@ -94,6 +94,8 @@ and ask first.
 | `test/domain/wardrobe/wardrobe_test.dart` | Unlocking from each activity; everything earnable; progress text; one item per slot; saved form and bad entries; schema 5; BuddyWardrobe saving, restart, reset, storage failure |
 | `test/ui/wardrobe/wardrobe_screen_test.dart` | Locked items and how to earn them; wearing and taking off; locked items cannot be worn; Buddy matches on other screens; restart; Buddy's button; storage error; Parent Zone shows and clears the outfit; speech stops; no microphone; every item painted in every mood; accessibility; no overflow |
 | `test/domain/voice/sound_effects_test.dart` | A sound plays before Buddy speaks; old speech stops first; stop and newer lines cancel the wait; works with voice off; sounds off; remembered; small effects skipped during speech; which moments play what; defaults; files exist and match their lengths in the code; native player knows every effect |
+| `test/domain/games/games_test.dart` | Levels and unlocking; star totals; Memory dealing, pairs, mismatches staying visible, stars; pattern content and number rules checked by calculation; validator; Spot differences, taps, stars; Quick Create ideas |
+| `test/ui/games/games_screens_test.dart` | View models for all three games, saving, best kept, failed save, speech stops; saved-data format; journal and Wardrobe link; Home to Arena; coming-soon labels; Buddy's button; all three games played through the screens; level opening; restart; Quick Create; full shelf; storage error; no typing or microphone; Parent Zone shows and deletes results; accessibility; no overflow at every level |
 | `test/ui/stories/stories_accessibility_test.dart` | Tap target, label and contrast guidelines on the shelf, intro, a choice page and an ending; numbered choice labels; picture descriptions; every page of every story without overflow on small phones and 2x text |
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
 | `test/domain/conversation/child_safety_filter_test.dart` | Personal info, self-harm, bullying, medical and off-limits detection; ordinary questions (incl. big numbers, look-alike words) pass |
@@ -244,6 +246,22 @@ user-visible change:
       it from its icon: warm paper background, Buddy in the middle, "Curious
       Buddy" at the bottom, then Home with no white or black flash. Repeat
       with the phone in dark mode: the same.
+- [ ] **Game Zone:**
+  - [ ] Home → Game Zone → Enter the Arena: three games, Starter open, others
+        locked; Quick Create with an idea. Dino Discovery and What's That
+        Sound? say Coming soon.
+  - [ ] Memory Match: flip cards; a wrong pair stays showing until your next
+        tap; matches stay up; finish with stars; Next level opens.
+  - [ ] Pattern Power: pick an answer; see right or wrong and why; finish
+        with stars. 2 or fewer right: no star, next level stays closed.
+  - [ ] Spot the Change: tap what changed in the second picture; a wrong tap
+        says keep looking; finish with stars.
+  - [ ] All 3 stars: confetti. Play again gives a new board.
+  - [ ] Quick Create: New idea changes it; Start drawing opens the Drawing
+        Studio with the idea shown.
+  - [ ] Force-stop and reopen: stars and open levels remain.
+  - [ ] My Discoveries counts game stars; 6 stars earns the Champion cap.
+  - [ ] Parent Zone: "Game Zone results" shows; Delete all progress clears it.
 - [ ] **Sound effects** (media volume up):
   - [ ] Right answer: a rising chime, then Buddy. Wrong answer: soft notes,
         never harsh, then Buddy. They never talk over each other.

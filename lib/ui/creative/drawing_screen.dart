@@ -18,10 +18,14 @@ class DrawingScreen extends StatefulWidget {
     super.key,
     required this.voice,
     required this.creationsRepository,
+    this.prompt,
   });
 
   final BuddyVoice voice;
   final CreationsRepository creationsRepository;
+
+  /// An idea to draw, from Quick Create.
+  final String? prompt;
 
   static const title = 'Drawing Studio';
   static const canvasLabel = 'Drawing area. Draw with your finger.';
@@ -115,6 +119,10 @@ class _DrawingScreenState extends State<DrawingScreen> {
                       crossAxisAlignment: .stretch,
                       children: [
                         CreativeBuddyRow(vm: _vm),
+                        if (widget.prompt case final prompt?) ...[
+                          const SizedBox(height: 6),
+                          Text(prompt, style: textTheme.titleMedium),
+                        ],
                         const SizedBox(height: 10),
                         _canvas(),
                         if (_vm.pointsFull && !saved) ...[

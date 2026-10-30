@@ -66,6 +66,8 @@ abstract final class BuddyOutfitPainter {
         _wizardHat(canvas);
       case WardrobeItem.crown:
         _crown(canvas);
+      case WardrobeItem.championCap:
+        _cap(canvas);
       default:
         break;
     }
@@ -244,6 +246,23 @@ abstract final class BuddyOutfitPainter {
     _shape(canvas, cone, AppColors.grape);
     _shape(canvas, _star(const Offset(47, 26), 5, 2.2), AppColors.sun);
     _shape(canvas, _star(const Offset(57, 15), 3.4, 1.5), AppColors.sun);
+  }
+
+  static void _cap(Canvas canvas) {
+    final peak = Path()
+      ..moveTo(52, 34)
+      ..quadraticBezierTo(76, 31, 82, 38)
+      ..quadraticBezierTo(70, 42, 52, 40)
+      ..close();
+    _shape(canvas, peak, AppColors.brandBlueDeep);
+    final dome = Path()
+      ..moveTo(30, 38)
+      ..quadraticBezierTo(30, 14, 50, 13)
+      ..quadraticBezierTo(70, 14, 70, 38)
+      ..quadraticBezierTo(50, 44, 30, 38)
+      ..close();
+    _shape(canvas, dome, AppColors.brandBlue);
+    _shape(canvas, _star(const Offset(50, 26), 6.5, 2.9), AppColors.sun);
   }
 
   static void _crown(Canvas canvas) {

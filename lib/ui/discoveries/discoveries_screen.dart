@@ -345,6 +345,11 @@ class _SummaryCard extends StatelessWidget {
                 icon: Icons.palette_rounded,
                 label: _count(journal.creationCount, 'creation', 'creations'),
               ),
+              if (journal.gameStars > 0)
+                _Total(
+                  icon: Icons.sports_esports_rounded,
+                  label: _count(journal.gameStars, 'game star', 'game stars'),
+                ),
             ],
           ),
         ],

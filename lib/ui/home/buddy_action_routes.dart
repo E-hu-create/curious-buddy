@@ -10,4 +10,5 @@ String routeForAction(BuddyAction action) => switch (action) {
   BuddyAction.openDiscoveries => Routes.discoveries,
   BuddyAction.startQuiz => Routes.quiz,
   BuddyAction.openWardrobe => Routes.wardrobe,
+  BuddyAction.openGames => Routes.games,
 };

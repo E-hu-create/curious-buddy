@@ -93,6 +93,7 @@ only used for unknown routes.
 | Living Stories ✅ | `ui/stories/`, `domain/stories/` | story repository, progress repository, BuddyVoice |
 | Quiz Time ✅ | `ui/quiz/`, `domain/quiz/` | quiz repository, progress repository, BuddyVoice |
 | Creative Island ✅ | `ui/creative/`, `domain/creative/` | creations repository (local only), BuddyVoice |
+| Game Zone ✅ (Challenge Arena) | `ui/games/`, `domain/games/` | progress and creations repositories, BuddyVoice |
 | Buddy's Wardrobe ✅ | `ui/wardrobe/`, `domain/wardrobe/` | progress and content repositories, BuddyWardrobe, BuddyVoice |
 | My Discoveries ✅ | `ui/discoveries/`, `domain/discoveries/` | reads progress, mission, story, quiz and creations repositories; BuddyVoice |
 | Saved progress | `domain/models/`, `data/repositories/` | KeyValueStore |
@@ -440,6 +441,25 @@ it. `BuddyWardrobe` (one instance, owned by the app root) reaches every Buddy
 through `BuddyLookScope`; `BuddyOutfitPainter` draws the items on his grid.
 Saved items that are unknown or in the wrong slot are ignored.
 
+## Game Zone
+
+The Home card opens `GameZoneScreen`, the way into every game. Buddy's
+Challenge Arena is built; Dino Discovery and What's That Sound? are shown as
+coming soon.
+
+- **Logic:** `domain/games/games.dart` holds `MemoryGame`, `SpotGame`, pattern
+  rounds and `ArenaRules`, with no Flutter. `game_content.dart` holds the
+  patterns and Quick Create ideas.
+- **Screens:** `GamePlayViewModel` is shared by the three scored games
+  (voice, finish, saving); `GameShell` is the shared frame and finish panel.
+- **Levels:** three per game, opened by any star on the level before.
+- **Kind by design:** no timers (a mismatched pair stays showing until the
+  next tap), a wrong move never loses anything, and finishing Memory Match or
+  Spot the Change always earns a star. Quick Create is never scored; it opens
+  the Drawing Studio with an idea.
+- **Saved:** `gameBest` in `LearnerProgress` (schema 6). Game stars count in
+  My Discoveries and unlock the Champion cap.
+
 ## Sound effects
 
 Four short sounds in `res/raw/`, synthesised by `tool/generate_sounds.py` (no
@@ -496,6 +516,8 @@ Buddy's voice, with their own Parent Zone switch (`sound.effects`).
   `storyBookmarks` (the scene path of an unfinished story, at most 64
   entries; a bookmark with any bad entry is dropped whole). Older data is
   still read, with no story details.
+- **Schema 6** adds `gameBest` (best stars per game level, 0 to 3). Older data
+  is still read, with no game results.
 - **Schema 5** adds `buddyLook` (wardrobe slot to item name). Older data is
   still read, with no outfit.
 - **Schema 4** adds `quizBest` (best correct answers per quiz level id, 0 to

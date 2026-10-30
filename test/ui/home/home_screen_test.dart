@@ -5,6 +5,7 @@ import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/domain/models/learner_progress.dart';
 import 'package:curious_buddy/ui/creative/creative_hub_screen.dart';
 import 'package:curious_buddy/ui/discoveries/discoveries_screen.dart';
+import 'package:curious_buddy/ui/games/game_zone_screen.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
 import 'package:curious_buddy/ui/home/home_view_model.dart';
 import 'package:curious_buddy/ui/missions/missions_screen.dart';
@@ -84,6 +85,8 @@ void main() {
       } else if (destination == HomeDestination.creative) {
         // The real Creative Island screen.
         expect(find.text(CreativeHubScreen.welcome), findsOneWidget);
+      } else if (destination == HomeDestination.games) {
+        expect(find.text(GameZoneScreen.welcome), findsOneWidget);
       } else if (destination == HomeDestination.wardrobe) {
         expect(find.text(WardrobeScreen.help), findsOneWidget);
       } else {

@@ -84,10 +84,10 @@ void main() {
     await openWardrobe(tester);
 
     expect(find.text(WardrobeScreen.title), findsOneWidget);
-    expect(find.text(WardrobeScreen.unlocked(0, 10)), findsOneWidget);
+    expect(find.text(WardrobeScreen.unlocked(0, 11)), findsOneWidget);
     expect(find.text('0 of 1 case solved'), findsOneWidget);
     expect(find.text('0 of 1 story ending'), findsOneWidget);
-    expect(find.byIcon(Icons.lock_rounded), findsNWidgets(10));
+    expect(find.byIcon(Icons.lock_rounded), findsNWidgets(11));
   });
 
   testWidgets('Buddy introduces his wardrobe', (tester) async {
@@ -101,7 +101,7 @@ void main() {
   ) async {
     await earnSome();
     await openWardrobe(tester);
-    expect(find.text(WardrobeScreen.unlocked(2, 10)), findsOneWidget);
+    expect(find.text(WardrobeScreen.unlocked(2, 11)), findsOneWidget);
 
     await tapText(tester, WardrobeItem.partyHat.title);
 

@@ -6,6 +6,7 @@
 /// not yet found never appear here, so nothing is spoiled.
 library;
 
+import '../games/games.dart';
 import '../missions/mission.dart';
 import '../models/learner_progress.dart';
 import '../quiz/quiz.dart';
@@ -76,6 +77,7 @@ class DiscoveryJournal {
     required this.quizzes,
     required this.creations,
     required this.next,
+    this.gameStars = 0,
   });
 
   /// Builds the journal. A null list means that content could not be
@@ -130,6 +132,7 @@ class DiscoveryJournal {
       stories: storyEntries,
       quizzes: quizEntries,
       creations: creations,
+      gameStars: ArenaRules.totalStars(progress.gameBest),
       next: _next(progress, missions, stories, topics),
     );
   }
@@ -140,6 +143,9 @@ class DiscoveryJournal {
   final int? creations;
   final NextAdventure next;
 
+  /// Stars earned in the Game Zone.
+  final int gameStars;
+
   int get casesSolved => badges?.where((b) => b.earned).length ?? 0;
   int get endingsFound =>
       stories?.fold<int>(0, (sum, s) => sum + s.found.length) ?? 0;
@@ -147,7 +153,8 @@ class DiscoveryJournal {
   int get creationCount => creations ?? 0;
 
   /// Everything that counts towards the explorer rank.
-  int get discoveries => casesSolved + endingsFound + quizStars + creationCount;
+  int get discoveries =>
+      casesSolved + endingsFound + quizStars + creationCount + gameStars;
 
   ExplorerRank get rank => ExplorerRank.forCount(discoveries);
 
@@ -170,6 +177,7 @@ class DiscoveryJournal {
       if (endingsFound > 0) 'found ${_n(endingsFound, 'story ending')}',
       if (quizStars > 0) 'earned ${_n(quizStars, 'quiz star')}',
       if (creationCount > 0) 'made ${_n(creationCount, 'creation')}',
+      if (gameStars > 0) 'won ${_n(gameStars, 'game star')}',
     ];
     final list = parts.length == 1
         ? parts.first

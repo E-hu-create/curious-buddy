@@ -21,6 +21,7 @@ enum WardrobeGoal {
   endings('story ending', 'story endings'),
   quizStars('quiz star', 'quiz stars'),
   creations('creation', 'creations'),
+  gameStars('game star', 'game stars'),
   discoveries('discovery', 'discoveries');
 
   const WardrobeGoal(this.one, this.many);
@@ -33,6 +34,7 @@ enum WardrobeGoal {
     WardrobeGoal.endings => journal.endingsFound,
     WardrobeGoal.quizStars => journal.quizStars,
     WardrobeGoal.creations => journal.creationCount,
+    WardrobeGoal.gameStars => journal.gameStars,
     WardrobeGoal.discoveries => journal.discoveries,
   };
 }
@@ -42,6 +44,7 @@ enum WardrobeItem {
   detectiveHat('Detective hat', WardrobeSlot.hat, WardrobeGoal.cases, 1),
   wizardHat('Wizard hat', WardrobeSlot.hat, WardrobeGoal.endings, 6),
   crown('Golden crown', WardrobeSlot.hat, WardrobeGoal.discoveries, 20),
+  championCap('Champion cap', WardrobeSlot.hat, WardrobeGoal.gameStars, 6),
   roundGlasses(
     'Round glasses',
     WardrobeSlot.glasses,

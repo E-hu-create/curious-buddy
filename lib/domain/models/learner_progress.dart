@@ -3,8 +3,8 @@
 /// Deliberately contains no personal information: no name, age, photo,
 /// location or voice data. Only identifiers of content the child completed,
 /// their best mission scores, the story endings they found, where they
-/// stopped reading, their best score on each quiz level, and what Buddy is
-/// wearing.
+/// stopped reading, their best score on each quiz level, their best stars
+/// in each game level, and what Buddy is wearing.
 class LearnerProgress {
   const LearnerProgress({
     this.completedMissionIds = const {},
@@ -14,6 +14,7 @@ class LearnerProgress {
     this.storyBookmarks = const {},
     this.quizBest = const {},
     this.buddyLook = const {},
+    this.gameBest = const {},
   });
 
   static const empty = LearnerProgress();
@@ -21,13 +22,14 @@ class LearnerProgress {
   /// Bump when the stored shape changes, and handle older versions in
   /// [tryFromJson]. History: 1 = ids only; 2 = adds mission best points;
   /// 3 = adds story endings and bookmarks; 4 = adds best quiz scores;
-  /// 5 = adds Buddy's outfit.
-  static const schemaVersion = 5;
+  /// 5 = adds Buddy's outfit; 6 = adds best game stars.
+  static const schemaVersion = 6;
 
   static const maxIdLength = 64;
   static const maxPoints = 100000;
   static const maxBookmarkLength = 64;
   static const maxQuizScore = 100;
+  static const maxGameStars = 3;
   static final _validId = RegExp(r'^[a-z0-9_\-]+$');
   static final _validName = RegExp(r'^[a-zA-Z]+$');
 
@@ -51,6 +53,9 @@ class LearnerProgress {
   /// What Buddy is wearing: wardrobe slot name to item name.
   final Map<String, String> buddyLook;
 
+  /// Best stars per game level id. Replays never lower it.
+  final Map<String, int> gameBest;
+
   /// Sum of each mission's best score.
   int get totalMissionPoints =>
       missionBestPoints.values.fold(0, (sum, points) => sum + points);
@@ -63,6 +68,7 @@ class LearnerProgress {
     Map<String, List<String>>? storyBookmarks,
     Map<String, int>? quizBest,
     Map<String, String>? buddyLook,
+    Map<String, int>? gameBest,
   }) => LearnerProgress(
     completedMissionIds: completedMissionIds ?? this.completedMissionIds,
     completedStoryIds: completedStoryIds ?? this.completedStoryIds,
@@ -71,6 +77,7 @@ class LearnerProgress {
     storyBookmarks: storyBookmarks ?? this.storyBookmarks,
     quizBest: quizBest ?? this.quizBest,
     buddyLook: buddyLook ?? this.buddyLook,
+    gameBest: gameBest ?? this.gameBest,
   );
 
   /// Records a finished mission, keeping the best score so far.
@@ -90,6 +97,14 @@ class LearnerProgress {
     final best = quizBest[levelId] ?? 0;
     return copyWith(
       quizBest: {...quizBest, levelId: correct > best ? correct : best},
+    );
+  }
+
+  /// Records a finished game level, keeping the most stars so far.
+  LearnerProgress withGameResult(String levelId, int stars) {
+    final best = gameBest[levelId] ?? 0;
+    return copyWith(
+      gameBest: {...gameBest, levelId: stars > best ? stars : best},
     );
   }
 
@@ -123,6 +138,7 @@ class LearnerProgress {
     'storyBookmarks': storyBookmarks,
     'quizBest': quizBest,
     'buddyLook': buddyLook,
+    'gameBest': gameBest,
   };
 
   /// Parses stored progress, returning null if the data is unusable.
@@ -150,6 +166,9 @@ class LearnerProgress {
           ? _points(json['quizBest'], max: maxQuizScore)
           : const {},
       buddyLook: version >= 5 ? _look(json['buddyLook']) : const {},
+      gameBest: version >= 6
+          ? _points(json['gameBest'], max: maxGameStars)
+          : const {},
     );
   }
 
@@ -227,6 +246,7 @@ class LearnerProgress {
       _mapEquals(other.missionBestPoints, missionBestPoints) &&
       _mapEquals(other.quizBest, quizBest) &&
       _lookEquals(other.buddyLook, buddyLook) &&
+      _mapEquals(other.gameBest, gameBest) &&
       _keyed(other.storyEndings) == _keyed(storyEndings) &&
       _keyed(other.storyBookmarks) == _keyed(storyBookmarks);
 
@@ -245,6 +265,9 @@ class LearnerProgress {
     ]),
     Object.hashAllUnordered([
       for (final MapEntry(:key, :value) in buddyLook.entries) '$key=$value',
+    ]),
+    Object.hashAllUnordered([
+      for (final MapEntry(:key, :value) in gameBest.entries) '$key=$value',
     ]),
   );
 

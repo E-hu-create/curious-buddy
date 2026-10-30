@@ -233,6 +233,26 @@ Built before Creative Island at the product owner's request.
 - ⏳ Device test on the Samsung SM-A516U, including how the sounds actually
   sound.
 
+## Game Zone: Buddy's Challenge Arena ✅ (awaiting device test)
+
+- ✅ Game Zone Home card, and Buddy's answer opens it.
+- ✅ Memory Match, Pattern Power and Spot the Change, three levels each.
+- ✅ Quick Create: drawing ideas, never scored.
+- ✅ No timers; wrong moves lose nothing.
+- ✅ Stars saved on the device (progress schema 6), counted in My Discoveries,
+  shown and cleared in the Parent Zone; Champion cap in the Wardrobe.
+- ⏳ Device test on the Samsung SM-A516U.
+
+## Game Zone: Dino Discovery (next)
+
+Three prehistoric places, about 9 drawn creatures, clue-based identifying,
+short missions and a Field Guide. Facts need a grown-up review.
+
+## Game Zone: What's That Sound?
+
+Needs real recordings with clearly free licences (CC0), approved by the
+product owner, and written hints for children who cannot hear them.
+
 ## Later, each needing an approved requirement
 
 - `EducationalResponseProvider` beyond scripted answers (AI backend).
