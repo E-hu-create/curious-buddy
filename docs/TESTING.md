@@ -298,6 +298,8 @@ user-visible change:
   - [ ] A wrong bubble turns pink and can't be tapped again.
   - [ ] Three right clears the round; five rounds, then stars.
   - [ ] Expert has times sums.
+- [ ] **Quick games:** the Game Zone lists every Arena game near the top, and
+      each one opens in one tap.
 - [ ] **Four in a Row:**
   - [ ] Arena → Four in a Row: How to play opens on the first game.
   - [ ] Tap a column: your star drops, Buddy thinks, then Buddy's circle drops.

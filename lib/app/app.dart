@@ -143,7 +143,9 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
         ),
         Routes.games: (_) =>
             GameZoneScreen(progressRepository: dependencies.progressRepository),
-        Routes.arena: (_) => ArenaScreen(
+        // With a GameKind as its argument, this opens just that game.
+        Routes.arena: (context) => ArenaScreen(
+          only: ModalRoute.of(context)?.settings.arguments as GameKind?,
           progressRepository: dependencies.progressRepository,
           creationsRepository: dependencies.creationsRepository,
           voice: _voice,

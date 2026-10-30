@@ -519,8 +519,10 @@ bubbles stay still on purpose, so there is no hidden clock.
 `domain/games/four_in_a_row.dart` is an Arena game played against Buddy. Starter
 plays anywhere, Explorer takes wins and blocks, and Expert also looks four moves
 ahead. The child goes first, and the two sides differ by shape as well as
-colour. New quick games join `GameKind.arena`, not the Game Zone tiles, to keep
-that screen short.
+colour. New quick games join `GameKind.arena`, not the big Game Zone tiles, to
+keep that screen short. The Quick games section at the top of the Game Zone
+lists all of `GameKind.arena`, so they appear there by themselves, opening
+`ArenaScreen` for just that game.
 
 ### Dino Discovery
 

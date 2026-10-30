@@ -46,6 +46,7 @@ class GameZoneScreen extends StatefulWidget {
   static const robotLabel = 'Start coding';
   static const wordsLabel = 'Build a word';
   static const soundsLabel = 'Start listening';
+  static const quickTitle = 'Quick games';
 
   static String starsLabel(int stars, int all) => '$stars of $all stars';
   static String nextRankLabel(int stars, GameRank next) =>
@@ -74,8 +75,8 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
     }
   }
 
-  Future<void> _open(String route) async {
-    await Navigator.of(context).pushNamed(route);
+  Future<void> _open(String route, [GameKind? kind]) async {
+    await Navigator.of(context).pushNamed(route, arguments: kind);
     await _load();
   }
 
@@ -99,6 +100,18 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
       ),
       const SizedBox(height: 12),
       _Scoreboard(stars: _stars),
+      const SizedBox(height: 16),
+      Semantics(
+        header: true,
+        child: Text(
+          GameZoneScreen.quickTitle,
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(color: AppColors.white),
+        ),
+      ),
+      const SizedBox(height: 8),
+      _QuickGames(onOpen: (kind) => unawaited(_open(Routes.arena, kind))),
       const SizedBox(height: 16),
       _GameTile(
         color: AppColors.leafTint,
@@ -218,6 +231,82 @@ class _Scoreboard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Every Arena game in one tap, so none of them hide further down.
+class _QuickGames extends StatelessWidget {
+  const _QuickGames({required this.onOpen});
+
+  final ValueChanged<GameKind> onOpen;
+
+  static const _gap = 10.0;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) => Wrap(
+      spacing: _gap,
+      runSpacing: _gap,
+      children: [
+        for (final kind in GameKind.arena)
+          SizedBox(
+            width: (constraints.maxWidth - _gap) / 2,
+            child: _QuickTile(kind: kind, onTap: () => onOpen(kind)),
+          ),
+      ],
+    ),
+  );
+}
+
+class _QuickTile extends StatelessWidget {
+  const _QuickTile({required this.kind, required this.onTap});
+
+  final GameKind kind;
+  final VoidCallback onTap;
+
+  static IconData _iconOf(GameKind kind) => switch (kind) {
+    GameKind.memory => Icons.style_rounded,
+    GameKind.pattern => Icons.auto_awesome_rounded,
+    GameKind.spot => Icons.search_rounded,
+    GameKind.four => Icons.grid_on_rounded,
+    GameKind.number => Icons.bubble_chart_rounded,
+    _ => Icons.sports_esports_rounded,
+  };
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: kind.title,
+    excludeSemantics: true,
+    child: StickerPress(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Ink(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+            decoration: AppShapes.sticker(
+              _GameCard.colorOf(kind),
+              depth: 3,
+              radius: 16,
+            ),
+            child: Row(
+              children: [
+                Icon(_iconOf(kind), color: AppColors.ink, size: 28),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    kind.title,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 class _GameTile extends StatelessWidget {
@@ -726,6 +815,8 @@ class _GameCard extends StatelessWidget {
   final ValueChanged<GameLevel> onPlay;
   final VoidCallback onHowTo;
 
+  static Color colorOf(GameKind kind) => _colors[kind]!;
+
   static const _colors = {
     GameKind.memory: AppColors.grapeTint,
     GameKind.pattern: AppColors.sunTint,
@@ -744,7 +835,7 @@ class _GameCard extends StatelessWidget {
     final levels = ArenaRules.levelsOf(kind);
     return Container(
       padding: const EdgeInsets.all(14),
-      decoration: AppShapes.sticker(_colors[kind]!),
+      decoration: AppShapes.sticker(colorOf(kind)),
       child: Column(
         crossAxisAlignment: .stretch,
         children: [
