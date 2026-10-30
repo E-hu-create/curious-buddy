@@ -9,9 +9,17 @@ import 'dino.dart';
 enum GameKind {
   memory('Memory Match', 'Flip the cards and find the pairs.'),
   pattern('Pattern Power', 'Work out what comes next.'),
-  spot('Spot the Change', 'Find what is different in the second picture.');
+  spot('Spot the Change', 'Find what is different in the second picture.'),
+  maze(
+    'Treasure Maze',
+    'Guide Buddy to the chest, collecting gems on the way.',
+  );
 
   const GameKind(this.title, this.tagline);
+
+  /// The quick games shown together in the Arena. The others have their own
+  /// tile in the Game Zone.
+  static const arena = [memory, pattern, spot];
 
   final String title;
   final String tagline;

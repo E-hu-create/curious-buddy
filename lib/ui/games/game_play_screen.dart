@@ -5,13 +5,16 @@ import 'package:flutter/material.dart';
 
 import '../../data/repositories/progress_repository.dart';
 import '../../domain/games/games.dart';
+import '../../domain/games/maze.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
+import '../core/widgets/buddy/buddy.dart';
 import '../core/widgets/motion.dart';
 import 'game_view_models.dart';
 import 'how_to_play.dart';
 import 'widgets/game_parts.dart';
+import 'widgets/maze_art.dart';
 
 /// The next level of [level], if any.
 GameLevel? _nextOf(GameLevel level) => level.number < ArenaRules.levelsPerGame
@@ -46,6 +49,14 @@ class GamePlayScreen extends StatefulWidget {
   static const secondPicture = 'Second picture: tap what changed';
   static const missNote = "That one didn't change. Keep looking!";
 
+  static String gemsLabel(int found, int all) => 'Gems: $found of $all';
+  static String goLabel(MazeDirection direction) => 'Go ${direction.label}';
+  static String whereLabel(MazeGame game) {
+    final ways = game.openings[game.cell].map((d) => d.label).join(', ');
+    return 'Buddy is in row ${game.row + 1}, column ${game.column + 1}. '
+        'Open ways: $ways.';
+  }
+
   static String movesLabel(int moves) =>
       '$moves ${moves == 1 ? 'move' : 'moves'}';
   static String leftLabel(int left) =>
@@ -70,6 +81,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       progressRepository: widget.progressRepository,
     ),
     GameKind.spot => SpotViewModel(
+      level: widget.level,
+      voice: widget.voice,
+      progressRepository: widget.progressRepository,
+      random: widget.random,
+    ),
+    GameKind.maze => MazeViewModel(
       level: widget.level,
       voice: widget.voice,
       progressRepository: widget.progressRepository,
@@ -133,6 +150,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           final MemoryViewModel vm => _MemoryBoard(vm: vm),
           final PatternViewModel vm => _PatternBoard(vm: vm),
           final SpotViewModel vm => _SpotBoard(vm: vm),
+          final MazeViewModel vm => _MazeBoard(vm: vm),
           _ => const SizedBox.shrink(),
         },
       ),
@@ -467,4 +485,160 @@ class _SpotGrid extends StatelessWidget {
       ),
     );
   }
+}
+
+// ------------------------------------------------------------- Treasure Maze
+
+class _MazeBoard extends StatefulWidget {
+  const _MazeBoard({required this.vm});
+
+  final MazeViewModel vm;
+
+  @override
+  State<_MazeBoard> createState() => _MazeBoardState();
+}
+
+class _MazeBoardState extends State<_MazeBoard> {
+  /// How far the current swipe has moved. Under this it counts as a slip.
+  static const _swipeDistance = 16.0;
+  Offset _swipe = Offset.zero;
+
+  void _endSwipe() {
+    final swipe = _swipe;
+    _swipe = Offset.zero;
+    if (swipe.distance < _swipeDistance) return;
+    widget.vm.go(
+      swipe.dx.abs() > swipe.dy.abs()
+          ? (swipe.dx > 0 ? MazeDirection.right : MazeDirection.left)
+          : (swipe.dy > 0 ? MazeDirection.down : MazeDirection.up),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final vm = widget.vm;
+    final game = vm.game;
+    final textTheme = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        Text(
+          GamePlayScreen.gemsLabel(game.collected.length, game.gems.length),
+          style: textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 400),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: Semantics(
+                label: GamePlayScreen.whereLabel(game),
+                liveRegion: true,
+                excludeSemantics: true,
+                child: GestureDetector(
+                  onHorizontalDragUpdate: (d) => _swipe += d.delta,
+                  onHorizontalDragEnd: (_) => _endSwipe(),
+                  onVerticalDragUpdate: (d) => _swipe += d.delta,
+                  onVerticalDragEnd: (_) => _endSwipe(),
+                  child: Container(
+                    clipBehavior: Clip.antiAlias,
+                    decoration: AppShapes.sticker(
+                      AppColors.white,
+                      depth: 3,
+                      radius: 12,
+                    ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final cell = constraints.maxWidth / game.size;
+                        return Stack(
+                          children: [
+                            Positioned.fill(child: MazeArt(game: game)),
+                            AnimatedPositioned(
+                              duration: AppMotion.isCalm(context)
+                                  ? Duration.zero
+                                  : AppMotion.quick,
+                              curve: Curves.easeOut,
+                              left: game.column * cell,
+                              top: game.row * cell,
+                              width: cell,
+                              height: cell,
+                              child: Padding(
+                                padding: EdgeInsets.all(cell * 0.08),
+                                child: FittedBox(
+                                  child: Buddy(
+                                    height: cell,
+                                    waveOnAppear: false,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Center(
+          child: _ArrowButton(vm: vm, direction: MazeDirection.up),
+        ),
+        const SizedBox(height: 6),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _ArrowButton(vm: vm, direction: MazeDirection.left),
+            const SizedBox(width: 6),
+            _ArrowButton(vm: vm, direction: MazeDirection.down),
+            const SizedBox(width: 6),
+            _ArrowButton(vm: vm, direction: MazeDirection.right),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _ArrowButton extends StatelessWidget {
+  const _ArrowButton({required this.vm, required this.direction});
+
+  final MazeViewModel vm;
+  final MazeDirection direction;
+
+  static const _size = 68.0;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: GamePlayScreen.goLabel(direction),
+    excludeSemantics: true,
+    child: StickerPress(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => vm.go(direction),
+          borderRadius: BorderRadius.circular(18),
+          child: Ink(
+            width: _size,
+            height: _size,
+            decoration: AppShapes.sticker(AppColors.sun, depth: 3, radius: 18),
+            child: Icon(
+              switch (direction) {
+                MazeDirection.up => Icons.arrow_upward_rounded,
+                MazeDirection.right => Icons.arrow_forward_rounded,
+                MazeDirection.down => Icons.arrow_downward_rounded,
+                MazeDirection.left => Icons.arrow_back_rounded,
+              },
+              size: 34,
+              color: AppColors.ink,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

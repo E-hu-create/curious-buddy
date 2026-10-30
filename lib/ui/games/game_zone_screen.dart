@@ -9,6 +9,7 @@ import '../../data/repositories/progress_repository.dart';
 import '../../domain/games/dino.dart';
 import '../../domain/games/game_content.dart';
 import '../../domain/games/games.dart';
+import '../../domain/games/maze.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
@@ -20,6 +21,7 @@ import 'game_play_screen.dart';
 import 'how_to_play.dart';
 import 'widgets/dino_art.dart';
 import 'widgets/game_world.dart';
+import 'widgets/maze_art.dart';
 import 'widgets/picture_art.dart';
 
 /// The way into every game.
@@ -38,6 +40,7 @@ class GameZoneScreen extends StatefulWidget {
   static const dinoText =
       'Explore prehistoric places and name their creatures.';
   static const dinoLabel = 'Start exploring';
+  static const mazeLabel = 'Find the treasure';
   static const soundTitle = "What's That Sound?";
 
   static String starsLabel(int stars, int all) => '$stars of $all stars';
@@ -102,6 +105,18 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
           label: GameZoneScreen.dinoLabel,
           icon: Icons.explore_rounded,
           onPressed: () => unawaited(_open(Routes.dino)),
+        ),
+      ),
+      const SizedBox(height: 16),
+      _GameTile(
+        color: AppColors.sunTint,
+        art: const _MazeTileArt(),
+        title: GameKind.maze.title,
+        text: GameKind.maze.tagline,
+        button: PlayButton(
+          label: GameZoneScreen.mazeLabel,
+          icon: Icons.diamond_rounded,
+          onPressed: () => unawaited(_open(Routes.maze)),
         ),
       ),
       const SizedBox(height: 16),
@@ -238,6 +253,37 @@ class _DinoTileArt extends StatelessWidget {
   );
 }
 
+/// A small maze, the same every time.
+class _MazeTileArt extends StatelessWidget {
+  const _MazeTileArt();
+
+  @override
+  Widget build(BuildContext context) => ExcludeSemantics(
+    child: Container(
+      height: 170,
+      alignment: Alignment.center,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: AppColors.coral,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            MazeArt(game: MazeGame(size: 5, gems: 2, random: Random(7))),
+            const Align(
+              alignment: Alignment.topLeft,
+              child: Buddy(height: 28, waveOnAppear: false),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 /// A fan of game cards.
 class _ArenaTileArt extends StatelessWidget {
   const _ArenaTileArt();
@@ -319,12 +365,16 @@ class ArenaScreen extends StatefulWidget {
     required this.creationsRepository,
     required this.voice,
     this.random,
+    this.only,
   });
 
   final ProgressRepository progressRepository;
   final CreationsRepository creationsRepository;
   final BuddyVoice voice;
   final Random? random;
+
+  /// Shows just this game's levels, for a game with its own Game Zone tile.
+  final GameKind? only;
 
   static const title = GameZoneScreen.arenaTitle;
   static const quickTitle = 'Quick Create';
@@ -425,8 +475,9 @@ class _ArenaScreenState extends State<ArenaScreen> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final only = widget.only;
     return GameWorld(
-      title: ArenaScreen.title,
+      title: only?.title ?? ArenaScreen.title,
       children: [
         if (_loading)
           const Center(
@@ -453,7 +504,7 @@ class _ArenaScreenState extends State<ArenaScreen> {
             ),
           ),
         ] else ...[
-          for (final kind in GameKind.values) ...[
+          for (final kind in only == null ? GameKind.arena : [only]) ...[
             _GameCard(
               kind: kind,
               best: _best,
@@ -468,7 +519,7 @@ class _ArenaScreenState extends State<ArenaScreen> {
             ),
             const SizedBox(height: 14),
           ],
-          _quickCreate(textTheme),
+          if (only == null) _quickCreate(textTheme),
         ],
       ],
     );
@@ -543,6 +594,7 @@ class _GameCard extends StatelessWidget {
     GameKind.memory: AppColors.grapeTint,
     GameKind.pattern: AppColors.sunTint,
     GameKind.spot: AppColors.leafTint,
+    GameKind.maze: AppColors.sunTint,
   };
 
   @override

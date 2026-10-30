@@ -293,7 +293,7 @@ void main() {
     ) async {
       await openArena(tester);
 
-      for (final kind in GameKind.values) {
+      for (final kind in GameKind.arena) {
         await tester.ensureVisible(find.text(kind.title));
         expect(find.text(kind.title), findsOneWidget);
       }

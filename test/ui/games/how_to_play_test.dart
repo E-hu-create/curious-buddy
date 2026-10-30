@@ -42,6 +42,7 @@ void main() {
     HowToPlay.memory,
     HowToPlay.pattern,
     HowToPlay.spot,
+    HowToPlay.maze,
     HowToPlay.dino,
     HowToPlay.quickCreate,
   ];
@@ -177,7 +178,7 @@ void main() {
       await tapText(tester, GameZoneScreen.arenaLabel);
       expect(
         find.text(HowToPlaySheet.buttonTooltip),
-        findsNWidgets(GameKind.values.length + 1),
+        findsNWidgets(GameKind.arena.length + 1),
         reason: 'one for each game, and one for Quick Create',
       );
       await tapText(tester, HowToPlaySheet.buttonTooltip);

@@ -262,6 +262,20 @@ Built before Creative Island at the product owner's request.
   available from each menu and during play.
 - ⏳ Device test on the Samsung SM-A516U.
 
+## Game Zone: Treasure Maze ✅ (awaiting device test)
+
+- ✅ A new maze every game, three sizes, arrows and swiping.
+- ✅ Gems for stars; the chest finishes; no clock; walls cost nothing.
+- ⏳ Device test on the Samsung SM-A516U.
+
+## Game Zone: Code the Robot (next)
+
+Plan a line of arrow commands, press Go, and watch Buddy follow them.
+
+## Game Zone: Word Builder
+
+Unscramble letters to make science and nature words.
+
 ## Game Zone: What's That Sound?
 
 Needs real recordings with clearly free licences (CC0), approved by the

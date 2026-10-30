@@ -93,7 +93,7 @@ only used for unknown routes.
 | Living Stories ✅ | `ui/stories/`, `domain/stories/` | story repository, progress repository, BuddyVoice |
 | Quiz Time ✅ | `ui/quiz/`, `domain/quiz/` | quiz repository, progress repository, BuddyVoice |
 | Creative Island ✅ | `ui/creative/`, `domain/creative/` | creations repository (local only), BuddyVoice |
-| Game Zone ✅ (Challenge Arena, Dino Discovery) | `ui/games/`, `domain/games/` | progress and creations repositories, BuddyVoice |
+| Game Zone ✅ (Challenge Arena, Dino Discovery, Treasure Maze) | `ui/games/`, `domain/games/` | progress and creations repositories, BuddyVoice |
 | Buddy's Wardrobe ✅ | `ui/wardrobe/`, `domain/wardrobe/` | progress and content repositories, BuddyWardrobe, BuddyVoice |
 | My Discoveries ✅ | `ui/discoveries/`, `domain/discoveries/` | reads progress, mission, story, quiz and creations repositories; BuddyVoice |
 | Saved progress | `domain/models/`, `data/repositories/` | KeyValueStore |
@@ -471,6 +471,15 @@ coming soon.
 - **Art:** `InkPen` draws the sticker style in code. `PictureArt` holds the 12
   Memory Match pictures and `DinoArt` the creatures and scenes, so there are
   no image files or licences to manage.
+
+### Treasure Maze
+
+`domain/games/maze.dart` makes a new maze each game by wandering from the start
+and backing up at dead ends, so every cell has exactly one route. The chest
+goes on the farthest cell and gems go in dead ends first. `go()` runs Buddy
+until a wall, a turning, a gem or the chest. It is a `GameKind` with three
+levels, saved in `gameBest`, but `GameKind.arena` leaves it out of the Arena
+list: it has its own Game Zone tile, which opens `ArenaScreen` with `only` set.
 
 ### Dino Discovery
 

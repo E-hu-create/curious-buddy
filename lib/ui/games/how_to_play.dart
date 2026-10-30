@@ -92,6 +92,26 @@ class HowToPlay {
     ],
   );
 
+  static const maze = HowToPlay(
+    game: 'Treasure Maze',
+    tip: noClock,
+    steps: [
+      HowToStep(
+        Icons.gamepad_rounded,
+        'Tap an arrow, or swipe on the maze, to move Buddy.',
+      ),
+      HowToStep(
+        Icons.directions_run_rounded,
+        'Buddy keeps running until a wall, a turning or a gem.',
+      ),
+      HowToStep(
+        Icons.diamond_rounded,
+        'Collect the gems. All of them earns 3 stars.',
+      ),
+      HowToStep(Icons.flag_rounded, 'Reach the treasure chest to finish.'),
+    ],
+  );
+
   static const dino = HowToPlay(
     game: 'Dino Discovery',
     tip: noClock,
@@ -133,6 +153,7 @@ class HowToPlay {
     GameKind.memory => memory,
     GameKind.pattern => pattern,
     GameKind.spot => spot,
+    GameKind.maze => maze,
   };
 }
 

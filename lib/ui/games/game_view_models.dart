@@ -7,6 +7,7 @@ import '../../data/repositories/progress_repository.dart';
 import '../../data/services/sound/sound_effects_service.dart';
 import '../../domain/games/game_content.dart';
 import '../../domain/games/games.dart';
+import '../../domain/games/maze.dart';
 import '../../domain/voice/buddy_voice.dart';
 
 enum GameSaveStatus { notSaved, saved, failed }
@@ -260,6 +261,53 @@ class PatternViewModel extends ArenaViewModel {
     _right = 0;
     _picked = null;
   }
+}
+
+class MazeViewModel extends ArenaViewModel {
+  MazeViewModel({
+    required super.level,
+    required super.voice,
+    required super.progressRepository,
+    Random? random,
+  }) : _random = random ?? Random() {
+    _build();
+  }
+
+  final Random _random;
+
+  MazeGame get game => _game;
+  late MazeGame _game;
+
+  @override
+  String get introLine =>
+      'Tap the arrows or swipe to run. Collect the gems and find the '
+      'treasure.';
+
+  void _build() {
+    final (size, gems) = MazeGame.sizeFor(level.number);
+    _game = MazeGame(size: size, gems: gems, random: _random);
+  }
+
+  void go(MazeDirection direction) {
+    if (isFinished) return;
+    switch (_game.go(direction)) {
+      case MazeMove.ignored:
+        return;
+      case MazeMove.blocked:
+        sound(SoundEffect.gentle);
+        return;
+      case MazeMove.moved:
+        sound(SoundEffect.pop);
+      case MazeMove.gem:
+        sound(SoundEffect.correct);
+      case MazeMove.won:
+        unawaited(finish(_game.stars));
+    }
+    notify();
+  }
+
+  @override
+  void reset() => _build();
 }
 
 class SpotViewModel extends ArenaViewModel {

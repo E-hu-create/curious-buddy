@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../domain/games/games.dart';
 import '../domain/parent/parent_gate.dart';
 import '../domain/settings/display_settings.dart';
 import '../domain/voice/buddy_listener.dart';
@@ -143,6 +144,12 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
         Routes.games: (_) =>
             GameZoneScreen(progressRepository: dependencies.progressRepository),
         Routes.arena: (_) => ArenaScreen(
+          progressRepository: dependencies.progressRepository,
+          creationsRepository: dependencies.creationsRepository,
+          voice: _voice,
+        ),
+        Routes.maze: (_) => ArenaScreen(
+          only: GameKind.maze,
           progressRepository: dependencies.progressRepository,
           creationsRepository: dependencies.creationsRepository,
           voice: _voice,
