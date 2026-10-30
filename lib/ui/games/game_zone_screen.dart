@@ -48,6 +48,7 @@ class GameZoneScreen extends StatefulWidget {
   static const soundsLabel = 'Start listening';
   static const fourLabel = 'Beat Buddy';
   static const numberLabel = 'Start popping';
+  static const sortLabel = 'Start sorting';
 
   static String starsLabel(int stars, int all) => '$stars of $all stars';
   static String nextRankLabel(int stars, GameRank next) =>
@@ -171,6 +172,18 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
           label: GameZoneScreen.numberLabel,
           icon: Icons.bubble_chart_rounded,
           onPressed: () => unawaited(_open(Routes.number)),
+        ),
+      ),
+      const SizedBox(height: 16),
+      _GameTile(
+        color: AppColors.sunTint,
+        art: const _SortTileArt(),
+        title: GameKind.sort.title,
+        text: GameKind.sort.tagline,
+        button: PlayButton(
+          label: GameZoneScreen.sortLabel,
+          icon: Icons.category_rounded,
+          onPressed: () => unawaited(_open(Routes.sort)),
         ),
       ),
       const SizedBox(height: 16),
@@ -582,6 +595,42 @@ class _NumberTileArt extends StatelessWidget {
   );
 }
 
+/// Things dropping into their groups.
+class _SortTileArt extends StatelessWidget {
+  const _SortTileArt();
+
+  @override
+  Widget build(BuildContext context) => ExcludeSemantics(
+    child: Container(
+      height: 150,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: AppColors.leaf,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: FittedBox(
+        child: Row(
+          children: [
+            for (final (picture, color) in const [
+              (GamePicture.fish, AppColors.brandBlueTint),
+              (GamePicture.tree, AppColors.sunTint),
+              (GamePicture.rocket, AppColors.grapeTint),
+            ])
+              Container(
+                width: 104,
+                height: 120,
+                margin: const EdgeInsets.all(5),
+                alignment: Alignment.center,
+                decoration: AppShapes.sticker(color, depth: 3, radius: 14),
+                child: PictureArt(picture: picture, size: 76),
+              ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 /// A fan of game cards.
 class _ArenaTileArt extends StatelessWidget {
   const _ArenaTileArt();
@@ -868,6 +917,7 @@ class _GameCard extends StatelessWidget {
     GameKind.sounds: AppColors.grapeTint,
     GameKind.four: AppColors.brandBlueTint,
     GameKind.number: AppColors.coralTint,
+    GameKind.sort: AppColors.sunTint,
   };
 
   @override

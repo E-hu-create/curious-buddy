@@ -184,6 +184,12 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
           creationsRepository: dependencies.creationsRepository,
           voice: _voice,
         ),
+        Routes.sort: (_) => ArenaScreen(
+          only: GameKind.sort,
+          progressRepository: dependencies.progressRepository,
+          creationsRepository: dependencies.creationsRepository,
+          voice: _voice,
+        ),
         Routes.dino: (_) => DinoHubScreen(
           progressRepository: dependencies.progressRepository,
           voice: _voice,

@@ -48,6 +48,7 @@ void main() {
     HowToPlay.sounds,
     HowToPlay.four,
     HowToPlay.number,
+    HowToPlay.sort,
     HowToPlay.dino,
     HowToPlay.quickCreate,
   ];

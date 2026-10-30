@@ -18,7 +18,8 @@ enum GameKind {
   words('Word Builder', 'Unscramble the letters to make science words.'),
   sounds("What's That Sound?", 'Listen closely and work out what made it.'),
   four('Four in a Row', 'Line up four counters before Buddy does.'),
-  number('Number Pop', 'Pop every bubble that makes the target number.');
+  number('Number Pop', 'Pop every bubble that makes the target number.'),
+  sort('Sort It!', 'Put each thing in the right group.');
 
   const GameKind(this.title, this.tagline);
 

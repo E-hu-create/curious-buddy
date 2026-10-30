@@ -233,6 +233,20 @@ class HowToPlay {
     ],
   );
 
+  static const sort = HowToPlay(
+    game: 'Sort It!',
+    tip: noClock,
+    steps: [
+      HowToStep(Icons.help_outline_rounded, 'Read the question at the top.'),
+      HowToStep(Icons.category_rounded, 'Look at the thing on the big card.'),
+      HowToStep(Icons.touch_app_rounded, 'Tap the group it belongs in.'),
+      HowToStep(
+        Icons.star_rounded,
+        'Sort all 8 things. Fewer wrong picks earn more stars.',
+      ),
+    ],
+  );
+
   static const dino = HowToPlay(
     game: 'Dino Discovery',
     tip: noClock,
@@ -280,6 +294,7 @@ class HowToPlay {
     GameKind.sounds => sounds,
     GameKind.four => four,
     GameKind.number => number,
+    GameKind.sort => sort,
   };
 }
 

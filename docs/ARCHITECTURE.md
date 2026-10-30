@@ -507,6 +507,13 @@ SoundPool as the effects, so Android must know each new clip by name.
 sounds off. Then the game shows the clue, so it can always be played, and it
 can be played by a child who can't hear the clips.
 
+### Sort It!
+
+`domain/games/sort_it.dart` holds two sets of things per level, and each game
+sorts eight from one set. Expert has three groups. Surprising items carry a
+short note, shown and read once they are sorted. `sortProblems()` checks that
+the sets are fair. It has its own Game Zone tile.
+
 ### Number Pop
 
 `domain/games/number_pop.dart` builds each round from the level's sums: three

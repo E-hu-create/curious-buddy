@@ -11,6 +11,7 @@ import '../../domain/games/games.dart';
 import '../../domain/games/maze.dart';
 import '../../domain/games/number_pop.dart';
 import '../../domain/games/robot.dart';
+import '../../domain/games/sort_it.dart';
 import '../../domain/games/sound_game.dart';
 import '../../domain/games/words.dart';
 import '../../domain/voice/buddy_voice.dart';
@@ -698,6 +699,58 @@ class NumberViewModel extends ArenaViewModel {
 
   @override
   void reset() => _game = NumberPopGame(level: level.number, random: _random);
+}
+
+class SortViewModel extends ArenaViewModel {
+  SortViewModel({
+    required super.level,
+    required super.voice,
+    required super.progressRepository,
+    Random? random,
+  }) : _random = random ?? Random() {
+    _game = SortGame(level: level.number, random: _random);
+  }
+
+  final Random _random;
+
+  SortGame get game => _game;
+  late SortGame _game;
+
+  /// Whether the last pick was the wrong group.
+  bool get wasWrong => _wrong;
+  bool _wrong = false;
+
+  @override
+  String get introLine => _game.set.question;
+
+  void pick(int group) {
+    if (isFinished) return;
+    switch (_game.pick(group)) {
+      case SortResult.ignored:
+        return;
+      case SortResult.wrong:
+        _wrong = true;
+        sound(SoundEffect.gentle);
+      case SortResult.right:
+        _wrong = false;
+        final note = _game.lastSorted?.note;
+        if (note == null) {
+          sound(SoundEffect.correct);
+        } else {
+          say(note, lead: SoundEffect.correct);
+        }
+      case SortResult.won:
+        _wrong = false;
+        unawaited(finish(_game.stars));
+    }
+    notify();
+  }
+
+  @override
+  void reset() {
+    _game = SortGame(level: level.number, random: _random);
+    _wrong = false;
+  }
 }
 
 class SpotViewModel extends ArenaViewModel {

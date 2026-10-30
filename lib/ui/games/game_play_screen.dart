@@ -58,6 +58,11 @@ class GamePlayScreen extends StatefulWidget {
   static const secondPicture = 'Second picture: tap what changed';
   static const missNote = "That one didn't change. Keep looking!";
 
+  static const sortWrong = 'Not that group. Try again!';
+
+  static String itemLabel(int n, int total) => 'Thing $n of $total';
+  static String groupLabel(String group, int count) => '$group, $count sorted';
+
   static String roundLabel(int n, int total) => 'Round $n of $total';
   static String targetLabel(int target) => 'Make $target';
   static String toGoLabel(int left) => '$left to go';
@@ -178,6 +183,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       progressRepository: widget.progressRepository,
       random: widget.random,
     ),
+    GameKind.sort => SortViewModel(
+      level: widget.level,
+      voice: widget.voice,
+      progressRepository: widget.progressRepository,
+      random: widget.random,
+    ),
   };
 
   @override
@@ -246,6 +257,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           final SoundViewModel vm => _SoundBoard(vm: vm),
           final FourViewModel vm => _FourBoard(vm: vm),
           final NumberViewModel vm => _NumberBoard(vm: vm),
+          final SortViewModel vm => _SortBoard(vm: vm),
           _ => const SizedBox.shrink(),
         },
       ),
@@ -1641,6 +1653,147 @@ class _Bubble extends StatelessWidget {
       label: sum.spoken,
       excludeSemantics: true,
       child: bubble,
+    );
+  }
+}
+
+// ------------------------------------------------------------------ Sort It!
+
+class _SortBoard extends StatelessWidget {
+  const _SortBoard({required this.vm});
+
+  final SortViewModel vm;
+
+  static const _colors = [
+    AppColors.leafTint,
+    AppColors.brandBlueTint,
+    AppColors.grapeTint,
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final game = vm.game;
+    final note = game.lastSorted?.note;
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        Text(
+          GamePlayScreen.itemLabel(game.index + 1, game.items.length),
+          style: textTheme.titleSmall,
+        ),
+        const SizedBox(height: 4),
+        Semantics(
+          header: true,
+          child: Text(game.set.question, style: textTheme.titleLarge),
+        ),
+        const SizedBox(height: 12),
+        PageSwap(
+          pageKey: '${game.index}',
+          child: Container(
+            key: ValueKey(game.index),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
+            decoration: AppShapes.sticker(AppColors.sun, depth: 4),
+            child: Text(
+              game.item.name,
+              textAlign: TextAlign.center,
+              style: textTheme.headlineMedium,
+            ),
+          ),
+        ),
+        const SizedBox(height: 14),
+        Row(
+          crossAxisAlignment: .start,
+          children: [
+            for (final (i, group) in game.set.groups.indexed) ...[
+              if (i > 0) const SizedBox(width: 8),
+              Expanded(
+                child: _SortGroup(
+                  name: group,
+                  count: game.counts[i],
+                  color: _colors[i],
+                  tried: game.tried.contains(i),
+                  onTap: () => vm.pick(i),
+                ),
+              ),
+            ],
+          ],
+        ),
+        const SizedBox(height: 12),
+        if (vm.wasWrong)
+          Semantics(
+            liveRegion: true,
+            child: Text(GamePlayScreen.sortWrong, style: textTheme.bodyLarge),
+          )
+        else if (note != null)
+          Semantics(
+            liveRegion: true,
+            child: Text(note, style: textTheme.bodyLarge),
+          ),
+      ],
+    );
+  }
+}
+
+class _SortGroup extends StatelessWidget {
+  const _SortGroup({
+    required this.name,
+    required this.count,
+    required this.color,
+    required this.tried,
+    required this.onTap,
+  });
+
+  final String name;
+  final int count;
+  final Color color;
+  final bool tried;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Semantics(
+      button: !tried,
+      label: GamePlayScreen.groupLabel(name, count),
+      excludeSemantics: true,
+      child: StickerPress(
+        enabled: !tried,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: tried ? null : onTap,
+            borderRadius: BorderRadius.circular(16),
+            child: Ink(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 14),
+              decoration: AppShapes.sticker(
+                tried ? AppColors.coralTint : color,
+                depth: 3,
+                radius: 16,
+              ),
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.inventory_2_rounded,
+                    size: 34,
+                    color: AppColors.ink,
+                  ),
+                  const SizedBox(height: 6),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      name,
+                      style: textTheme.titleMedium,
+                      maxLines: 1,
+                    ),
+                  ),
+                  Text('$count', style: textTheme.titleMedium),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
