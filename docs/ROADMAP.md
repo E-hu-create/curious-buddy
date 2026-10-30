@@ -171,7 +171,7 @@ Built before Creative Island at the product owner's request.
 - ⏳ Grown-up review of the quiz questions before external testers.
 - Later: more questions per level, so replays vary more.
 
-## Phase 7: Creative Island ✅ (awaiting device test)
+## Phase 7: Creative Island ✅
 
 - ✅ Creative Island page with activities and a My Creations shelf.
 - ✅ Drawing Studio: finger drawing with 8 colours, 3 brushes, eraser, undo,
@@ -183,7 +183,8 @@ Built before Creative Island at the product owner's request.
 - ✅ No typing, camera, photos, export or sharing, and no new permissions.
 - ✅ Buddy's voice follows the Parent Zone settings; no microphone.
 - ✅ Creations in the Parent Zone overview and deleted by its reset.
-- ⏳ Device test on the Samsung SM-A516U.
+- ✅ Device test on the Samsung SM-A516U: the Creative Island checks in
+  TESTING.md passed (confirmed 30 Oct 2026).
 - Later: Invention Workshop (combine problem, power and parts cards).
 
 ## Later, each needing an approved requirement
