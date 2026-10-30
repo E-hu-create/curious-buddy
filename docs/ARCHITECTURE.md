@@ -457,7 +457,8 @@ Backed by `SharedPreferencesKeyValueStore`
 DataStore), so progress and settings (`voice.muted`,
 `voice.allowOnlineRecognition`) **survive restarts**. Data stays in the
 app's private storage: Android cloud backup is off (`allowBackup="false"`),
-and uninstalling deletes it. Any storage failure, including plugin errors,
+data-extraction rules ask Android to leave it out of phone-to-phone transfers
+(some phone makers may not honour this), and uninstalling deletes it. Any storage failure, including plugin errors,
 becomes a `StorageException`, which every caller already handles: settings
 fall back to safe defaults (voice on, online off), and progress is hidden
 rather than overwritten. Tests use `InMemoryKeyValueStore` or the plugin's

@@ -71,8 +71,10 @@ class DataOverviewSection extends StatelessWidget {
       "In Curious Buddy's private app storage on this phone, which other "
       'apps cannot normally read. Curious Buddy does not add its own encryption. '
       'Android cloud backup is turned off for this app, so it is not copied '
-      "to a Google account. Uninstalling the app, or the phone's Settings > "
-      'Apps > Curious Buddy > Storage > Clear data, also deletes it.';
+      'to a Google account. Curious Buddy also asks Android to leave it out '
+      'of phone-to-phone transfers, but some phone makers may still copy it. '
+      "Uninstalling the app, or the phone's Settings > Apps > Curious Buddy > "
+      'Storage > Clear data, also deletes it.';
 
   static const sentTitle = 'Does anything leave the phone?';
   static const sent =

@@ -44,11 +44,13 @@ reads storage back and only reports success if nothing is left. Optionally it
 writes every setting back to its default. Any new stored data must be added
 to this table, the Parent Zone overview and the reset.
 
-Saved **on this phone only**, in the app's private storage
-(`shared_preferences`). Android cloud backup is turned off for the app
-(`allowBackup="false"`), so it is not copied to Google Drive (phone-to-phone
-transfer is still open; see "Still to resolve before external testers");
-uninstalling the app deletes it. Conversations are never saved. The app
+Saved in the app's private storage on the phone (`shared_preferences`).
+Android cloud backup is turned off for the app (`allowBackup="false"`), so it
+is not copied to Google Drive. Data-extraction rules
+(`res/xml/data_extraction_rules.xml`) also exclude everything from
+phone-to-phone transfers on Android 12+, but Android's documentation says
+some manufacturers' devices cannot disable these, so **we do not promise the
+data can never move to a new phone**. Uninstalling the app deletes it. Conversations are never saved. The app
 does not add its own encryption; it relies on Android keeping app-private
 storage away from other apps.
 
@@ -176,9 +178,10 @@ each time it opens, so Delete all progress empties it.
 - A privacy policy and parent-facing notice.
 - The permanent application ID.
 - Whether a stronger parent check is needed for stores' kids categories.
-- Phone-to-phone transfer: `allowBackup="false"` may not stop it on Android
-  12+, so saved data, now including children's creations, could move to a
-  new phone. Add data-extraction rules and confirm on a device.
+- Phone-to-phone transfer: reduced, not guaranteed. Data-extraction rules
+  exclude all app data, but some manufacturers' devices may still transfer
+  it. Not yet tested with a real transfer (for example Samsung Smart Switch
+  to a second phone). The Parent Zone tells parents this.
 
 ## No accounts, backend or AI yet
 

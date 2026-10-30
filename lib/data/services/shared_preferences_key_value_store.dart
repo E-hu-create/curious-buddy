@@ -14,8 +14,9 @@ class StorageException implements Exception {
 
 /// [KeyValueStore] saved on the device with `shared_preferences`
 /// (Android DataStore). Survives app restarts; deleted when the app is
-/// uninstalled. Never leaves the phone: Android cloud backup is turned off
-/// for this app (`android:allowBackup="false"`).
+/// uninstalled. Android cloud backup is off (`android:allowBackup="false"`),
+/// and data-extraction rules ask Android to leave it out of phone-to-phone
+/// transfers, though some phone makers may not honour that.
 ///
 /// Every failure surfaces as a [StorageException], including plugin
 /// *errors* (e.g. no platform implementation), so callers' existing

@@ -88,7 +88,9 @@ See [STAGE_C_SMARTER_ANSWERS.md](STAGE_C_SMARTER_ANSWERS.md).
   `KeyValueStore`. No other code changed.
 - ✅ Progress, voice on/off and the grown-up "allow online" setting survive
   restarts.
-- ✅ Android cloud backup off, so data stays on the phone.
+- ✅ Android cloud backup off. Data-extraction rules also leave data out of
+  phone-to-phone transfers, though some phone makers may not honour them
+  (see CHILD_SAFETY.md).
 - ✅ Storage failures (even plugin errors) fall back safely.
 - ✅ Device test: settings survive force-stop (confirmed on the Samsung
   SM-A516U, 29 Oct 2026).

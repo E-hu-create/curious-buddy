@@ -6,14 +6,16 @@
          grown-up allows online recognition. The app itself makes no network
          calls. -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- allowBackup=false: saved progress and settings stay on this phone and
-         are never copied to cloud backup (children's data minimisation). -->
+    <!-- Children's data minimisation. allowBackup=false: no cloud backup.
+         dataExtractionRules: on Android 12+, also leaves all app data out of
+         phone-to-phone transfers (some phone makers may not honour this). -->
     <application
         android:label="Curious Buddy"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false"
-        android:fullBackupContent="false">
+        android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/data_extraction_rules">
         <activity
             android:name=".MainActivity"
             android:exported="true"
