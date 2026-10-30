@@ -4,6 +4,7 @@ import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/repositories/quiz_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/domain/models/learner_progress.dart';
+import 'package:curious_buddy/domain/quiz/more_quiz_topics.dart';
 import 'package:curious_buddy/domain/quiz/quiz.dart';
 import 'package:curious_buddy/domain/quiz/quiz_content.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
@@ -109,14 +110,21 @@ void main() {
     await openQuiz(tester);
 
     expect(find.text(QuizHubScreen.title), findsOneWidget);
-    for (final topic in starterQuizTopics) {
+    for (final topic in allQuizTopics) {
       await tester.ensureVisible(find.text(topic.title));
       expect(find.text(topic.title), findsOneWidget);
     }
-    expect(find.text(QuizHubScreen.starsLabel(0, 36)), findsOneWidget);
-    expect(find.text('Play Starter'), findsNWidgets(4));
-    expect(find.text(QuizHubScreen.lockedLabel('Starter')), findsNWidgets(4));
-    expect(find.text(QuizHubScreen.lockedLabel('Explorer')), findsNWidgets(4));
+    final count = allQuizTopics.length;
+    expect(find.text(QuizHubScreen.starsLabel(0, count * 9)), findsOneWidget);
+    expect(find.text('Play Starter'), findsNWidgets(count));
+    expect(
+      find.text(QuizHubScreen.lockedLabel('Starter')),
+      findsNWidgets(count),
+    );
+    expect(
+      find.text(QuizHubScreen.lockedLabel('Explorer')),
+      findsNWidgets(count),
+    );
   });
 
   testWidgets('shows a loading state, then the quizzes', (tester) async {
@@ -212,7 +220,7 @@ void main() {
     await tapText(tester, QuizPlayScreen.backLabel);
 
     expect(find.text(QuizHubScreen.title), findsOneWidget);
-    expect(find.text(QuizHubScreen.starsLabel(2, 36)), findsOneWidget);
+    expect(find.text(QuizHubScreen.starsLabel(2, 90)), findsOneWidget);
     expect(find.text(QuizHubScreen.bestLabel(4, 5)), findsOneWidget);
     expect(find.text('Play again Starter'), findsOneWidget);
     expect(find.text('Play Explorer'), findsOneWidget);
@@ -324,7 +332,7 @@ void main() {
 
     await tapText(tester, ParentZoneScreen.backToBuddy);
     await tapText(tester, HomeDestination.quiz.title);
-    expect(find.text(QuizHubScreen.starsLabel(0, 36)), findsOneWidget);
+    expect(find.text(QuizHubScreen.starsLabel(0, 90)), findsOneWidget);
     expect(find.text('Play Explorer'), findsNothing);
   });
 

@@ -1,5 +1,6 @@
 import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
+import 'package:curious_buddy/domain/quiz/more_quiz_topics.dart';
 import 'package:curious_buddy/domain/quiz/quiz.dart';
 import 'package:curious_buddy/domain/quiz/quiz_content.dart';
 import 'package:curious_buddy/domain/voice/buddy_voice.dart';
@@ -145,10 +146,10 @@ void main() {
       await tester.pumpAndSettle();
       await _tap(tester, find.text(HomeDestination.quiz.title));
       // Overflow errors fail the test automatically.
-      expect(find.text(starterQuizTopics.last.title), findsOneWidget);
+      expect(find.text(allQuizTopics.last.title), findsWidgets);
     });
 
-    for (final topic in starterQuizTopics) {
+    for (final topic in allQuizTopics) {
       testWidgets('every question of ${topic.title} lays out: $name', (
         tester,
       ) async {

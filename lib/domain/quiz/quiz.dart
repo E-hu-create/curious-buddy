@@ -20,6 +20,28 @@ class QuizQuestion {
     required this.explanation,
   });
 
+  /// Writes a question briefly. Option ids are a, b, c, d in the order
+  /// written; [answer] is the index of the correct one.
+  factory QuizQuestion.fromList(
+    String id,
+    String prompt,
+    List<String> options,
+    int answer,
+    String explanation,
+  ) {
+    const ids = ['a', 'b', 'c', 'd'];
+    return QuizQuestion(
+      id: id,
+      prompt: prompt,
+      options: [
+        for (final (i, text) in options.indexed)
+          QuizOption(id: ids[i], text: text),
+      ],
+      answerId: ids[answer],
+      explanation: explanation,
+    );
+  }
+
   final String id;
   final String prompt;
 

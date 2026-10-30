@@ -296,6 +296,9 @@ user-visible change:
   - [ ] Second game of that kind: it doesn't open by itself.
   - [ ] During a game, the ? at the top opens it. Got it returns to the game
         with nothing lost.
+- [ ] **Quiz Time update:** ten topics, each with its own icon. Play a new
+      topic: answers, explanations and read aloud work, and stars count on the
+      Quiz screen and in My Discoveries.
 - [ ] **Ten more Living Stories:** the Stories screen lists thirteen, each with
       its own cover. Play one to an ending, then again by another path. The
       endings collection, bookmarks and Buddy's reading all work, and My

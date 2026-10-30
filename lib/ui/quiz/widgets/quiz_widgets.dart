@@ -28,6 +28,36 @@ import '../../core/widgets/motion.dart';
         color: AppColors.leaf,
         tint: AppColors.leafTint,
       ),
+      'dinosaurs' => (
+        icon: Icons.landscape_rounded,
+        color: AppColors.sun,
+        tint: AppColors.sunTint,
+      ),
+      'oceans' => (
+        icon: Icons.water_rounded,
+        color: AppColors.brandBlue,
+        tint: AppColors.brandBlueTint,
+      ),
+      'plants' => (
+        icon: Icons.local_florist_rounded,
+        color: AppColors.leaf,
+        tint: AppColors.leafTint,
+      ),
+      'energy' => (
+        icon: Icons.bolt_rounded,
+        color: AppColors.sun,
+        tint: AppColors.sunTint,
+      ),
+      'matter' => (
+        icon: Icons.science_rounded,
+        color: AppColors.grape,
+        tint: AppColors.grapeTint,
+      ),
+      'inventions' => (
+        icon: Icons.smart_toy_rounded,
+        color: AppColors.coral,
+        tint: AppColors.coralTint,
+      ),
       _ => (
         icon: Icons.quiz_rounded,
         color: AppColors.brandBlue,

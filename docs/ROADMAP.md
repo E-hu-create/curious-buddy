@@ -292,6 +292,14 @@ Built before Creative Island at the product owner's request.
 - ⏳ Grown-up review of the facts.
 - ⏳ Device test on the Samsung SM-A516U.
 
+## Quiz Time update ✅ (awaiting device test)
+
+- ✅ Six new topics: Dinosaurs & Fossils, Oceans, Plants & Bugs, Electricity &
+  Energy, Matter & Materials, and Robots & Inventions.
+- ✅ Ten topics and 150 questions in all, with an icon for each topic.
+- ⏳ Grown-up review of the new questions.
+- ⏳ Device test on the Samsung SM-A516U.
+
 ## Ten more Living Stories ✅ (awaiting device test)
 
 - ✅ The Whale Who Lost Her Song, The Secret of the Six-Sided Snowflake, The Bee

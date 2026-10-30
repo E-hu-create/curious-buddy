@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 
+import '../../domain/quiz/more_quiz_topics.dart';
 import '../../domain/quiz/quiz.dart';
-import '../../domain/quiz/quiz_content.dart';
 import '../../domain/quiz/quiz_rules.dart';
 
-/// Where Quiz Time questions come from. Today: the reviewed starter
-/// quizzes bundled in the app (offline). Kept behind an interface so more
+/// Where Quiz Time questions come from. Today: the quizzes bundled in the
+/// app (offline). Kept behind an interface so more
 /// can be added later without changing screens.
 abstract interface class QuizRepository {
   /// Only valid, playable topics. Invalid ones are left out (and logged)
@@ -15,7 +15,7 @@ abstract interface class QuizRepository {
 
 class BundledQuizRepository implements QuizRepository {
   BundledQuizRepository({List<QuizTopic>? topics})
-    : topics = topics ?? starterQuizTopics;
+    : topics = topics ?? allQuizTopics;
 
   final List<QuizTopic> topics;
 

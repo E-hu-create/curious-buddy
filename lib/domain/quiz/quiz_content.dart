@@ -6,27 +6,7 @@ import 'quiz.dart';
 /// test/domain/quiz checks every question with QuizValidator.
 final starterQuizTopics = <QuizTopic>[_space, _animals, _body, _earth];
 
-/// Option ids are a, b, c, d in the order written; [answer] is the index of
-/// the correct one.
-QuizQuestion _q(
-  String id,
-  String prompt,
-  List<String> options,
-  int answer,
-  String explanation,
-) {
-  const ids = ['a', 'b', 'c', 'd'];
-  return QuizQuestion(
-    id: id,
-    prompt: prompt,
-    options: [
-      for (final (i, text) in options.indexed)
-        QuizOption(id: ids[i], text: text),
-    ],
-    answerId: ids[answer],
-    explanation: explanation,
-  );
-}
+final _q = QuizQuestion.fromList;
 
 // ------------------------------------------------------------------- Space
 

@@ -1,4 +1,5 @@
 import 'package:curious_buddy/data/repositories/quiz_repository.dart';
+import 'package:curious_buddy/domain/quiz/more_quiz_topics.dart';
 import 'package:curious_buddy/domain/quiz/quiz.dart';
 import 'package:curious_buddy/domain/quiz/quiz_content.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,13 +13,14 @@ QuizTopic _copy(QuizTopic source, {String? id, List<QuizLevel>? levels}) =>
     );
 
 void main() {
-  test('loads all four starter topics offline', () async {
+  test('loads every topic offline, none left out', () async {
     final topics = await BundledQuizRepository().loadTopics();
 
     expect(
       [for (final t in topics) t.id],
-      ['space', 'animals', 'body', 'earth'],
+      [for (final t in allQuizTopics) t.id],
     );
+    expect(topics, hasLength(10));
   });
 
   test('leaves out invalid topics instead of showing them broken', () async {
