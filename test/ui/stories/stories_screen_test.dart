@@ -4,6 +4,7 @@ import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/repositories/story_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/domain/models/learner_progress.dart';
+import 'package:curious_buddy/domain/stories/more_stories.dart';
 import 'package:curious_buddy/domain/stories/story.dart';
 import 'package:curious_buddy/domain/stories/story_content.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
@@ -71,18 +72,21 @@ void main() {
 
   Future<LearnerProgress> saved() => LocalProgressRepository(store).load();
 
-  testWidgets('Home opens the real Living Stories screen with three stories', (
+  testWidgets('Home opens the real Living Stories screen with every story', (
     tester,
   ) async {
     await openStories(tester);
 
     expect(find.text(StoriesScreen.title), findsOneWidget);
-    for (final story in starterStories) {
+    for (final story in allStories) {
       await tester.ensureVisible(find.text(story.title));
       expect(find.text(story.title), findsOneWidget);
     }
-    expect(find.text(StoriesScreen.startLabel), findsNWidgets(3));
-    expect(find.text(StoriesScreen.endingsLabel(0, 12)), findsOneWidget);
+    expect(
+      find.text(StoriesScreen.startLabel),
+      findsNWidgets(allStories.length),
+    );
+    expect(find.text(StoriesScreen.endingsLabel(0, 42)), findsOneWidget);
   });
 
   testWidgets('shows a loading state, then the stories', (tester) async {
@@ -271,7 +275,10 @@ void main() {
     await openStories(tester);
 
     expect(find.text(StoriesScreen.continueLabel), findsNothing);
-    expect(find.text(StoriesScreen.startLabel), findsNWidgets(3));
+    expect(
+      find.text(StoriesScreen.startLabel),
+      findsNWidgets(allStories.length),
+    );
   });
 
   testWidgets('leaving a story mid-narration stops Buddy at once', (

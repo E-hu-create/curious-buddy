@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../domain/stories/story.dart';
 import '../../core/themes/app_colors.dart';
 import '../../core/themes/app_theme.dart';
+import 'story_picture_more.dart';
 
 /// A scene's picture, drawn in code in the app's flat sticker style (solid
 /// fills, ink outlines), so it stays crisp and needs no image files. Each
@@ -41,6 +42,7 @@ class StoryPicture extends StatelessWidget {
       'A windmill spinning on a windy hill, watched by a snail and ants',
     ScenePicture.inventorGarden =>
       'Tall sunflowers in a watered garden, with the mouse inventor cheering',
+    _ => moreStoryPictureLabel(picture),
   };
 
   @override
@@ -146,6 +148,8 @@ class StoryPicturePainter extends CustomPainter {
         _inventorHill(canvas, size);
       case ScenePicture.inventorGarden:
         _inventorGarden(canvas, size);
+      default:
+        paintMoreStoryPicture(canvas, size, picture);
     }
   }
 

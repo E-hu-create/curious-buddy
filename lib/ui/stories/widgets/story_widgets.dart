@@ -5,31 +5,71 @@ import '../../core/themes/app_colors.dart';
 import '../../core/themes/app_theme.dart';
 import '../../core/widgets/motion.dart';
 
-/// Each story's own colour, so the three feel like different books.
-({Color accent, Color tint}) storyColours(ScenePicture cover) =>
-    switch (cover) {
-      ScenePicture.forestGrey ||
-      ScenePicture.forestOak ||
-      ScenePicture.forestStream ||
-      ScenePicture.forestRainbow => (
-        accent: AppColors.leaf,
-        tint: AppColors.leafTint,
-      ),
-      ScenePicture.lumaCamp ||
-      ScenePicture.lumaRidge ||
-      ScenePicture.lumaCrater ||
-      ScenePicture.lumaSignal => (
-        accent: AppColors.grape,
-        tint: AppColors.grapeTint,
-      ),
-      ScenePicture.inventorShed ||
-      ScenePicture.inventorWorkshop ||
-      ScenePicture.inventorHill ||
-      ScenePicture.inventorGarden => (
-        accent: AppColors.coral,
-        tint: AppColors.coralTint,
-      ),
-    };
+/// Each story's own colour, so they feel like different books.
+({Color accent, Color tint}) storyColours(
+  ScenePicture cover,
+) => switch (cover) {
+  ScenePicture.forestGrey ||
+  ScenePicture.forestOak ||
+  ScenePicture.forestStream ||
+  ScenePicture.forestRainbow => (
+    accent: AppColors.leaf,
+    tint: AppColors.leafTint,
+  ),
+  ScenePicture.lumaCamp ||
+  ScenePicture.lumaRidge ||
+  ScenePicture.lumaCrater ||
+  ScenePicture.lumaSignal => (
+    accent: AppColors.grape,
+    tint: AppColors.grapeTint,
+  ),
+  ScenePicture.inventorShed ||
+  ScenePicture.inventorWorkshop ||
+  ScenePicture.inventorHill ||
+  ScenePicture.inventorGarden => (
+    accent: AppColors.coral,
+    tint: AppColors.coralTint,
+  ),
+  ScenePicture.whaleSea ||
+  ScenePicture.whaleReef ||
+  ScenePicture.whaleSong ||
+  ScenePicture.snowHill ||
+  ScenePicture.snowCrystal ||
+  ScenePicture.snowSunny ||
+  ScenePicture.springMountain ||
+  ScenePicture.springPool ||
+  ScenePicture.springHappy => (
+    accent: AppColors.brandBlue,
+    tint: AppColors.brandBlueTint,
+  ),
+  ScenePicture.beeMeadow ||
+  ScenePicture.beeHive ||
+  ScenePicture.beeBusy ||
+  ScenePicture.fossilCliff ||
+  ScenePicture.fossilBrush ||
+  ScenePicture.fossilDisplay => (
+    accent: AppColors.sun,
+    tint: AppColors.sunTint,
+  ),
+  ScenePicture.bubbleCave ||
+  ScenePicture.bubbleBig ||
+  ScenePicture.bubbleRainbow ||
+  ScenePicture.starNight ||
+  ScenePicture.starScope ||
+  ScenePicture.starMap => (accent: AppColors.grape, tint: AppColors.grapeTint),
+  ScenePicture.seedHill ||
+  ScenePicture.seedRiver ||
+  ScenePicture.seedTall => (accent: AppColors.leaf, tint: AppColors.leafTint),
+  ScenePicture.robotDust ||
+  ScenePicture.robotPanel ||
+  ScenePicture.robotSun ||
+  ScenePicture.monarchField ||
+  ScenePicture.monarchMountains ||
+  ScenePicture.monarchForest => (
+    accent: AppColors.coral,
+    tint: AppColors.coralTint,
+  ),
+};
 
 /// One choice, shown as a numbered storybook card.
 class StoryChoiceCard extends StatelessWidget {

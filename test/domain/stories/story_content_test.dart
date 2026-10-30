@@ -1,3 +1,4 @@
+import 'package:curious_buddy/domain/stories/more_stories.dart';
 import 'package:curious_buddy/domain/stories/story.dart';
 import 'package:curious_buddy/domain/stories/story_content.dart';
 import 'package:curious_buddy/domain/stories/story_rules.dart';
@@ -14,7 +15,32 @@ void main() {
     ]);
   });
 
-  for (final story in starterStories) {
+  test('there are thirteen stories with unique ids and titles', () {
+    expect(moreStories, hasLength(10));
+    expect(allStories.map((s) => s.id).toSet(), hasLength(13));
+    expect(allStories.map((s) => s.title).toSet(), hasLength(13));
+  });
+
+  test('no story is left out as invalid', () {
+    for (final story in allStories) {
+      expect(StoryValidator.problems(story), isEmpty, reason: story.id);
+    }
+  });
+
+  test('every new story has three endings to discover', () {
+    for (final story in moreStories) {
+      expect(story.endings, hasLength(3), reason: story.id);
+    }
+  });
+
+  test('no two stories share a main character name', () {
+    final seed = moreStories.firstWhere((s) => s.id == 'little_seed');
+    final text = seed.scenes.map((s) => s.text).join(' ');
+    expect(text, contains('Tuft'));
+    expect(text, isNot(contains('Pip')));
+  });
+
+  for (final story in allStories) {
     group(story.title, () {
       final graph = StoryGraph(story);
 
@@ -50,7 +76,7 @@ void main() {
 
       test('uses a distinct set of pictures from the other stories', () {
         final mine = {for (final s in story.scenes) s.picture};
-        for (final other in starterStories.where((s) => s != story)) {
+        for (final other in allStories.where((s) => s != story)) {
           final theirs = {for (final s in other.scenes) s.picture};
           expect(mine.intersection(theirs), isEmpty);
         }
@@ -86,7 +112,7 @@ void main() {
 
   test('scene pictures cover every story picture', () {
     final used = {
-      for (final story in starterStories)
+      for (final story in allStories)
         for (final scene in story.scenes) scene.picture,
     };
     expect(used, ScenePicture.values.toSet());

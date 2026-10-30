@@ -4,6 +4,7 @@ import 'package:curious_buddy/data/services/voice/text_to_speech_service.dart';
 import 'package:curious_buddy/domain/missions/more_missions.dart';
 import 'package:curious_buddy/domain/models/learner_progress.dart';
 import 'package:curious_buddy/domain/settings/display_settings.dart';
+import 'package:curious_buddy/domain/stories/more_stories.dart';
 import 'package:curious_buddy/domain/voice/buddy_listener.dart';
 import 'package:curious_buddy/domain/voice/buddy_voice.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
@@ -453,8 +454,11 @@ void main() {
 
       await tapText(tester, HomeDestination.stories.title);
       expect(find.text(StoriesScreen.continueLabel), findsNothing);
-      expect(find.text(StoriesScreen.startLabel), findsNWidgets(3));
-      expect(find.text(StoriesScreen.endingsLabel(0, 12)), findsOneWidget);
+      expect(
+        find.text(StoriesScreen.startLabel),
+        findsNWidgets(allStories.length),
+      );
+      expect(find.text(StoriesScreen.endingsLabel(0, 42)), findsOneWidget);
     });
 
     testWidgets('reopening the app does not bring deleted progress back', (

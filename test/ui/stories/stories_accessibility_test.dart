@@ -1,5 +1,6 @@
 import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
+import 'package:curious_buddy/domain/stories/more_stories.dart';
 import 'package:curious_buddy/domain/stories/story.dart';
 import 'package:curious_buddy/domain/stories/story_content.dart';
 import 'package:curious_buddy/domain/voice/buddy_voice.dart';
@@ -143,7 +144,7 @@ void main() {
       expect(find.text(StoriesScreen.title), findsOneWidget);
     });
 
-    for (final story in starterStories) {
+    for (final story in allStories) {
       testWidgets('every page of "${story.title}" lays out without '
           'overflow: $name', (tester) async {
         usePhoneScreen(tester, logicalSize: size);

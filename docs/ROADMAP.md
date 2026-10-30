@@ -292,6 +292,17 @@ Built before Creative Island at the product owner's request.
 - ⏳ Grown-up review of the facts.
 - ⏳ Device test on the Samsung SM-A516U.
 
+## Ten more Living Stories ✅ (awaiting device test)
+
+- ✅ The Whale Who Lost Her Song, The Secret of the Six-Sided Snowflake, The Bee
+  Who Danced a Map, The Dragon Who Sneezed Bubbles, The Library of Old
+  Starlight, The Mountain That Kept Warm, The Little Seed's Long Journey, Rusty
+  and the Dusty Solar Panels, The Mystery in the Cliff and The Great Butterfly
+  Journey, thirteen stories in all.
+- ✅ Each has branching choices, three endings and its own drawn pictures.
+- ⏳ Grown-up review of the science.
+- ⏳ Device test on the Samsung SM-A516U.
+
 ## Seven more Mystery Missions ✅ (awaiting device test)
 
 - ✅ The Puddle That Vanished, The Lighthouse That Went Dark, The Mystery

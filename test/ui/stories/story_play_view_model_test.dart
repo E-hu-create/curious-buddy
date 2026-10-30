@@ -1,5 +1,6 @@
 import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
+import 'package:curious_buddy/domain/stories/more_stories.dart';
 import 'package:curious_buddy/domain/stories/story.dart';
 import 'package:curious_buddy/domain/stories/story_content.dart';
 import 'package:curious_buddy/domain/voice/buddy_voice.dart';
@@ -230,7 +231,7 @@ void main() {
   });
 
   test('every ending of every story can be reached by choosing', () async {
-    for (final story in starterStories) {
+    for (final story in allStories) {
       final reached = <String>{};
       void explore(List<String> choiceIds) {
         final vm = build(story: story)..begin();

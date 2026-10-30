@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 
+import '../../domain/stories/more_stories.dart';
 import '../../domain/stories/story.dart';
-import '../../domain/stories/story_content.dart';
 import '../../domain/stories/story_rules.dart';
 
-/// Where Living Stories come from. Today: the reviewed starter stories
+/// Where Living Stories come from. Today: the stories
 /// bundled in the app (offline). Kept behind an interface so more can be
 /// added later without changing screens.
 abstract interface class StoryRepository {
@@ -14,7 +14,7 @@ abstract interface class StoryRepository {
 }
 
 class BundledStoryRepository implements StoryRepository {
-  BundledStoryRepository({this.stories = starterStories});
+  BundledStoryRepository({this.stories = allStories});
 
   final List<Story> stories;
 

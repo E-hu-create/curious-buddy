@@ -1,4 +1,5 @@
 import 'package:curious_buddy/data/repositories/story_repository.dart';
+import 'package:curious_buddy/domain/stories/more_stories.dart';
 import 'package:curious_buddy/domain/stories/story.dart';
 import 'package:curious_buddy/domain/stories/story_content.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,13 +15,11 @@ Story _copy(Story source, {String? id, List<StoryScene>? scenes}) => Story(
 );
 
 void main() {
-  test('loads all three starter stories offline', () async {
+  test('loads every story offline, none left out', () async {
     final stories = await BundledStoryRepository().loadStories();
 
-    expect(
-      [for (final s in stories) s.id],
-      ['forest_colours', 'luma_signal', 'tiny_inventor'],
-    );
+    expect([for (final s in stories) s.id], [for (final s in allStories) s.id]);
+    expect(stories, hasLength(13));
   });
 
   test('leaves out invalid stories instead of showing them broken', () async {
