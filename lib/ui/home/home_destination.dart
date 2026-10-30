@@ -47,6 +47,14 @@ enum HomeDestination {
     icon: Icons.emoji_events_rounded,
     color: AppColors.coral,
     tint: AppColors.coralTint,
+  ),
+  wardrobe(
+    route: Routes.wardrobe,
+    title: "Buddy's Wardrobe",
+    subtitle: 'Dress up Buddy with what you earn',
+    icon: Icons.checkroom_rounded,
+    color: AppColors.buddyTealLight,
+    tint: AppColors.buddyBelly,
   );
 
   const HomeDestination({

@@ -6,8 +6,10 @@ import '../domain/parent/parent_gate.dart';
 import '../domain/settings/display_settings.dart';
 import '../domain/voice/buddy_listener.dart';
 import '../domain/voice/buddy_voice.dart';
+import '../domain/wardrobe/buddy_wardrobe.dart';
 import '../ui/core/themes/app_theme.dart';
 import '../ui/core/widgets/buddy/buddy.dart';
+import '../ui/core/widgets/buddy/buddy_look_scope.dart';
 import '../ui/core/widgets/placeholder_screen.dart';
 import '../ui/creative/creative_hub_screen.dart';
 import '../ui/discoveries/discoveries_screen.dart';
@@ -16,6 +18,7 @@ import '../ui/missions/missions_screen.dart';
 import '../ui/parent_zone/parent_zone_screen.dart';
 import '../ui/quiz/quiz_hub_screen.dart';
 import '../ui/stories/stories_screen.dart';
+import '../ui/wardrobe/wardrobe_screen.dart';
 import 'app_dependencies.dart';
 import 'routes.dart';
 import 'voice_navigator_observer.dart';
@@ -48,6 +51,10 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
     settings: widget.dependencies.settingsStore,
   );
 
+  late final BuddyWardrobe _wardrobe = BuddyWardrobe(
+    progressRepository: widget.dependencies.progressRepository,
+  );
+
   /// Kept for the whole session so its pause after wrong answers cannot be
   /// skipped by leaving and reopening the Parent Zone.
   final ParentGate _parentGate = ParentGate();
@@ -65,6 +72,7 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
     unawaited(_voice.ready);
     unawaited(_listener.ready);
     unawaited(_display.ready);
+    unawaited(_wardrobe.load());
     _lifecycle = AppLifecycleListener(
       // Covers calls, the app switcher, the screen turning off, and leaving
       // the app.
@@ -84,6 +92,7 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
     _listener.dispose();
     _voice.dispose();
     _display.dispose();
+    _wardrobe.dispose();
     super.dispose();
   }
 
@@ -105,7 +114,7 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
               disableAnimations:
                   media.disableAnimations || _display.reduceMotion,
             ),
-            child: child!,
+            child: BuddyLookScope(wardrobe: _wardrobe, child: child!),
           );
         },
       ),
@@ -127,6 +136,15 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
           storyRepository: dependencies.storyRepository,
           progressRepository: dependencies.progressRepository,
           voice: _voice,
+        ),
+        Routes.wardrobe: (_) => WardrobeScreen(
+          progressRepository: dependencies.progressRepository,
+          missionRepository: dependencies.missionRepository,
+          storyRepository: dependencies.storyRepository,
+          quizRepository: dependencies.quizRepository,
+          creationsRepository: dependencies.creationsRepository,
+          voice: _voice,
+          wardrobe: _wardrobe,
         ),
         Routes.discoveries: (_) => DiscoveriesScreen(
           progressRepository: dependencies.progressRepository,
@@ -154,6 +172,7 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
           display: _display,
           progressRepository: dependencies.progressRepository,
           creationsRepository: dependencies.creationsRepository,
+          wardrobe: _wardrobe,
         ),
       },
       onUnknownRoute: (settings) => MaterialPageRoute<void>(

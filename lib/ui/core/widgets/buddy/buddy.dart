@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import 'buddy_look_scope.dart';
 import 'buddy_painter.dart';
 
 export 'buddy_painter.dart' show BuddyMood;
@@ -72,8 +73,12 @@ class _BuddyState extends State<Buddy> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final width = widget.height * BuddyPainter.aspectRatio;
+    final look = BuddyLookScope.of(context);
     return Semantics(
-      label: Buddy.semanticLabel,
+      label: look.isEmpty
+          ? Buddy.semanticLabel
+          : '${Buddy.semanticLabel}, wearing '
+                '${look.items.map((i) => i.title.toLowerCase()).join(' and ')}',
       image: true,
       child: GestureDetector(
         onTap: _onTap,
@@ -92,6 +97,7 @@ class _BuddyState extends State<Buddy> with SingleTickerProviderStateMixin {
                   mood: _reacting ? BuddyMood.excited : widget.mood,
                   armLift: lift,
                   armSwing: math.sin(t * math.pi * 6) * lift,
+                  look: look,
                 ),
               ),
             );

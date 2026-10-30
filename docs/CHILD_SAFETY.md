@@ -22,7 +22,7 @@ Zone shows the same list to parents, with live values read from storage.
 
 | Key | Data | Why | Reset by "Delete all progress" |
 | --- | --- | --- | --- |
-| `progress` | `LearnerProgress` JSON: IDs of completed missions and stories, best mission points, story ending IDs found, the scene IDs of an unfinished story, and the best score per quiz level | Show progress, badges, endings found, quiz stars and open levels, and let the child continue a story | Deleted |
+| `progress` | `LearnerProgress` JSON: IDs of completed missions and stories, best mission points, story ending IDs found, the scene IDs of an unfinished story, the best score per quiz level, and what Buddy is wearing | Show progress, badges, endings found, quiz stars and open levels, and let the child continue a story | Deleted |
 | `progress.corrupt_backup` | A copy of saved progress that could not be read (only exists if that ever happened) | Not silently losing a child's progress | Deleted |
 | `voice.muted` | Voice on/off | Respect the choice to keep Buddy quiet | Kept, unless "Also restore default settings" is ticked |
 | `voice.speed` | Speaking speed (slower / normal / faster) | Grown-up choice | Same as above |

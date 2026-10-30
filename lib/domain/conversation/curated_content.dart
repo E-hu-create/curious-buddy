@@ -279,6 +279,21 @@ const curatedTopics = <CuratedTopic>[
     actionLabel: 'Visit Creative Island',
   ),
   CuratedTopic(
+    id: 'wardrobe',
+    triggers: [
+      ['wardrobe'],
+      ['outfit'],
+      ['dress', 'up'],
+      ['clothes'],
+    ],
+    answers: [
+      'Ooh, I love dressing up! Everything you do earns me something new to '
+          'wear. Pick my outfit in my wardrobe!',
+    ],
+    action: BuddyAction.openWardrobe,
+    actionLabel: "Open Buddy's Wardrobe",
+  ),
+  CuratedTopic(
     id: 'discoveries',
     triggers: [
       ['my', 'progress'],

@@ -7,5 +7,6 @@ abstract final class Routes {
   static const creative = '/creative';
   static const discoveries = '/discoveries';
   static const quiz = '/quiz';
+  static const wardrobe = '/wardrobe';
   static const parentZone = '/parent-zone';
 }

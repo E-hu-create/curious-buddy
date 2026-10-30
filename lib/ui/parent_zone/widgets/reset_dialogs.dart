@@ -44,6 +44,9 @@ class ResetExplainDialog extends StatefulWidget {
         : 'Place in unfinished stories: '
               '${DataOverviewSection.placesValue(s)}.',
     s == null
+        ? "Buddy's outfit."
+        : "Buddy's outfit: ${DataOverviewSection.outfitValue(s)}.",
+    s == null
         ? 'Creative Island drawings and creatures.'
         : 'Creative Island creations: '
               '${DataOverviewSection.creationsValue(s)}.',

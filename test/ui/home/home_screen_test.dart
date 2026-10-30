@@ -10,6 +10,7 @@ import 'package:curious_buddy/ui/home/home_view_model.dart';
 import 'package:curious_buddy/ui/missions/missions_screen.dart';
 import 'package:curious_buddy/ui/quiz/quiz_hub_screen.dart';
 import 'package:curious_buddy/ui/stories/stories_screen.dart';
+import 'package:curious_buddy/ui/wardrobe/wardrobe_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -83,6 +84,8 @@ void main() {
       } else if (destination == HomeDestination.creative) {
         // The real Creative Island screen.
         expect(find.text(CreativeHubScreen.welcome), findsOneWidget);
+      } else if (destination == HomeDestination.wardrobe) {
+        expect(find.text(WardrobeScreen.help), findsOneWidget);
       } else {
         expect(destination, HomeDestination.discoveries);
         expect(find.text(DiscoveriesScreen.nextTitle), findsOneWidget);

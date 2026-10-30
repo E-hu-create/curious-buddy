@@ -216,6 +216,16 @@ Built before Creative Island at the product owner's request.
 - Later: sound effects (needs an audio package, sounds with clear rights and
   a Parent Zone setting).
 
+## Buddy's Wardrobe ✅ (awaiting device test)
+
+- ✅ 10 items (hats, glasses, neckwear) earned through missions, stories,
+  quizzes and creations; locked items show how to earn them.
+- ✅ Buddy wears his outfit on every screen.
+- ✅ Saved with progress (schema 5), shown in the Parent Zone, and cleared by
+  its reset.
+- ✅ Home card (six cards now) and Buddy's answer open it.
+- ⏳ Device test on the Samsung SM-A516U.
+
 ## Later, each needing an approved requirement
 
 - `EducationalResponseProvider` beyond scripted answers (AI backend).

@@ -8,6 +8,7 @@ import '../../domain/parent/parent_gate.dart';
 import '../../domain/settings/display_settings.dart';
 import '../../domain/voice/buddy_listener.dart';
 import '../../domain/voice/buddy_voice.dart';
+import '../../domain/wardrobe/buddy_wardrobe.dart';
 import '../core/themes/app_colors.dart';
 import 'parent_zone_view_model.dart';
 import 'widgets/data_overview.dart';
@@ -30,6 +31,7 @@ class ParentZoneScreen extends StatefulWidget {
     required this.display,
     required this.progressRepository,
     required this.creationsRepository,
+    required this.wardrobe,
   });
 
   final ParentGate gate;
@@ -39,13 +41,16 @@ class ParentZoneScreen extends StatefulWidget {
   final ProgressRepository progressRepository;
   final CreationsRepository creationsRepository;
 
+  /// Reloaded after a reset, so Buddy takes his outfit off at once.
+  final BuddyWardrobe wardrobe;
+
   static const title = 'Parent Zone';
   static const backToBuddy = 'Back to Buddy';
   static const resetTitle = 'Delete progress';
   static const resetHelp =
       "Deletes your child's mission results, story endings, quiz results, "
-      'places in unfinished stories and Creative Island creations from this '
-      'phone. Everything stays playable. You will see exactly what is deleted and confirm twice.';
+      "places in unfinished stories, Buddy's outfit and Creative Island "
+      'creations from this phone. Everything stays playable. You will see exactly what is deleted and confirm twice.';
   static const resetLabel = 'Delete all progress...';
   static const resetting = 'Deleting...';
   static const resetDone =
@@ -117,6 +122,7 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
     );
     if (confirmed != true || !mounted) return;
     await _vm.reset(settingsToo: settingsToo);
+    await widget.wardrobe.load();
   }
 
   @override

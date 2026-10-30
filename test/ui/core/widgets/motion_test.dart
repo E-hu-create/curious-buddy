@@ -13,6 +13,7 @@ import 'package:curious_buddy/ui/core/widgets/motion.dart';
 import 'package:curious_buddy/ui/creative/creature_screen.dart';
 import 'package:curious_buddy/ui/discoveries/discoveries_screen.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
+import 'package:curious_buddy/ui/home/widgets/destination_grid.dart';
 import 'package:curious_buddy/ui/quiz/quiz_play_screen.dart';
 import 'package:curious_buddy/ui/quiz/widgets/quiz_widgets.dart';
 import 'package:curious_buddy/ui/stories/story_play_screen.dart';
@@ -347,22 +348,29 @@ void main() {
       expect(text.headlineMedium!.fontWeight, FontWeight.w800);
     });
 
-    testWidgets('the last Home card fills its row on phones', (tester) async {
+    testWidgets('a card alone in its row fills it on phones', (tester) async {
       usePhoneScreen(tester);
-      await tester.pumpWidget(buildTestApp(store: store));
-      await tester.pumpAndSettle();
+      final five = HomeDestination.values.take(5).toList();
+      await tester.pumpWidget(
+        app(
+          SingleChildScrollView(
+            child: DestinationGrid(destinations: five, onSelected: (_) {}),
+          ),
+        ),
+      );
 
-      final last = find.text(HomeDestination.values.last.title);
-      final first = find.text(HomeDestination.values.first.title);
-      await tester.ensureVisible(last);
-      await tester.pumpAndSettle();
-      double cardWidth(Finder text) => tester
+      double cardWidth(HomeDestination destination) => tester
           .getSize(
-            find.ancestor(of: text, matching: find.byType(Expanded)).first,
+            find
+                .ancestor(
+                  of: find.text(destination.title),
+                  matching: find.byType(Expanded),
+                )
+                .first,
           )
           .width;
 
-      expect(cardWidth(last), greaterThan(cardWidth(first) * 1.5));
+      expect(cardWidth(five.last), greaterThan(cardWidth(five.first) * 1.5));
     });
   });
 }

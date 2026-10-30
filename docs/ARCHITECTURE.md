@@ -93,6 +93,7 @@ only used for unknown routes.
 | Living Stories ✅ | `ui/stories/`, `domain/stories/` | story repository, progress repository, BuddyVoice |
 | Quiz Time ✅ | `ui/quiz/`, `domain/quiz/` | quiz repository, progress repository, BuddyVoice |
 | Creative Island ✅ | `ui/creative/`, `domain/creative/` | creations repository (local only), BuddyVoice |
+| Buddy's Wardrobe ✅ | `ui/wardrobe/`, `domain/wardrobe/` | progress and content repositories, BuddyWardrobe, BuddyVoice |
 | My Discoveries ✅ | `ui/discoveries/`, `domain/discoveries/` | reads progress, mission, story, quiz and creations repositories; BuddyVoice |
 | Saved progress | `domain/models/`, `data/repositories/` | KeyValueStore |
 | Parent Zone ✅ | `ui/parent_zone/`, `domain/parent/`, `domain/settings/` | progress repository, BuddyVoice, BuddyListener, DisplaySettings; behind `ParentGate` |
@@ -429,6 +430,16 @@ its reset empties the journal.
 - **Narration:** Buddy reads the summary on opening, and a discovery when its
   speaker is tapped. Automatic reading follows the Parent Zone setting.
 
+## Buddy's Wardrobe
+
+`domain/wardrobe/wardrobe.dart` lists 10 items in three slots (hats, glasses,
+neckwear), each with a goal such as "6 story endings". Unlocks are worked out
+from `DiscoveryJournal`, so they are never saved. Only what Buddy is wearing
+is saved, as `buddyLook` in `LearnerProgress`, so Delete all progress clears
+it. `BuddyWardrobe` (one instance, owned by the app root) reaches every Buddy
+through `BuddyLookScope`; `BuddyOutfitPainter` draws the items on his grid.
+Saved items that are unknown or in the wrong slot are ignored.
+
 ## Look and feel
 
 - **Font:** Nunito, bundled in `assets/fonts/` with its licence (`OFL.txt`,
@@ -470,6 +481,8 @@ its reset empties the journal.
   `storyBookmarks` (the scene path of an unfinished story, at most 64
   entries; a bookmark with any bad entry is dropped whole). Older data is
   still read, with no story details.
+- **Schema 5** adds `buddyLook` (wardrobe slot to item name). Older data is
+  still read, with no outfit.
 - **Schema 4** adds `quizBest` (best correct answers per quiz level id, 0 to
   100). Older data is still read, with no quiz results.
 - **Migrations:** bump `schemaVersion` and handle older versions in

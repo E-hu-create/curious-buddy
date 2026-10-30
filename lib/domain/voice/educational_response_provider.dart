@@ -39,6 +39,7 @@ enum BuddyAction {
 
   /// Opens Quiz Time.
   startQuiz,
+  openWardrobe,
 }
 
 class EducationalResponse {

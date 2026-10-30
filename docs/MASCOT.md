@@ -28,7 +28,7 @@ consistent everywhere: in code today, and in any final artwork later.
 | Arms / feet | Two short rounded arms, two small rounded feet. |
 | Backpack | Tiny golden-yellow explorer pack (`#FFC43D`, shade `#E0960F`) behind the right side, one strap over the right shoulder with a buckle, flap and front pocket. |
 | Surface | Smooth and soft, lit from the top left; gentle shadow underneath. No textures or fur. |
-| Avoid | Teeth, sharp shapes, extra accessories, clutter. |
+| Avoid | Teeth, sharp shapes, extra accessories, clutter. Buddy's default look has no accessories; outfits appear only when a child chooses them in the Wardrobe. |
 
 ## Expressions
 

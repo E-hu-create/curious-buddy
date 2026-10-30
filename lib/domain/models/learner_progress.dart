@@ -3,7 +3,8 @@
 /// Deliberately contains no personal information: no name, age, photo,
 /// location or voice data. Only identifiers of content the child completed,
 /// their best mission scores, the story endings they found, where they
-/// stopped reading, and their best score on each quiz level.
+/// stopped reading, their best score on each quiz level, and what Buddy is
+/// wearing.
 class LearnerProgress {
   const LearnerProgress({
     this.completedMissionIds = const {},
@@ -12,20 +13,23 @@ class LearnerProgress {
     this.storyEndings = const {},
     this.storyBookmarks = const {},
     this.quizBest = const {},
+    this.buddyLook = const {},
   });
 
   static const empty = LearnerProgress();
 
   /// Bump when the stored shape changes, and handle older versions in
   /// [tryFromJson]. History: 1 = ids only; 2 = adds mission best points;
-  /// 3 = adds story endings and bookmarks; 4 = adds best quiz scores.
-  static const schemaVersion = 4;
+  /// 3 = adds story endings and bookmarks; 4 = adds best quiz scores;
+  /// 5 = adds Buddy's outfit.
+  static const schemaVersion = 5;
 
   static const maxIdLength = 64;
   static const maxPoints = 100000;
   static const maxBookmarkLength = 64;
   static const maxQuizScore = 100;
   static final _validId = RegExp(r'^[a-z0-9_\-]+$');
+  static final _validName = RegExp(r'^[a-zA-Z]+$');
 
   final Set<String> completedMissionIds;
   final Set<String> completedStoryIds;
@@ -44,6 +48,9 @@ class LearnerProgress {
   /// it.
   final Map<String, int> quizBest;
 
+  /// What Buddy is wearing: wardrobe slot name to item name.
+  final Map<String, String> buddyLook;
+
   /// Sum of each mission's best score.
   int get totalMissionPoints =>
       missionBestPoints.values.fold(0, (sum, points) => sum + points);
@@ -55,6 +62,7 @@ class LearnerProgress {
     Map<String, Set<String>>? storyEndings,
     Map<String, List<String>>? storyBookmarks,
     Map<String, int>? quizBest,
+    Map<String, String>? buddyLook,
   }) => LearnerProgress(
     completedMissionIds: completedMissionIds ?? this.completedMissionIds,
     completedStoryIds: completedStoryIds ?? this.completedStoryIds,
@@ -62,6 +70,7 @@ class LearnerProgress {
     storyEndings: storyEndings ?? this.storyEndings,
     storyBookmarks: storyBookmarks ?? this.storyBookmarks,
     quizBest: quizBest ?? this.quizBest,
+    buddyLook: buddyLook ?? this.buddyLook,
   );
 
   /// Records a finished mission, keeping the best score so far.
@@ -113,6 +122,7 @@ class LearnerProgress {
     },
     'storyBookmarks': storyBookmarks,
     'quizBest': quizBest,
+    'buddyLook': buddyLook,
   };
 
   /// Parses stored progress, returning null if the data is unusable.
@@ -139,8 +149,22 @@ class LearnerProgress {
       quizBest: version >= 4
           ? _points(json['quizBest'], max: maxQuizScore)
           : const {},
+      buddyLook: version >= 5 ? _look(json['buddyLook']) : const {},
     );
   }
+
+  static Map<String, String> _look(Object? raw) {
+    if (raw is! Map<String, Object?>) return const {};
+    return {
+      for (final MapEntry(:key, :value) in raw.entries)
+        if (_isValidName(key) && value is String && _isValidName(value))
+          key: value,
+    };
+  }
+
+  /// Wardrobe names are camelCase, unlike content ids.
+  static bool _isValidName(String name) =>
+      name.length <= maxIdLength && _validName.hasMatch(name);
 
   static Map<String, Set<String>> _endings(Object? raw) {
     if (raw is! Map<String, Object?>) return const {};
@@ -202,6 +226,7 @@ class LearnerProgress {
       _setEquals(other.completedStoryIds, completedStoryIds) &&
       _mapEquals(other.missionBestPoints, missionBestPoints) &&
       _mapEquals(other.quizBest, quizBest) &&
+      _lookEquals(other.buddyLook, buddyLook) &&
       _keyed(other.storyEndings) == _keyed(storyEndings) &&
       _keyed(other.storyBookmarks) == _keyed(storyBookmarks);
 
@@ -218,6 +243,9 @@ class LearnerProgress {
     Object.hashAllUnordered([
       for (final MapEntry(:key, :value) in quizBest.entries) '$key=$value',
     ]),
+    Object.hashAllUnordered([
+      for (final MapEntry(:key, :value) in buddyLook.entries) '$key=$value',
+    ]),
   );
 
   /// A canonical string for comparing story maps: endings are sets (order
@@ -232,6 +260,9 @@ class LearnerProgress {
 
   static bool _setEquals(Set<String> a, Set<String> b) =>
       a.length == b.length && a.containsAll(b);
+
+  static bool _lookEquals(Map<String, String> a, Map<String, String> b) =>
+      a.length == b.length && a.entries.every((e) => b[e.key] == e.value);
 
   static bool _mapEquals(Map<String, int> a, Map<String, int> b) =>
       a.length == b.length && a.entries.every((e) => b[e.key] == e.value);

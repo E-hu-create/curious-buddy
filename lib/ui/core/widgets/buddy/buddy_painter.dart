@@ -2,7 +2,9 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../../../domain/wardrobe/wardrobe.dart';
 import '../../themes/app_colors.dart';
+import 'buddy_outfit_painter.dart';
 
 /// Buddy's expressions. Every mood uses the same character model; only the
 /// face and arm pose change. See docs/MASCOT.md.
@@ -15,7 +17,12 @@ enum BuddyMood { neutral, happy, curious, surprised, thoughtful, excited }
 /// crisp at any size without image assets. Soft shading comes from radial
 /// gradients and a blurred highlight; there are no textures.
 class BuddyPainter extends CustomPainter {
-  const BuddyPainter({required this.mood, this.armLift = 0, this.armSwing = 0});
+  const BuddyPainter({
+    required this.mood,
+    this.armLift = 0,
+    this.armSwing = 0,
+    this.look = BuddyLook.none,
+  });
 
   final BuddyMood mood;
 
@@ -25,6 +32,9 @@ class BuddyPainter extends CustomPainter {
 
   /// -1..1 side-to-side wave motion, applied on top of [armLift].
   final double armSwing;
+
+  /// What he is wearing. His default look has no accessories.
+  final BuddyLook look;
 
   static const gridWidth = 100.0;
   static const gridHeight = 120.0;
@@ -67,10 +77,13 @@ class BuddyPainter extends CustomPainter {
     if (!rightInFront) _arm(canvas, _rightShoulder, right);
     _bodyShape(canvas);
     _straps(canvas);
+    BuddyOutfitPainter.paintNeck(canvas, _body, look.neck);
     _brows(canvas);
     _eyes(canvas);
     _cheeks(canvas);
     _mouth(canvas);
+    BuddyOutfitPainter.paintGlasses(canvas, _leftEye, _rightEye, look.glasses);
+    BuddyOutfitPainter.paintHat(canvas, look.hat);
     if (rightInFront) _arm(canvas, _rightShoulder, right);
 
     canvas
@@ -459,5 +472,6 @@ class BuddyPainter extends CustomPainter {
   bool shouldRepaint(BuddyPainter oldDelegate) =>
       oldDelegate.mood != mood ||
       oldDelegate.armLift != armLift ||
-      oldDelegate.armSwing != armSwing;
+      oldDelegate.armSwing != armSwing ||
+      oldDelegate.look != look;
 }
