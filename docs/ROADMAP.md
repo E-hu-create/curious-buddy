@@ -292,6 +292,15 @@ Built before Creative Island at the product owner's request.
 - ⏳ Grown-up review of the facts.
 - ⏳ Device test on the Samsung SM-A516U.
 
+## Seven more Mystery Missions ✅ (awaiting device test)
+
+- ✅ The Puddle That Vanished, The Lighthouse That Went Dark, The Mystery
+  Postcards, The Strange Tracks on the Beach, The Case of the Flat Loaf, The
+  Quiet Orchard and The Case of the Shrinking Shadow, ten missions in all.
+- ✅ Real science, a drawn cover and a badge for each.
+- ⏳ Grown-up review of the science.
+- ⏳ Device test on the Samsung SM-A516U.
+
 ## Stronger logo ✅ (awaiting device test)
 
 - ✅ App icon: Buddy on a golden sun, on the Game Zone night sky.

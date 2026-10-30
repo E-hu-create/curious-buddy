@@ -1,6 +1,7 @@
 import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/data/services/voice/text_to_speech_service.dart';
+import 'package:curious_buddy/domain/missions/more_missions.dart';
 import 'package:curious_buddy/domain/models/learner_progress.dart';
 import 'package:curious_buddy/domain/settings/display_settings.dart';
 import 'package:curious_buddy/domain/voice/buddy_listener.dart';
@@ -443,7 +444,10 @@ void main() {
 
       await tapText(tester, HomeDestination.missions.title);
       expect(find.text(MissionsScreen.solvedLabel), findsNothing);
-      expect(find.text(MissionsScreen.playLabel), findsNWidgets(3));
+      expect(
+        find.text(MissionsScreen.playLabel),
+        findsNWidgets(allMissions.length),
+      );
       await tester.pageBack();
       await tester.pumpAndSettle();
 

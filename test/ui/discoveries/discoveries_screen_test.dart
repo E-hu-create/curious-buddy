@@ -6,6 +6,7 @@ import 'package:curious_buddy/domain/creative/creation.dart';
 import 'package:curious_buddy/domain/discoveries/discovery_journal.dart';
 import 'package:curious_buddy/domain/missions/mission.dart';
 import 'package:curious_buddy/domain/missions/mission_content.dart';
+import 'package:curious_buddy/domain/missions/more_missions.dart';
 import 'package:curious_buddy/domain/models/learner_progress.dart';
 import 'package:curious_buddy/domain/stories/story_content.dart';
 import 'package:curious_buddy/ui/creative/creative_hub_screen.dart';
@@ -108,7 +109,10 @@ void main() {
     expect(find.textContaining('first discovery'), findsOneWidget);
     expect(find.text(DiscoveriesScreen.nextTitle), findsOneWidget);
     expect(find.textContaining(_mission.title), findsWidgets);
-    expect(find.text(DiscoveriesScreen.notYet), findsNWidgets(3));
+    expect(
+      find.text(DiscoveriesScreen.notYet),
+      findsNWidgets(allMissions.length),
+    );
     expect(find.text(DiscoveriesScreen.noCreations), findsOneWidget);
   });
 

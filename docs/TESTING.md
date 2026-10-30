@@ -296,6 +296,9 @@ user-visible change:
   - [ ] Second game of that kind: it doesn't open by itself.
   - [ ] During a game, the ? at the top opens it. Got it returns to the game
         with nothing lost.
+- [ ] **Seven more Mystery Missions:** the Missions screen lists ten, each
+      with its own cover. Play at least one to the end: clues, hints, wrong
+      answers, the badge, and My Discoveries counts it.
 - [ ] **Logo:**
   - [ ] Phone home screen: the icon stands out, and nothing is cut off.
   - [ ] Opening the app: the splash shows Buddy on the sun, and the name.

@@ -1,8 +1,8 @@
 import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/domain/missions/mission.dart';
-import 'package:curious_buddy/domain/missions/mission_content.dart';
 import 'package:curious_buddy/domain/missions/mission_rules.dart';
+import 'package:curious_buddy/domain/missions/more_missions.dart';
 import 'package:curious_buddy/domain/voice/buddy_voice.dart';
 import 'package:curious_buddy/ui/missions/mission_play_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -45,7 +45,7 @@ void answerWrongly(MissionPlayViewModel vm) {
   vm.check();
 }
 
-Mission missionWith(String id) => starterMissions.firstWhere((m) => m.id == id);
+Mission missionWith(String id) => allMissions.firstWhere((m) => m.id == id);
 
 void main() {
   late FakeTextToSpeechService tts;
@@ -210,7 +210,7 @@ void main() {
   });
 
   test('pieces are never shown already in the right order', () {
-    for (final mission in starterMissions) {
+    for (final mission in allMissions) {
       for (final stage in mission.stages.whereType<OrderStage>()) {
         final shown = MissionPlayViewModel.shuffled(stage.pieces);
         expect(shown, isNot(stage.pieces), reason: stage.id);
@@ -219,7 +219,7 @@ void main() {
     }
   });
 
-  for (final mission in starterMissions) {
+  for (final mission in allMissions) {
     test('${mission.title} can be finished, scored and saved', () async {
       final vm = build(mission.id)..start();
       for (var i = 0; i < mission.stages.length; i++) {

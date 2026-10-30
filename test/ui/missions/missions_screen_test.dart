@@ -4,6 +4,7 @@ import 'package:curious_buddy/data/repositories/mission_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/domain/missions/mission.dart';
 import 'package:curious_buddy/domain/missions/mission_content.dart';
+import 'package:curious_buddy/domain/missions/more_missions.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
 import 'package:curious_buddy/ui/missions/mission_play_screen.dart';
 import 'package:curious_buddy/ui/missions/missions_screen.dart';
@@ -91,16 +92,19 @@ void main() {
     }
   }
 
-  testWidgets('Home opens the real Missions screen with three cases', (
+  testWidgets('Home opens the real Missions screen with every case', (
     tester,
   ) async {
     await openMissions(tester);
 
     expect(find.text(MissionsScreen.title), findsOneWidget);
-    for (final mission in starterMissions) {
+    for (final mission in allMissions) {
       expect(find.text(mission.title), findsOneWidget);
     }
-    expect(find.text(MissionsScreen.newLabel), findsNWidgets(3));
+    expect(
+      find.text(MissionsScreen.newLabel),
+      findsNWidgets(allMissions.length),
+    );
     expect(find.text('0 points'), findsOneWidget);
   });
 
@@ -187,7 +191,7 @@ void main() {
   testWidgets('results are saved, shown as solved, and can be replayed', (
     tester,
   ) async {
-    final mission = starterMissions.last; // includes an order puzzle
+    final mission = allMissions.last; // includes an order puzzle
     await openMissions(tester);
     await tapText(tester, mission.title);
     final play = find.widgetWithText(FilledButton, MissionsScreen.playLabel);

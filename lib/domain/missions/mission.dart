@@ -6,7 +6,18 @@
 library;
 
 /// Which locally drawn cover a mission uses.
-enum MissionArt { moonstone, garden, signals }
+enum MissionArt {
+  moonstone,
+  garden,
+  signals,
+  puddle,
+  lighthouse,
+  postcards,
+  beach,
+  bread,
+  orchard,
+  shadow,
+}
 
 class Clue {
   const Clue({required this.id, required this.title, required this.text});

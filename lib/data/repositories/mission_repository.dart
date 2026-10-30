@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 
 import '../../domain/missions/mission.dart';
-import '../../domain/missions/mission_content.dart';
 import '../../domain/missions/mission_rules.dart';
+import '../../domain/missions/more_missions.dart';
 
-/// Where missions come from. Today: the reviewed starter missions bundled
+/// Where missions come from. Today: the missions bundled
 /// in the app (offline). Kept behind an interface so more can be added
 /// later without changing screens.
 abstract interface class MissionRepository {
@@ -14,7 +14,7 @@ abstract interface class MissionRepository {
 }
 
 class BundledMissionRepository implements MissionRepository {
-  BundledMissionRepository({this.missions = starterMissions});
+  BundledMissionRepository({this.missions = allMissions});
 
   final List<Mission> missions;
 

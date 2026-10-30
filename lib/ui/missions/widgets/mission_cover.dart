@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../domain/missions/mission.dart';
 import '../../core/themes/app_colors.dart';
 import '../../core/themes/app_theme.dart';
+import '../../games/widgets/ink_pen.dart';
 
 /// A mission's cover, drawn in code in the app's flat sticker style
 /// (solid fills, ink outlines), so it stays crisp and needs no image files.
@@ -20,6 +21,13 @@ class MissionCover extends StatelessWidget {
     MissionArt.garden =>
       'A sunny garden with two healthy flowers and one drooping flower',
     MissionArt.signals => 'A radio tower sending signal waves under the stars',
+    MissionArt.puddle => 'A puddle in a chalk circle under a sun and a cloud',
+    MissionArt.lighthouse => 'A dark lighthouse on the rocks beside the sea',
+    MissionArt.postcards => 'A postcard floating in space beside a red planet',
+    MissionArt.beach => 'Turtle tracks crossing a sandy beach at sunrise',
+    MissionArt.bread => 'A tall loaf of bread beside a flat one',
+    MissionArt.orchard => 'An apple tree with a bee flying towards a flower',
+    MissionArt.shadow => 'A statue on a square casting a long shadow',
   };
 
   @override
@@ -67,6 +75,20 @@ class _CoverPainter extends CustomPainter {
         _garden(canvas, size);
       case MissionArt.signals:
         _signals(canvas, size);
+      case MissionArt.puddle:
+        _puddle(canvas, size);
+      case MissionArt.lighthouse:
+        _lighthouse(canvas, size);
+      case MissionArt.postcards:
+        _postcards(canvas, size);
+      case MissionArt.beach:
+        _beach(canvas, size);
+      case MissionArt.bread:
+        _bread(canvas, size);
+      case MissionArt.orchard:
+        _orchard(canvas, size);
+      case MissionArt.shadow:
+        _shadow(canvas, size);
     }
   }
 
@@ -288,6 +310,250 @@ class _CoverPainter extends CustomPainter {
       Path()..addRect(Rect.fromLTWH(w * 0.69, h * 0.62, w * 0.08, h * 0.08)),
       AppColors.sunTint,
     );
+  }
+
+  /// Fills the cover, and returns a pen and a way to place points by
+  /// fractions of its size.
+  (InkPen, Offset Function(double, double)) _start(
+    Canvas canvas,
+    Size size,
+    Color background,
+  ) {
+    canvas.drawRect(Offset.zero & size, _fill(background));
+    return (
+      InkPen(canvas, outline: 2.5),
+      (x, y) => Offset(size.width * x, size.height * y),
+    );
+  }
+
+  void _puddle(Canvas canvas, Size size) {
+    final (pen, p) = _start(canvas, size, const Color(0xFFCFEFFF));
+    pen
+      ..disc(p(0.82, 0.22), 20, AppColors.sun)
+      ..blob([
+        p(0.2, 0.3),
+        p(0.28, 0.14),
+        p(0.42, 0.12),
+        p(0.52, 0.24),
+        p(0.56, 0.36),
+        p(0.2, 0.36),
+      ], AppColors.white)
+      ..poly([
+        p(-0.02, 0.6),
+        p(1.02, 0.6),
+        p(1.02, 1.02),
+        p(-0.02, 1.02),
+      ], const Color(0xFFC9CCD6))
+      ..blob([
+        p(0.2, 0.8),
+        p(0.34, 0.66),
+        p(0.62, 0.66),
+        p(0.8, 0.8),
+        p(0.6, 0.94),
+        p(0.34, 0.94),
+      ], AppColors.white)
+      ..blob([
+        p(0.3, 0.8),
+        p(0.42, 0.72),
+        p(0.6, 0.73),
+        p(0.7, 0.8),
+        p(0.56, 0.88),
+        p(0.42, 0.88),
+      ], AppColors.brandBlue);
+    for (final x in [0.34, 0.5, 0.66]) {
+      pen.line([p(x, 0.58), p(x + 0.02, 0.46), p(x, 0.38)]);
+    }
+  }
+
+  void _lighthouse(Canvas canvas, Size size) {
+    final (pen, p) = _start(canvas, size, const Color(0xFF263A6B));
+    _stars(canvas, size, 5);
+    pen
+      ..poly([
+        p(-0.02, 0.76),
+        p(1.02, 0.76),
+        p(1.02, 1.02),
+        p(-0.02, 1.02),
+      ], AppColors.brandBlue)
+      ..blob([
+        p(0.2, 0.86),
+        p(0.34, 0.68),
+        p(0.66, 0.68),
+        p(0.8, 0.86),
+      ], AppColors.inkSoft)
+      ..poly([
+        p(0.42, 0.72),
+        p(0.58, 0.72),
+        p(0.55, 0.3),
+        p(0.45, 0.3),
+      ], AppColors.white)
+      ..poly([
+        p(0.44, 0.56),
+        p(0.56, 0.56),
+        p(0.55, 0.42),
+        p(0.45, 0.42),
+      ], AppColors.coral)
+      ..poly([
+        p(0.44, 0.3),
+        p(0.56, 0.3),
+        p(0.56, 0.18),
+        p(0.44, 0.18),
+      ], AppColors.inkSoft)
+      ..poly([p(0.42, 0.18), p(0.5, 0.06), p(0.58, 0.18)], AppColors.coral);
+  }
+
+  void _postcards(Canvas canvas, Size size) {
+    final (pen, p) = _start(canvas, size, const Color(0xFF1B1A4B));
+    _stars(canvas, size, 11);
+    pen
+      ..disc(p(0.2, 0.62), 42, const Color(0xFFD9774A))
+      ..disc(p(0.14, 0.52), 8, const Color(0xFFAF5730))
+      ..disc(p(0.25, 0.72), 6, const Color(0xFFAF5730))
+      ..poly([
+        p(0.46, 0.22),
+        p(0.92, 0.3),
+        p(0.86, 0.84),
+        p(0.4, 0.76),
+      ], AppColors.paper)
+      ..poly([
+        p(0.76, 0.32),
+        p(0.87, 0.34),
+        p(0.85, 0.5),
+        p(0.74, 0.48),
+      ], AppColors.coral)
+      ..line([p(0.65, 0.3), p(0.6, 0.76)]);
+    for (final y in [0.46, 0.56, 0.66]) {
+      pen.line([p(0.47, y), p(0.58, y + 0.02)]);
+    }
+  }
+
+  void _beach(Canvas canvas, Size size) {
+    final (pen, p) = _start(canvas, size, const Color(0xFFFFD8A8));
+    pen
+      ..disc(p(0.78, 0.26), 22, AppColors.sun)
+      ..poly([
+        p(-0.02, 0.32),
+        p(1.02, 0.32),
+        p(1.02, 0.56),
+        p(-0.02, 0.56),
+      ], AppColors.brandBlue)
+      ..blob([
+        p(-0.1, 0.6),
+        p(0.3, 0.5),
+        p(0.7, 0.54),
+        p(1.1, 0.48),
+        p(1.1, 1.1),
+        p(-0.1, 1.1),
+      ], const Color(0xFFE5CE93));
+    // A pair of flipper marks with a groove between them, heading up the sand.
+    pen.line([p(0.5, 0.56), p(0.46, 0.76), p(0.42, 0.98)], width: 4);
+    for (var i = 0; i < 6; i++) {
+      final y = 0.6 + i * 0.07;
+      final x = 0.5 - (y - 0.56) * 0.5;
+      pen
+        ..line([p(x - 0.06, y), p(x - 0.11, y - 0.02)], width: 3)
+        ..line([p(x + 0.06, y), p(x + 0.11, y - 0.02)], width: 3);
+    }
+  }
+
+  void _bread(Canvas canvas, Size size) {
+    final (pen, p) = _start(canvas, size, AppColors.sunTint);
+    const crust = Color(0xFFD9A05B);
+    pen
+      ..poly([
+        p(-0.02, 0.8),
+        p(1.02, 0.8),
+        p(1.02, 1.02),
+        p(-0.02, 1.02),
+      ], const Color(0xFFB9743C))
+      ..blob([
+        p(0.1, 0.8),
+        p(0.1, 0.46),
+        p(0.2, 0.2),
+        p(0.36, 0.2),
+        p(0.46, 0.46),
+        p(0.46, 0.8),
+      ], crust)
+      ..line([p(0.2, 0.34), p(0.24, 0.42)])
+      ..line([p(0.3, 0.32), p(0.34, 0.4)])
+      ..blob([
+        p(0.56, 0.8),
+        p(0.6, 0.7),
+        p(0.76, 0.66),
+        p(0.9, 0.7),
+        p(0.94, 0.8),
+      ], crust);
+  }
+
+  void _orchard(Canvas canvas, Size size) {
+    final (pen, p) = _start(canvas, size, const Color(0xFFCFEFFF));
+    pen
+      ..poly([
+        p(-0.02, 0.82),
+        p(1.02, 0.82),
+        p(1.02, 1.02),
+        p(-0.02, 1.02),
+      ], const Color(0xFF8FC96E))
+      ..poly([
+        p(0.28, 0.5),
+        p(0.36, 0.5),
+        p(0.38, 0.86),
+        p(0.26, 0.86),
+      ], const Color(0xFF8A5F3A))
+      ..blob([
+        p(0.32, 0.08),
+        p(0.54, 0.2),
+        p(0.56, 0.5),
+        p(0.32, 0.62),
+        p(0.08, 0.5),
+        p(0.1, 0.2),
+      ], AppColors.leaf);
+    for (final (x, y) in [
+      (0.22, 0.28),
+      (0.4, 0.22),
+      (0.46, 0.44),
+      (0.24, 0.48),
+    ]) {
+      pen.disc(p(x, y), 7, AppColors.coral);
+    }
+    // A bee.
+    pen
+      ..disc(p(0.74, 0.3), 8, AppColors.white)
+      ..disc(p(0.8, 0.3), 8, AppColors.white)
+      ..blob([
+        p(0.68, 0.42),
+        p(0.76, 0.34),
+        p(0.86, 0.42),
+        p(0.76, 0.5),
+      ], AppColors.sun)
+      ..line([p(0.74, 0.36), p(0.74, 0.48)], width: 4)
+      ..line([p(0.79, 0.36), p(0.79, 0.48)], width: 4);
+  }
+
+  void _shadow(Canvas canvas, Size size) {
+    final (pen, p) = _start(canvas, size, const Color(0xFFFFE9B8));
+    pen
+      ..disc(p(0.84, 0.2), 20, AppColors.sun)
+      ..poly([
+        p(-0.02, 0.7),
+        p(1.02, 0.7),
+        p(1.02, 1.02),
+        p(-0.02, 1.02),
+      ], const Color(0xFFD9C8A8))
+      ..poly([
+        p(0.56, 0.86),
+        p(0.08, 0.74),
+        p(0.1, 0.8),
+        p(0.54, 0.92),
+      ], AppColors.inkSoft)
+      ..poly([
+        p(0.48, 0.86),
+        p(0.64, 0.86),
+        p(0.64, 0.74),
+        p(0.48, 0.74),
+      ], AppColors.paper)
+      ..limb([p(0.56, 0.72), p(0.56, 0.46)], 10, AppColors.brandBlueDeep)
+      ..disc(p(0.56, 0.3), 12, AppColors.brandBlueDeep);
   }
 
   @override

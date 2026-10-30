@@ -1,5 +1,5 @@
 import 'package:curious_buddy/domain/missions/mission.dart';
-import 'package:curious_buddy/domain/missions/mission_content.dart';
+import 'package:curious_buddy/domain/missions/more_missions.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
 import 'package:curious_buddy/ui/missions/mission_play_screen.dart';
 import 'package:curious_buddy/ui/missions/missions_screen.dart';
@@ -58,53 +58,56 @@ void main() {
     ('phone with 2x text', const Size(412, 892), 2.0),
     ('small phone with 2x text', const Size(320, 640), 2.0),
   ]) {
-    testWidgets('every mission step lays out without overflow: $name', (
-      tester,
-    ) async {
-      usePhoneScreen(tester, logicalSize: size);
-      useTextScale(tester, scale);
-      await tester.pumpWidget(buildTestApp());
-      await tester.pumpAndSettle();
-      await _tapText(tester, HomeDestination.missions.title);
+    for (final (index, mission) in allMissions.indexed) {
+      testWidgets('${mission.title} lays out without overflow: $name', (
+        tester,
+      ) async {
+        usePhoneScreen(tester, logicalSize: size);
+        useTextScale(tester, scale);
+        await tester.pumpWidget(buildTestApp());
+        await tester.pumpAndSettle();
+        await _tapText(tester, HomeDestination.missions.title);
 
-      final mission = starterMissions.last; // has an order puzzle
-      final play = find.widgetWithText(FilledButton, MissionsScreen.playLabel);
-      await tester.ensureVisible(play.last);
-      await tester.pumpAndSettle();
-      await tester.tap(play.last);
-      await tester.pumpAndSettle();
-      await _tapText(tester, MissionPlayScreen.startLabel);
+        final play = find
+            .widgetWithText(FilledButton, MissionsScreen.playLabel)
+            .at(index);
+        await tester.ensureVisible(play);
+        await tester.pumpAndSettle();
+        await tester.tap(play);
+        await tester.pumpAndSettle();
+        await _tapText(tester, MissionPlayScreen.startLabel);
 
-      // Walk each step; overflow errors fail the test automatically.
-      for (final stage in mission.stages) {
-        while (find.text(ClueCard.inspectLabel).evaluate().isNotEmpty) {
-          await _tapText(tester, ClueCard.inspectLabel);
+        // Walk each step; overflow errors fail the test automatically.
+        for (final stage in mission.stages) {
+          while (find.text(ClueCard.inspectLabel).evaluate().isNotEmpty) {
+            await _tapText(tester, ClueCard.inspectLabel);
+          }
+          switch (stage) {
+            case ChoiceStage(:final choices):
+              await _tapText(tester, choices.firstWhere((c) => c.correct).text);
+            case MultiSelectStage(:final choices):
+              for (final c in choices.where((c) => c.correct)) {
+                await _tapText(tester, c.text);
+              }
+            case OrderStage(:final pieces):
+              for (final p in pieces) {
+                final b = find.widgetWithText(OutlinedButton, p.text);
+                await tester.ensureVisible(b);
+                await tester.pumpAndSettle();
+                await tester.tap(b);
+                await tester.pumpAndSettle();
+              }
+          }
+          await _tapText(tester, MissionPlayScreen.checkLabel);
+          await _tapText(
+            tester,
+            stage == mission.stages.last
+                ? MissionPlayScreen.finishLabel
+                : MissionPlayScreen.nextLabel,
+          );
         }
-        switch (stage) {
-          case ChoiceStage(:final choices):
-            await _tapText(tester, choices.firstWhere((c) => c.correct).text);
-          case MultiSelectStage(:final choices):
-            for (final c in choices.where((c) => c.correct)) {
-              await _tapText(tester, c.text);
-            }
-          case OrderStage(:final pieces):
-            for (final p in pieces) {
-              final b = find.widgetWithText(OutlinedButton, p.text);
-              await tester.ensureVisible(b);
-              await tester.pumpAndSettle();
-              await tester.tap(b);
-              await tester.pumpAndSettle();
-            }
-        }
-        await _tapText(tester, MissionPlayScreen.checkLabel);
-        await _tapText(
-          tester,
-          stage == mission.stages.last
-              ? MissionPlayScreen.finishLabel
-              : MissionPlayScreen.nextLabel,
-        );
-      }
-      expect(find.text(MissionPlayScreen.caseSolved), findsOneWidget);
-    });
+        expect(find.text(MissionPlayScreen.caseSolved), findsOneWidget);
+      });
+    }
   }
 }

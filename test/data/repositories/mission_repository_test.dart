@@ -1,6 +1,7 @@
 import 'package:curious_buddy/data/repositories/mission_repository.dart';
 import 'package:curious_buddy/domain/missions/mission.dart';
 import 'package:curious_buddy/domain/missions/mission_content.dart';
+import 'package:curious_buddy/domain/missions/more_missions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Mission _withId(Mission source, String id) => Mission(
@@ -16,13 +17,14 @@ Mission _withId(Mission source, String id) => Mission(
 );
 
 void main() {
-  test('loads all three starter missions offline', () async {
+  test('loads every mission offline, none left out', () async {
     final missions = await BundledMissionRepository().loadMissions();
 
     expect(
       [for (final m in missions) m.id],
-      ['missing_moonstone', 'wilting_garden', 'mixed_up_signals'],
+      [for (final m in allMissions) m.id],
     );
+    expect(missions, hasLength(10));
   });
 
   test('leaves out invalid missions instead of showing them broken', () async {

@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:curious_buddy/domain/conversation/child_safety_filter.dart';
 import 'package:curious_buddy/domain/missions/mission.dart';
 import 'package:curious_buddy/domain/missions/mission_content.dart';
 import 'package:curious_buddy/domain/missions/mission_rules.dart';
+import 'package:curious_buddy/domain/missions/more_missions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Shift each letter by [by] places (A..Z), as the station's code does.
@@ -9,13 +12,26 @@ String shift(String word, int by) => String.fromCharCodes([
   for (final c in word.codeUnits) 65 + (c - 65 + by) % 26,
 ]);
 
+/// Finds a stage by its mission and stage ids.
+MissionStage _stage(String mission, String stage) => allMissions
+    .firstWhere((m) => m.id == mission)
+    .stages
+    .firstWhere((s) => s.id == stage);
+
 void main() {
-  test('there are three starter missions with unique ids', () {
+  test('there are ten missions with unique ids, titles and badges', () {
     expect(starterMissions, hasLength(3));
-    expect({for (final m in starterMissions) m.id}, hasLength(3));
+    expect(moreMissions, hasLength(7));
+    expect({for (final m in allMissions) m.id}, hasLength(10));
+    expect({for (final m in allMissions) m.title}, hasLength(10));
+    expect({for (final m in allMissions) m.badge}, hasLength(10));
   });
 
-  for (final mission in starterMissions) {
+  test('every mission has its own cover', () {
+    expect({for (final m in allMissions) m.art}, MissionArt.values.toSet());
+  });
+
+  for (final mission in allMissions) {
     group(mission.title, () {
       test('passes validation', () {
         expect(MissionValidator.problems(mission), isEmpty);
@@ -155,6 +171,43 @@ void main() {
 
       permute([], words);
       expect(valid, [words]);
+    });
+
+    test('the circuit test results point to one gap', () {
+      final stage = _stage('dark_lighthouse', 'find_the_gap') as ChoiceStage;
+      expect(stage.clues.last.text, 'Point 1: yes. Point 2: yes. Point 3: no.');
+      expect(stage.choices.singleWhere((c) => c.correct).id, 'p2_p3');
+    });
+
+    test('the order of the planets is right', () {
+      final stage = _stage('mystery_postcards', 'trip_home') as OrderStage;
+      expect(
+        [for (final p in stage.pieces) p.text],
+        ['Venus', 'Earth', 'Mars', 'Jupiter'],
+      );
+    });
+
+    test('tides: tracks after 10 pm are the only ones to survive', () {
+      final stage =
+          _stage('beach_footprints', 'when_it_happened') as ChoiceStage;
+      expect(stage.clues.first.text, contains('High tide was at 10 pm'));
+      expect(stage.choices.singleWhere((c) => c.correct).id, 'after_high');
+    });
+
+    test('the bee count singles out Row C', () {
+      final stage = _stage('quiet_orchard', 'count_bees') as ChoiceStage;
+      final counts = RegExp(r'\d+')
+          .allMatches(stage.clues.first.text)
+          .map((m) => int.parse(m[0]!))
+          .toList();
+      expect(counts, [40, 35, 3]);
+      expect(counts.reduce(min), counts.last);
+    });
+
+    test('morning shadows point west, away from the rising Sun', () {
+      final stage = _stage('shrinking_shadow', 'order_photos') as OrderStage;
+      expect(stage.pieces.first.text, contains('west'));
+      expect(stage.pieces.last.text, contains('east'));
     });
 
     test('the moonstone timeline is consistent', () {
