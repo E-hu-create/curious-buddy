@@ -49,6 +49,7 @@ void main() {
     HowToPlay.four,
     HowToPlay.number,
     HowToPlay.sort,
+    HowToPlay.circuit,
     HowToPlay.dino,
     HowToPlay.quickCreate,
   ];

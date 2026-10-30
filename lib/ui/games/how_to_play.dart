@@ -247,6 +247,30 @@ class HowToPlay {
     ],
   );
 
+  static const circuit = HowToPlay(
+    game: 'Circuit Fixer',
+    tip: noClock,
+    steps: [
+      HowToStep(
+        Icons.battery_charging_full_rounded,
+        'Find the battery on the left and the bulb on the right.',
+      ),
+      HowToStep(Icons.rotate_right_rounded, 'Tap a wire piece to turn it.'),
+      HowToStep(
+        Icons.bolt_rounded,
+        'Wires turn yellow when electricity reaches them.',
+      ),
+      HowToStep(
+        Icons.lightbulb_rounded,
+        'Join the wires all the way to the bulb to light it.',
+      ),
+      HowToStep(
+        Icons.star_rounded,
+        'Fix 3 circuits. Fewer taps earn more stars.',
+      ),
+    ],
+  );
+
   static const dino = HowToPlay(
     game: 'Dino Discovery',
     tip: noClock,
@@ -295,6 +319,7 @@ class HowToPlay {
     GameKind.four => four,
     GameKind.number => number,
     GameKind.sort => sort,
+    GameKind.circuit => circuit,
   };
 }
 

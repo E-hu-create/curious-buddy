@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../data/repositories/progress_repository.dart';
+import '../../domain/games/circuit.dart';
 import '../../domain/games/four_in_a_row.dart';
 import '../../domain/games/games.dart';
 import '../../domain/games/maze.dart';
@@ -18,6 +19,7 @@ import '../core/widgets/buddy/buddy.dart';
 import '../core/widgets/motion.dart';
 import 'game_view_models.dart';
 import 'how_to_play.dart';
+import 'widgets/circuit_art.dart';
 import 'widgets/game_parts.dart';
 import 'widgets/game_world.dart';
 import 'widgets/maze_art.dart';
@@ -57,6 +59,16 @@ class GamePlayScreen extends StatefulWidget {
   static const firstPicture = 'First picture';
   static const secondPicture = 'Second picture: tap what changed';
   static const missNote = "That one didn't change. Keep looking!";
+
+  static const nextCircuit = 'Next circuit';
+  static const batteryLabel = 'Battery';
+  static const bulbOnLabel = 'Bulb, lit';
+  static const bulbOffLabel = 'Bulb, not lit';
+  static const circuitHint = 'Tap a wire piece to turn it.';
+
+  static String circuitLabel(int n, int total) => 'Circuit $n of $total';
+  static String pieceLabel(int row, int column) =>
+      'Wire in row $row, column $column';
 
   static const sortWrong = 'Not that group. Try again!';
 
@@ -189,6 +201,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       progressRepository: widget.progressRepository,
       random: widget.random,
     ),
+    GameKind.circuit => CircuitViewModel(
+      level: widget.level,
+      voice: widget.voice,
+      progressRepository: widget.progressRepository,
+      random: widget.random,
+    ),
   };
 
   @override
@@ -258,6 +276,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           final FourViewModel vm => _FourBoard(vm: vm),
           final NumberViewModel vm => _NumberBoard(vm: vm),
           final SortViewModel vm => _SortBoard(vm: vm),
+          final CircuitViewModel vm => _CircuitBoard(vm: vm),
           _ => const SizedBox.shrink(),
         },
       ),
@@ -1796,4 +1815,221 @@ class _SortGroup extends StatelessWidget {
       ),
     );
   }
+}
+
+// ------------------------------------------------------------- Circuit Fixer
+
+class _CircuitBoard extends StatelessWidget {
+  const _CircuitBoard({required this.vm});
+
+  final CircuitViewModel vm;
+
+  static const _sideWidth = 34.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final game = vm.game;
+    final puzzle = game.puzzle;
+    final lit = puzzle.lit;
+    final on = puzzle.isLit;
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        Text(
+          GamePlayScreen.circuitLabel(game.round + 1, CircuitGame.rounds),
+          style: textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 420),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final board = constraints.maxWidth - _sideWidth * 2;
+                return Row(
+                  crossAxisAlignment: .start,
+                  children: [
+                    SizedBox(
+                      width: _sideWidth,
+                      child: _SideMark(
+                        board: board,
+                        size: puzzle.size,
+                        row: puzzle.sourceRow,
+                        child: const Icon(
+                          Icons.battery_charging_full_rounded,
+                          color: AppColors.leaf,
+                          size: 34,
+                          semanticLabel: GamePlayScreen.batteryLabel,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        decoration: AppShapes.sticker(
+                          AppColors.white,
+                          depth: 3,
+                          radius: 10,
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Column(
+                          children: [
+                            for (var row = 0; row < puzzle.size; row++)
+                              Row(
+                                children: [
+                                  for (
+                                    var column = 0;
+                                    column < puzzle.size;
+                                    column++
+                                  )
+                                    Expanded(
+                                      child: _WirePiece(
+                                        row: row,
+                                        column: column,
+                                        turns: puzzle
+                                            .tiles[row * puzzle.size + column]
+                                            .turns,
+                                        straight: puzzle
+                                            .tiles[row * puzzle.size + column]
+                                            .straight,
+                                        lit: lit.contains(
+                                          row * puzzle.size + column,
+                                        ),
+                                        onTap: on
+                                            ? null
+                                            : () => vm.tap(
+                                                row * puzzle.size + column,
+                                              ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: _sideWidth,
+                      child: _SideMark(
+                        board: board,
+                        size: puzzle.size,
+                        row: puzzle.bulbRow,
+                        child: Icon(
+                          on
+                              ? Icons.lightbulb_rounded
+                              : Icons.lightbulb_outline_rounded,
+                          color: on
+                              ? AppColors.backpackShade
+                              : AppColors.inkSoft,
+                          size: 34,
+                          semanticLabel: on
+                              ? GamePlayScreen.bulbOnLabel
+                              : GamePlayScreen.bulbOffLabel,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        if (on) ...[
+          Semantics(
+            liveRegion: true,
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: AppShapes.sticker(
+                AppColors.sunTint,
+                depth: 3,
+                radius: 14,
+              ),
+              child: Text(game.fact, style: textTheme.bodyLarge),
+            ),
+          ),
+          const SizedBox(height: 12),
+          FilledButton.icon(
+            onPressed: () => unawaited(vm.next()),
+            icon: const Icon(Icons.arrow_forward_rounded),
+            label: Text(
+              game.round + 1 < CircuitGame.rounds
+                  ? GamePlayScreen.nextCircuit
+                  : GamePlayScreen.seeStars,
+            ),
+          ),
+        ] else
+          Text(GamePlayScreen.circuitHint, style: textTheme.bodyMedium),
+      ],
+    );
+  }
+}
+
+/// Lines a mark up with one row of the board.
+class _SideMark extends StatelessWidget {
+  const _SideMark({
+    required this.board,
+    required this.size,
+    required this.row,
+    required this.child,
+  });
+
+  /// The width of the square board.
+  final double board;
+  final int size;
+  final int row;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsets.only(top: (row + 0.5) * board / size - 17),
+    child: Align(alignment: Alignment.topCenter, child: child),
+  );
+}
+
+class _WirePiece extends StatelessWidget {
+  const _WirePiece({
+    required this.row,
+    required this.column,
+    required this.turns,
+    required this.straight,
+    required this.lit,
+    required this.onTap,
+  });
+
+  final int row;
+  final int column;
+  final int turns;
+  final bool straight;
+  final bool lit;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: onTap != null,
+    label:
+        '${GamePlayScreen.pieceLabel(row + 1, column + 1)}'
+        ', joining ${wireLabel(CircuitTile(straight: straight, turns: turns).openings)}'
+        '${lit ? ', electricity reaches it' : ''}',
+    excludeSemantics: true,
+    child: AspectRatio(
+      aspectRatio: 1,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: lit ? AppColors.sunTint : AppColors.brandBlueTint,
+            border: Border.all(color: AppColors.white, width: 0.5),
+          ),
+          child: AnimatedRotation(
+            turns: turns / 4,
+            duration: AppMotion.isCalm(context)
+                ? Duration.zero
+                : AppMotion.quick,
+            child: WireArt(straight: straight, lit: lit),
+          ),
+        ),
+      ),
+    ),
+  );
 }

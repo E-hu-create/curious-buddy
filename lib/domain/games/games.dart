@@ -19,7 +19,8 @@ enum GameKind {
   sounds("What's That Sound?", 'Listen closely and work out what made it.'),
   four('Four in a Row', 'Line up four counters before Buddy does.'),
   number('Number Pop', 'Pop every bubble that makes the target number.'),
-  sort('Sort It!', 'Put each thing in the right group.');
+  sort('Sort It!', 'Put each thing in the right group.'),
+  circuit('Circuit Fixer', 'Turn the wires to light the bulb.');
 
   const GameKind(this.title, this.tagline);
 

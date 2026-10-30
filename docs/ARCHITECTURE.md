@@ -507,6 +507,14 @@ SoundPool as the effects, so Android must know each new clip by name.
 sounds off. Then the game shows the clue, so it can always be played, and it
 can be played by a child who can't hear the clips.
 
+### Circuit Fixer
+
+`domain/games/circuit.dart` first walks a route from the battery to the bulb,
+lays pieces along it and scrambles every piece, so each circuit can be solved.
+The board works out which pieces electricity reaches after every tap, and any
+path to the bulb counts, not just the planned one. The route also sets the taps
+allowed for three stars. It has its own Game Zone tile.
+
 ### Sort It!
 
 `domain/games/sort_it.dart` holds two sets of things per level, and each game

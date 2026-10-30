@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../data/repositories/progress_repository.dart';
 import '../../data/services/sound/sound_effects_service.dart';
+import '../../domain/games/circuit.dart';
 import '../../domain/games/four_in_a_row.dart';
 import '../../domain/games/game_content.dart';
 import '../../domain/games/games.dart';
@@ -165,7 +166,8 @@ abstract class ArenaViewModel extends GamePlayViewModel {
   @override
   String get gameTitle {
     final title = level.kind.title;
-    return '${title.endsWith('?') ? title : '$title:'} ${level.name}';
+    final ended = title.endsWith('?') || title.endsWith('!');
+    return '${ended ? title : '$title:'} ${level.name}';
   }
 }
 
@@ -751,6 +753,51 @@ class SortViewModel extends ArenaViewModel {
     _game = SortGame(level: level.number, random: _random);
     _wrong = false;
   }
+}
+
+class CircuitViewModel extends ArenaViewModel {
+  CircuitViewModel({
+    required super.level,
+    required super.voice,
+    required super.progressRepository,
+    Random? random,
+  }) : _random = random ?? Random() {
+    _game = CircuitGame(level: level.number, random: _random);
+  }
+
+  final Random _random;
+
+  CircuitGame get game => _game;
+  late CircuitGame _game;
+
+  @override
+  String get introLine => 'Tap the wires to turn them, and light the bulb.';
+
+  void tap(int cell) {
+    if (isFinished) return;
+    switch (_game.tap(cell)) {
+      case CircuitResult.ignored:
+        return;
+      case CircuitResult.turned:
+        sound(SoundEffect.pop);
+      case CircuitResult.lit:
+        say('The bulb is on! ${_game.fact}', lead: SoundEffect.correct);
+    }
+    notify();
+  }
+
+  /// The next circuit, or the finish after the last one.
+  Future<void> next() async {
+    if (!_game.puzzle.isLit) return;
+    if (!_game.nextRound()) {
+      await finish(_game.stars);
+      return;
+    }
+    notify();
+  }
+
+  @override
+  void reset() => _game = CircuitGame(level: level.number, random: _random);
 }
 
 class SpotViewModel extends ArenaViewModel {

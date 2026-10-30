@@ -305,7 +305,8 @@ Built before Creative Island at the product owner's request.
 - ✅ Four in a Row against Buddy (awaiting device test).
 - ✅ Number Pop (awaiting device test).
 - ✅ Sort It! (awaiting device test, and a grown-up review of its sorting).
-- ⏳ Circuit Fixer, Picture Sudoku and Planet Parade.
+- ✅ Circuit Fixer (awaiting device test).
+- ⏳ Picture Sudoku and Planet Parade.
 
 ## Later, each needing an approved requirement
 

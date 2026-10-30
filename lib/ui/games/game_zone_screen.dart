@@ -20,6 +20,7 @@ import '../creative/drawing_screen.dart';
 import '../quiz/widgets/quiz_widgets.dart';
 import 'game_play_screen.dart';
 import 'how_to_play.dart';
+import 'widgets/circuit_art.dart';
 import 'widgets/dino_art.dart';
 import 'widgets/game_world.dart';
 import 'widgets/maze_art.dart';
@@ -49,6 +50,7 @@ class GameZoneScreen extends StatefulWidget {
   static const fourLabel = 'Beat Buddy';
   static const numberLabel = 'Start popping';
   static const sortLabel = 'Start sorting';
+  static const circuitLabel = 'Light the bulb';
 
   static String starsLabel(int stars, int all) => '$stars of $all stars';
   static String nextRankLabel(int stars, GameRank next) =>
@@ -184,6 +186,18 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
           label: GameZoneScreen.sortLabel,
           icon: Icons.category_rounded,
           onPressed: () => unawaited(_open(Routes.sort)),
+        ),
+      ),
+      const SizedBox(height: 16),
+      _GameTile(
+        color: AppColors.grapeTint,
+        art: const _CircuitTileArt(),
+        title: GameKind.circuit.title,
+        text: GameKind.circuit.tagline,
+        button: PlayButton(
+          label: GameZoneScreen.circuitLabel,
+          icon: Icons.lightbulb_rounded,
+          onPressed: () => unawaited(_open(Routes.circuit)),
         ),
       ),
       const SizedBox(height: 16),
@@ -631,6 +645,44 @@ class _SortTileArt extends StatelessWidget {
   );
 }
 
+/// A battery, a glowing wire and a lit bulb.
+class _CircuitTileArt extends StatelessWidget {
+  const _CircuitTileArt();
+
+  @override
+  Widget build(BuildContext context) => ExcludeSemantics(
+    child: Container(
+      height: 150,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: AppColors.arcade,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: FittedBox(
+        child: Row(
+          children: [
+            const Icon(
+              Icons.battery_charging_full_rounded,
+              size: 90,
+              color: AppColors.leaf,
+            ),
+            for (final straight in const [true, false])
+              SizedBox(
+                width: 70,
+                height: 70,
+                child: RotatedBox(
+                  quarterTurns: straight ? 1 : 3,
+                  child: WireArt(straight: straight, lit: true),
+                ),
+              ),
+            const Icon(Icons.lightbulb_rounded, size: 90, color: AppColors.sun),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 /// A fan of game cards.
 class _ArenaTileArt extends StatelessWidget {
   const _ArenaTileArt();
@@ -918,6 +970,7 @@ class _GameCard extends StatelessWidget {
     GameKind.four: AppColors.brandBlueTint,
     GameKind.number: AppColors.coralTint,
     GameKind.sort: AppColors.sunTint,
+    GameKind.circuit: AppColors.grapeTint,
   };
 
   @override
