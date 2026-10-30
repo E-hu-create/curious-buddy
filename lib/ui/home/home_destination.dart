@@ -24,6 +24,14 @@ enum HomeDestination {
     color: AppColors.grape,
     tint: AppColors.grapeTint,
   ),
+  storyMaker(
+    route: Routes.storyMaker,
+    title: 'Story Maker',
+    subtitle: 'Make a brand-new story of your own',
+    icon: Icons.auto_fix_high_rounded,
+    color: AppColors.sun,
+    tint: AppColors.sunTint,
+  ),
   quiz(
     route: Routes.quiz,
     title: 'Quiz Time',

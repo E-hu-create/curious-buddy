@@ -4,6 +4,7 @@ abstract final class Routes {
   static const home = '/';
   static const missions = '/missions';
   static const stories = '/stories';
+  static const storyMaker = '/stories/maker';
   static const creative = '/creative';
   static const discoveries = '/discoveries';
   static const quiz = '/quiz';

@@ -50,6 +50,16 @@ void main() {
     ),
   );
 
+  testWidgets('Home has its own Story Maker card', (tester) async {
+    usePhoneScreen(tester);
+    await tester.pumpWidget(buildTestApp(store: store));
+    await tester.pumpAndSettle();
+
+    await tapText(tester, HomeDestination.storyMaker.title);
+
+    expect(find.text(StoryMakerScreen.welcome), findsOneWidget);
+  });
+
   testWidgets('Stories has a Story Maker card that opens it', (tester) async {
     usePhoneScreen(tester);
     await tester.pumpWidget(buildTestApp(store: store));

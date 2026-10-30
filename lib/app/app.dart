@@ -21,6 +21,7 @@ import '../ui/missions/missions_screen.dart';
 import '../ui/parent_zone/parent_zone_screen.dart';
 import '../ui/quiz/quiz_hub_screen.dart';
 import '../ui/stories/stories_screen.dart';
+import '../ui/stories/story_maker_screen.dart';
 import '../ui/wardrobe/wardrobe_screen.dart';
 import 'app_dependencies.dart';
 import 'routes.dart';
@@ -135,6 +136,10 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
           missionRepository: dependencies.missionRepository,
           progressRepository: dependencies.progressRepository,
           voice: _voice,
+        ),
+        Routes.storyMaker: (_) => StoryMakerScreen(
+          voice: _voice,
+          progressRepository: dependencies.progressRepository,
         ),
         Routes.stories: (_) => StoriesScreen(
           storyRepository: dependencies.storyRepository,
