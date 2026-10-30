@@ -17,7 +17,7 @@ lib/
     core/themes/            Colours (app_colors.dart), theme and sticker shapes
     core/widgets/           Reusable widgets shared across features
       buddy/                Buddy the robot (CustomPainter, no image assets)
-      placeholder_screen.dart   Buddy + message; "coming soon" and unknown routes
+      placeholder_screen.dart   Buddy + message; the page for unknown routes
     home/                   Home and exploration (Phase 1)
       home_screen.dart, home_view_model.dart, home_destination.dart
       widgets/              Greeting bubble, explorer log, destination grid
@@ -38,6 +38,8 @@ lib/
       drawing_screen.dart, creature_screen.dart             The two activities
       creative_view_models.dart  Shelf, drawing and creature logic
       widgets/              Painters, palette, descriptions, shared controls
+    discoveries/            My Discoveries (the explorer journal)
+      discoveries_screen.dart, discoveries_view_model.dart
     <feature>/              One folder per feature (see below)
       <feature>_screen.dart
       <feature>_view_model.dart   ChangeNotifier holding screen state/logic
@@ -79,10 +81,9 @@ guards (e.g. the Parent Zone gate) that become awkward without it.
 ## Planned feature boundaries
 
 Each becomes a folder under `lib/ui/` (and `lib/domain/` / `lib/data/` only if
-it needs its own logic or data). Home, Mystery Missions, Living Stories, Quiz Time and Creative Island exist.
-The other
-destinations are routes in `routes.dart` that show `PlaceholderScreen` until
-built; Home's cards come from the `HomeDestination` enum.
+it needs its own logic or data). Every Home card now opens a real feature;
+Home's cards come from the `HomeDestination` enum, and `PlaceholderScreen` is
+only used for unknown routes.
 
 | Feature | UI folder | Depends on |
 | --- | --- | --- |
@@ -92,6 +93,7 @@ built; Home's cards come from the `HomeDestination` enum.
 | Living Stories ✅ | `ui/stories/`, `domain/stories/` | story repository, progress repository, BuddyVoice |
 | Quiz Time ✅ | `ui/quiz/`, `domain/quiz/` | quiz repository, progress repository, BuddyVoice |
 | Creative Island ✅ | `ui/creative/`, `domain/creative/` | creations repository (local only), BuddyVoice |
+| My Discoveries ✅ | `ui/discoveries/`, `domain/discoveries/` | reads progress, mission, story, quiz and creations repositories; BuddyVoice |
 | Saved progress | `domain/models/`, `data/repositories/` | KeyValueStore |
 | Parent Zone ✅ | `ui/parent_zone/`, `domain/parent/`, `domain/settings/` | progress repository, BuddyVoice, BuddyListener, DisplaySettings; behind `ParentGate` |
 
@@ -219,9 +221,8 @@ AskBuddyPanel (text box, ideas) ─► BuddyChatViewModel ─► EducationalResp
 | `routeForAction` | `ui/home/buddy_action_routes.dart` | Exhaustive map from `BuddyAction` to an in-app route. Actions only run when the child taps the button. |
 
 **Actions.** `openMissions`, `openStories`, `openCreative`,
-`openDiscoveries` open existing feature pages (My Discoveries is still a
-placeholder); `startQuiz` opens Quiz Time. No action
-can open the web, files or device features.
+`openDiscoveries` open their feature pages; `startQuiz` opens Quiz Time. No
+action can open the web, files or device features.
 
 **Talk button (Stage B).** `HomeScreen._startTalking` →
 `TalkViewModel.prepare`: unavailable → notice; permission missing →
@@ -407,6 +408,26 @@ paper colour.
 fact when a creature's extra, pattern or eyes change, and confirms saving.
 Hear again / Stop talking as elsewhere; automatic reading follows the Parent
 Zone setting. Speech stops on leaving; the microphone is never used.
+
+## My Discoveries
+
+`DiscoveryJournal.build` (`domain/discoveries/discovery_journal.dart`) turns
+saved progress and the content lists into the journal: badges, endings found,
+quiz stars per topic, the explorer rank and one next-adventure suggestion. It
+is pure logic and **stores nothing**, so the Parent Zone needs no changes and
+its reset empties the journal.
+
+- **No spoilers:** endings not yet found are only counted.
+- **Rank:** cases, endings, quiz stars and creations each count one
+  discovery. Curious Beginner (0), Keen Explorer (3), Brave Adventurer (10),
+  Master Discoverer (20).
+- **Next adventure:** the area with the least done so far, a started story
+  first; Creative Island when everything else is finished.
+- **Failures:** without readable progress the page offers a retry. If one
+  other source fails, its section is hidden with a note. Saved ids that no
+  longer match content are ignored.
+- **Narration:** Buddy reads the summary on opening, and a discovery when its
+  speaker is tapped. Automatic reading follows the Parent Zone setting.
 
 ## Saved progress
 

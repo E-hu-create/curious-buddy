@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'buddy/buddy.dart';
 
-/// Buddy with a short message. Used for features that are not built yet and
-/// for unknown routes.
+/// Buddy with a short message. Used for unknown routes.
 class PlaceholderScreen extends StatelessWidget {
   const PlaceholderScreen({
     super.key,

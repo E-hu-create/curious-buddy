@@ -85,6 +85,9 @@ and ask first.
 | `test/ui/creative/creative_view_models_test.dart` | Strokes, tiny moves dropped, canvas bounds, dots, colours and sizes, eraser, undo, clear, point cap, save and lock, Draw another, full shelf, failed save; creature parts, facts, Surprise me, New name, save, Make another; narration, automatic reading off, voice off, dispose stops speech; shelf order, remove, storage error |
 | `test/ui/creative/creative_screen_test.dart` | Real Creative Island from Home; storage error; vertical strokes draw instead of scrolling; Save enabled only with a drawing; tools; Undo and Start over; saved flow; leaving stops speech; building and saving a creature; no text boxes anywhere; New name, Surprise me; view and remove with confirmation; full shelf; app restart; explorer log; Buddy's button; Parent Zone shows and deletes creations; no speech engine; no microphone |
 | `test/ui/creative/creative_accessibility_test.dart` | Guidelines on the page, both activities and the viewer; canvas and creation labels; every creature described and painted; no overflow on small phones and 2x text |
+| `test/domain/discoveries/discovery_journal_test.dart` | Empty journal; counting; pass mark for stars; unknown ids ignored; only found endings included; every rank threshold; top rank reachable; summary wording; next-adventure choices; sections left out when content fails |
+| `test/ui/discoveries/discoveries_screen_test.dart` | New and busy journals; narration; no spoilers; speaker reads a discovery; next adventure opens the right place and the journal updates; Buddy's button; saves nothing; retry; partial failure; parent reset, including after a restart; leaving and Stop silence Buddy; no speech engine; no microphone |
+| `test/ui/discoveries/discoveries_accessibility_test.dart` | Guidelines on new and busy journals; latest four creations; no overflow on small phones and 2x text |
 | `test/ui/stories/stories_accessibility_test.dart` | Tap target, label and contrast guidelines on the shelf, intro, a choice page and an ending; numbered choice labels; picture descriptions; every page of every story without overflow on small phones and 2x text |
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
 | `test/domain/conversation/child_safety_filter_test.dart` | Personal info, self-harm, bullying, medical and off-limits detection; ordinary questions (incl. big numbers, look-alike words) pass |
@@ -111,8 +114,7 @@ user-visible change:
       "Curious Buddy".
 - [ ] Home: Buddy waves once; tapping Buddy makes him excited (arms up,
       eyes squeezed) and then he settles.
-- [ ] My Discoveries opens its "coming soon" page; the back arrow and "Back
-      to Home" both return to Home.
+- [ ] Every Home card opens its feature, and the back arrow returns to Home.
 - [ ] "Grown-ups" opens the Parent Zone.
 - [ ] **Voice** (media volume up, phone not on silent-media):
   - [ ] Buddy says the welcome once on a fresh start (force-stop first).
@@ -232,6 +234,20 @@ user-visible change:
   - [ ] Go back to Home: the explorer log shows the mission and points.
   - [ ] Force-stop and reopen: solved missions and points are still there.
   - [ ] Voice off: missions still fully playable with text only.
+- [ ] **My Discoveries:**
+  - [ ] Home → My Discoveries: your rank, a summary read by Buddy, totals,
+        and Your next adventure.
+  - [ ] Stop talking and Hear again work; back mid-speech stops Buddy.
+  - [ ] Go to ... opens the suggested place; after doing something and
+        coming back, the journal has updated.
+  - [ ] Mission badges: earned ones shown, others locked with "Not earned
+        yet".
+  - [ ] Story discoveries: found endings with their discovery and a speaker;
+        unfound endings only as "n more endings to find".
+  - [ ] Quiz stars per topic; the latest four creations; Open Creative Island.
+  - [ ] Parent Zone → Delete all progress: the journal is back to Curious
+        Beginner, and stays so after a force-stop.
+  - [ ] Voice off and automatic reading off: still fully readable.
 - [ ] **Creative Island (Phase 7):**
   - [ ] Home → Creative Island: Drawing Studio, Creature Maker, an empty
         shelf, "0 of 12".

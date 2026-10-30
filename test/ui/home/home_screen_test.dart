@@ -1,12 +1,16 @@
+import 'dart:async';
+
 import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/domain/models/learner_progress.dart';
 import 'package:curious_buddy/ui/creative/creative_hub_screen.dart';
+import 'package:curious_buddy/ui/discoveries/discoveries_screen.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
 import 'package:curious_buddy/ui/home/home_view_model.dart';
 import 'package:curious_buddy/ui/missions/missions_screen.dart';
 import 'package:curious_buddy/ui/quiz/quiz_hub_screen.dart';
 import 'package:curious_buddy/ui/stories/stories_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../testing/fakes.dart';
@@ -80,7 +84,8 @@ void main() {
         // The real Creative Island screen.
         expect(find.text(CreativeHubScreen.welcome), findsOneWidget);
       } else {
-        expect(find.text(destination.comingSoonMessage), findsOneWidget);
+        expect(destination, HomeDestination.discoveries);
+        expect(find.text(DiscoveriesScreen.nextTitle), findsOneWidget);
       }
 
       await tester.pageBack();
@@ -91,10 +96,9 @@ void main() {
 
   testWidgets('"Back to Home" button returns to Home', (tester) async {
     await openHome(tester);
-    // A destination that is still a "coming soon" page.
-    await tester.ensureVisible(find.text(HomeDestination.discoveries.title));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text(HomeDestination.discoveries.title));
+    // The friendly page shown for an unknown route.
+    final navigator = tester.state<NavigatorState>(find.byType(Navigator));
+    unawaited(navigator.pushNamed('/does-not-exist'));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Back to Home'));

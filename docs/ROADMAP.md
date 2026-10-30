@@ -187,6 +187,16 @@ Built before Creative Island at the product owner's request.
   TESTING.md passed (confirmed 30 Oct 2026).
 - Later: Invention Workshop (combine problem, power and parts cards).
 
+## My Discoveries ✅ (awaiting device test)
+
+- ✅ Explorer journal: rank, summary read by Buddy, totals, mission badges,
+  story discoveries, quiz stars and recent creations.
+- ✅ One next-adventure suggestion with a button.
+- ✅ Endings not yet found are never shown.
+- ✅ Saves nothing of its own, so the Parent Zone reset empties it.
+- ✅ Every Home card now opens a real feature.
+- ⏳ Device test on the Samsung SM-A516U.
+
 ## Later, each needing an approved requirement
 
 - `EducationalResponseProvider` beyond scripted answers (AI backend).

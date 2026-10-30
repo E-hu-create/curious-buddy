@@ -163,6 +163,11 @@ privacy and legal review is needed before release.
 - Drawings are the child's own and are not reviewed or filtered. They stay
   on the phone, and a grown-up can delete them from the Parent Zone.
 
+## My Discoveries
+
+The journal saves nothing of its own: it is worked out from the data above
+each time it opens, so Delete all progress empties it.
+
 ## Still to resolve before external testers
 
 - Privacy and legal review (for example COPPA, GDPR-K / UK Age Appropriate

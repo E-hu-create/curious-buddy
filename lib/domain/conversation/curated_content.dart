@@ -286,8 +286,8 @@ const curatedTopics = <CuratedTopic>[
       ['what', 'have', 'i', 'done'],
     ],
     answers: [
-      'Your discoveries will be saved in My Discoveries. '
-          "It's coming soon!",
+      'My Discoveries is your explorer journal! It shows your badges, story '
+          'discoveries, quiz stars and creations.',
     ],
     action: BuddyAction.openDiscoveries,
     actionLabel: 'Open My Discoveries',
