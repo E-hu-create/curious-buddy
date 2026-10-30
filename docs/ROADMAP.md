@@ -187,7 +187,7 @@ Built before Creative Island at the product owner's request.
   TESTING.md passed (confirmed 30 Oct 2026).
 - Later: Invention Workshop (combine problem, power and parts cards).
 
-## My Discoveries ✅ (awaiting device test)
+## My Discoveries ✅
 
 - ✅ Explorer journal: rank, summary read by Buddy, totals, mission badges,
   story discoveries, quiz stars and recent creations.
@@ -195,7 +195,8 @@ Built before Creative Island at the product owner's request.
 - ✅ Endings not yet found are never shown.
 - ✅ Saves nothing of its own, so the Parent Zone reset empties it.
 - ✅ Every Home card now opens a real feature.
-- ⏳ Device test on the Samsung SM-A516U.
+- ✅ Device test on the Samsung SM-A516U: the My Discoveries checks in
+  TESTING.md passed (confirmed 30 Oct 2026).
 
 ## Later, each needing an approved requirement
 
