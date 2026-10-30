@@ -15,7 +15,16 @@ RATE = 22050
 OUT = Path('android/app/src/main/res/raw')
 
 
-def tone(freq, seconds, volume=0.5, end_freq=None):
+def silence(seconds):
+    return [0.0] * int(RATE * seconds)
+
+
+# Bluetooth audio can take a moment to wake, which would swallow the start of
+# a short sound, so the main sounds begin with a brief silence.
+WAKE = silence(0.12)
+
+
+def tone(freq, seconds, volume=0.85, end_freq=None):
     """A soft bell-like note: quick attack, gentle decay, a little overtone."""
     samples = []
     count = int(RATE * seconds)
@@ -50,15 +59,15 @@ def write(name, samples):
 
 
 # A light pop for small choices.
-write('sfx_pop', tone(620, 0.08, 0.4, end_freq=920))
+write('sfx_pop', tone(620, 0.08, 0.6, end_freq=920))
 
 # Two rising notes for a right answer.
-write('sfx_correct', sequence(tone(784, 0.10), tone(1047, 0.20)))
+write('sfx_correct', sequence(WAKE, tone(784, 0.12), tone(1047, 0.26)))
 
 # Two soft falling notes for a wrong answer: kind, never a buzzer.
-write('sfx_gentle', sequence(tone(392, 0.12, 0.35), tone(330, 0.16, 0.35)))
+write('sfx_gentle', sequence(WAKE, tone(392, 0.14, 0.6), tone(330, 0.20, 0.6)))
 
 # A small rising fanfare for the big moments.
 write('sfx_cheer', sequence(
-    tone(523, 0.10), tone(659, 0.10), tone(784, 0.10), tone(1047, 0.38),
+    WAKE, tone(523, 0.11), tone(659, 0.11), tone(784, 0.11), tone(1047, 0.42),
 ))

@@ -250,6 +250,7 @@ user-visible change:
   - [ ] Passing a quiz, solving a case, a new story ending and saving a
         creation: a small fanfare. Choosing creature parts: a light pop.
   - [ ] The sounds are pleasant, not too loud, and not annoying when repeated.
+  - [ ] With Bluetooth earbuds or a speaker connected: the sounds are heard.
   - [ ] Voice off: sounds still play. Parent Zone → Sound effects off: none,
         and Buddy still speaks. Still off after a force-stop.
 - [ ] **Buddy's Wardrobe:**

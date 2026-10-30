@@ -5,9 +5,9 @@ import 'package:flutter/services.dart';
 /// Buddy can wait for it before speaking.
 enum SoundEffect {
   pop(Duration(milliseconds: 80)),
-  correct(Duration(milliseconds: 300)),
-  gentle(Duration(milliseconds: 280)),
-  cheer(Duration(milliseconds: 680));
+  correct(Duration(milliseconds: 500)),
+  gentle(Duration(milliseconds: 460)),
+  cheer(Duration(milliseconds: 870));
 
   const SoundEffect(this.length);
 

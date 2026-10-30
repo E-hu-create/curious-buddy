@@ -68,7 +68,7 @@ class MainActivity : FlutterActivity() {
     }
 
     private companion object {
-        /// Effects stay quieter than Buddy's voice.
-        const val SOUND_VOLUME = 0.6f
+        /// Effects stay a little quieter than Buddy's voice.
+        const val SOUND_VOLUME = 0.85f
     }
 }

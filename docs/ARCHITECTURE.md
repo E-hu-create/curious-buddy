@@ -445,7 +445,9 @@ Saved items that are unknown or in the wrong slot are ignored.
 Four short sounds in `res/raw/`, synthesised by `tool/generate_sounds.py` (no
 third-party audio). `PlatformSoundEffectsService` plays them through Android's
 `SoundPool` over the app's own `curious_buddy/sounds` channel, so no package
-is needed. They follow the media volume, quieter than Buddy.
+is needed. They follow the media volume, a little quieter than Buddy. The
+main sounds start with 120ms of silence, because Bluetooth audio can take a
+moment to wake and would otherwise swallow the start.
 
 `BuddyVoice` owns the rule that **sounds never play over speech**: `say(text,
 lead: effect)` ends old speech, plays the effect, waits for it, then speaks,
