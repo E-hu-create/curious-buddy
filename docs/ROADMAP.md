@@ -208,6 +208,8 @@ Built before Creative Island at the product owner's request.
 - ✅ Pop for right answers, shake for wrong ones, stars one by one, Buddy
   hops, and confetti for the big moments.
 - ✅ Bolder page titles; the last Home card fills its row.
+- ✅ Splash: Buddy and the app name on the app's own colour, the same in dark
+  mode, with no flash into the app.
 - ✅ All of it follows Calmer animations and the phone's Remove animations.
 - ⏳ Device test on the Samsung SM-A516U.
 - Later: sound effects (needs an audio package, sounds with clear rights and

@@ -108,5 +108,6 @@ Avoid `git reset --hard` and `git clean`: they discard uncommitted work.
 - [Stage B voice input](docs/STAGE_B_VOICE_INPUT.md)
 - [Stage C smarter answers](docs/STAGE_C_SMARTER_ANSWERS.md) and [decision guide](docs/STAGE_C_DECISION_GUIDE.md)
 
-To regenerate the Android launcher icons after changing Buddy:
-`flutter test tool/generate_launcher_icons_test.dart`
+To regenerate the Android launcher icons or splash after changing Buddy:
+`flutter test tool/generate_launcher_icons_test.dart` and
+`flutter test tool/generate_splash_test.dart`

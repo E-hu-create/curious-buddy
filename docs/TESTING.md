@@ -88,6 +88,7 @@ and ask first.
 | `test/domain/discoveries/discovery_journal_test.dart` | Empty journal; counting; pass mark for stars; unknown ids ignored; only found endings included; every rank threshold; top rank reachable; summary wording; next-adventure choices; sections left out when content fails |
 | `test/ui/discoveries/discoveries_screen_test.dart` | New and busy journals; narration; no spoilers; speaker reads a discovery; next adventure opens the right place and the journal updates; Buddy's button; saves nothing; retry; partial failure; parent reset, including after a restart; leaving and Stop silence Buddy; no speech engine; no microphone |
 | `test/ui/discoveries/discoveries_accessibility_test.dart` | Guidelines on new and busy journals; latest four creations; no overflow on small phones and 2x text |
+| `test/android/splash_test.dart` | Splash colour matches the app; Android 12+ shows Buddy and the name; same in dark mode; no white or black flash; older Android matches; all images for every density |
 | `test/android/backup_rules_test.dart` | Manifest turns backup off and links the data-extraction rules; cloud backup and device transfer exclude every data location; the Parent Zone wording does not over-promise |
 | `test/ui/core/widgets/motion_test.dart` | Confetti and phone tap only at the right moments (perfect quiz, new ending, saved creation, new rank; not for mistakes or repeat endings); confetti ignores touch and screen readers, and ends by itself; calm settings skip everything; stars pop in; bundled font and licence; bold headings; last Home card fills its row |
 | `test/ui/stories/stories_accessibility_test.dart` | Tap target, label and contrast guidelines on the shelf, intro, a choice page and an ending; numbered choice labels; picture descriptions; every page of every story without overflow on small phones and 2x text |
@@ -236,6 +237,10 @@ user-visible change:
   - [ ] Go back to Home: the explorer log shows the mission and points.
   - [ ] Force-stop and reopen: solved missions and points are still there.
   - [ ] Voice off: missions still fully playable with text only.
+- [ ] **Splash:** close the app fully (swipe it away, or Force stop), then open
+      it from its icon: warm paper background, Buddy in the middle, "Curious
+      Buddy" at the bottom, then Home with no white or black flash. Repeat
+      with the phone in dark mode: the same.
 - [ ] **Look and feel:**
   - [ ] The rounded font appears everywhere, and text fits on every page.
   - [ ] Page changes fade gently; story pages and quiz questions slide.

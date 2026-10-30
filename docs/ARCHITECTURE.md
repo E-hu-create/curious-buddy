@@ -445,6 +445,12 @@ its reset empties the journal.
   creation, and a new rank while the journal is open. Rank-ups are noticed
   only within a visit, because My Discoveries saves nothing.
 - Confetti is decorative: it ignores touches and screen readers skip it.
+- **Splash:** native Android, so it appears instantly with no added wait and
+  no package. Android 12+ uses `values-v31/styles.xml`; older versions use
+  `launch_background.xml`. The same light splash is used in dark mode because
+  the app is always light (`night` beats the version in resource matching, so
+  `values-night-v31` must match). Images come from
+  `tool/generate_splash_test.dart`.
 
 ## Saved progress
 

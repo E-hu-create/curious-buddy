@@ -2,4 +2,6 @@
 <resources>
     <!-- Matches AppColors.sunTint. -->
     <color name="ic_launcher_background">#FFFFEDB8</color>
+    <!-- Matches AppColors.paper, so the splash melts into the app. -->
+    <color name="splash_background">#FFFFF8EE</color>
 </resources>
