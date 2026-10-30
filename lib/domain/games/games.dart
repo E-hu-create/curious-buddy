@@ -124,6 +124,26 @@ class GameLevel {
   };
 }
 
+/// A player's rank, from the stars won across every game. Ranks only ever go
+/// up: replaying can't lose stars.
+enum GameRank {
+  rookie('Rookie', 0),
+  player('Player', 6),
+  starPlayer('Star Player', 15),
+  champion('Champion', 30);
+
+  const GameRank(this.label, this.stars);
+
+  final String label;
+  final int stars;
+
+  static GameRank of(int stars) =>
+      values.lastWhere((rank) => stars >= rank.stars);
+
+  /// The rank after this one, if any.
+  GameRank? get next => this == champion ? null : values[index + 1];
+}
+
 abstract final class ArenaRules {
   static const levelsPerGame = 3;
 
@@ -151,6 +171,9 @@ abstract final class ArenaRules {
   );
 
   static const maxStars = 3;
+
+  /// Every star there is to win.
+  static int get allStars => allLevelIds.length * maxStars;
 }
 
 // -------------------------------------------------------------- Memory Match

@@ -13,6 +13,7 @@ import 'package:curious_buddy/ui/games/dino_play_screen.dart';
 import 'package:curious_buddy/ui/games/dino_view_model.dart';
 import 'package:curious_buddy/ui/games/game_view_models.dart';
 import 'package:curious_buddy/ui/games/game_zone_screen.dart';
+import 'package:curious_buddy/ui/games/how_to_play.dart';
 import 'package:curious_buddy/ui/games/widgets/dino_art.dart';
 import 'package:curious_buddy/ui/games/widgets/game_parts.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
@@ -74,6 +75,7 @@ void main() {
       voice: voice,
       progressRepository: progress,
       random: Random(1),
+      autoGuide: false,
     ),
   );
 
@@ -285,6 +287,7 @@ void main() {
     testWidgets('next place carries on, and the hub remembers', (tester) async {
       await openHub(tester);
       await tapText(tester, DinoHubScreen.exploreLabel(DinoPlace.fernForest));
+      await tapText(tester, HowToPlaySheet.letsPlayLabel);
       await winThrough(tester, DinoPlace.fernForest);
 
       await tapText(

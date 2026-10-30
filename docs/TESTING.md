@@ -98,6 +98,7 @@ and ask first.
 | `test/ui/games/games_screens_test.dart` | View models for all three games, saving, best kept, failed save, speech stops; saved-data format; journal and Wardrobe link; Home to Arena; coming-soon labels; Buddy's button; all three games played through the screens; level opening; restart; Quick Create; full shelf; storage error; no typing or microphone; Parent Zone shows and deletes results; accessibility; no overflow at every level |
 | `test/domain/games/dino_test.dart` | Fairness checks on the content; places and saved ids; opening places; Field Guide; expedition stages, stars, clues, wrong picks, out-of-turn taps, missions; Memory pictures |
 | `test/ui/games/dino_screens_test.dart` | View model speech, sounds, saving, failed save, speech stops; hub; every place played through the screens; creatures appear in the scene; wrong picks; next place; Field Guide stays secret and reads aloud; storage error; no typing or microphone; accessibility; no overflow |
+| `test/ui/games/how_to_play_test.dart` | Short steps for every game; opens by itself the first time only; help button during a game; menu buttons; closing stops Buddy; ranks; scoreboard; storage error; accessibility; no overflow |
 | `test/ui/stories/stories_accessibility_test.dart` | Tap target, label and contrast guidelines on the shelf, intro, a choice page and an ending; numbered choice labels; picture descriptions; every page of every story without overflow on small phones and 2x text |
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
 | `test/domain/conversation/child_safety_filter_test.dart` | Personal info, self-harm, bullying, medical and off-limits detection; ordinary questions (incl. big numbers, look-alike words) pass |
@@ -263,6 +264,17 @@ user-visible change:
   - [ ] Force-stop and reopen: stars and open levels remain.
   - [ ] My Discoveries counts game stars; 6 stars earns the Champion cap.
   - [ ] Parent Zone: "Game Zone results" shows; Delete all progress clears it.
+- [ ] **Game Zone look and How to play:**
+  - [ ] Game Zone: night-sky screen, scoreboard with rank and stars, big game
+        tiles with pictures.
+  - [ ] Win a game, go back: the stars and rank have gone up.
+  - [ ] Arena: each game shows numbered level buttons; locked ones show a lock;
+        each game has a How to play button, and so does Quick Create.
+  - [ ] First game of each kind: How to play opens by itself and Buddy reads
+        it. Let's play! closes it and Buddy stops.
+  - [ ] Second game of that kind: it doesn't open by itself.
+  - [ ] During a game, the ? at the top opens it. Got it returns to the game
+        with nothing lost.
 - [ ] **Dino Discovery:**
   - [ ] Game Zone → Start exploring: Fern Forest open, the other two say to
         explore the place before.

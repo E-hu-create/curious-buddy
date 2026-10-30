@@ -40,4 +40,8 @@ abstract final class AppColors {
   static const leafTint = Color(0xFFD3F2DF);
   static const grape = Color(0xFF9B7BF2);
   static const grapeTint = Color(0xFFE7DEFF);
+
+  /// The Game Zone's night sky.
+  static const arcade = Color(0xFF2B2A6B);
+  static const arcadeGlow = Color(0xFF3F3E8C);
 }

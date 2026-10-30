@@ -11,7 +11,9 @@ import '../core/themes/app_theme.dart';
 import '../core/widgets/buddy/buddy.dart';
 import '../quiz/widgets/quiz_widgets.dart';
 import 'dino_play_screen.dart';
+import 'how_to_play.dart';
 import 'widgets/dino_art.dart';
+import 'widgets/game_world.dart';
 
 /// Dino Discovery: the places to explore, and the way to the Field Guide.
 class DinoHubScreen extends StatefulWidget {
@@ -106,88 +108,82 @@ class _DinoHubScreenState extends State<DinoHubScreen> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-      appBar: AppBar(),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 680),
-              child: Column(
-                crossAxisAlignment: .stretch,
-                children: [
-                  Semantics(
-                    header: true,
-                    child: Text(
-                      DinoHubScreen.title,
-                      style: textTheme.headlineMedium,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      const Buddy(height: 96, mood: BuddyMood.excited),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          DinoHubScreen.welcome,
-                          style: textTheme.bodyLarge,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  if (_loading)
-                    const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(24),
-                        child: CircularProgressIndicator(
-                          semanticsLabel: 'Opening Dino Discovery',
-                        ),
-                      ),
-                    )
-                  else if (_failed) ...[
-                    Text(
-                      DinoHubScreen.errorMessage,
-                      style: textTheme.bodyLarge,
-                    ),
-                    const SizedBox(height: 12),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: FilledButton(
-                        onPressed: () => unawaited(_load()),
-                        child: const Text(DinoHubScreen.retryLabel),
-                      ),
-                    ),
-                  ] else ...[
-                    FilledButton.icon(
-                      onPressed: () => unawaited(_openGuide()),
-                      icon: const Icon(Icons.menu_book_rounded),
-                      label: Text(
-                        DinoHubScreen.guideLabel(
-                          DinoRules.foundIn(_best).length,
-                          DinoCreature.values.length,
-                        ),
-                      ),
-                    ),
-                    for (final place in DinoPlace.values) ...[
-                      const SizedBox(height: 14),
-                      _PlaceCard(
-                        place: place,
-                        open: DinoRules.isOpen(place, _best),
-                        stars: _best[place.id] ?? 0,
-                        onExplore: () => unawaited(_explore(place)),
-                      ),
-                    ],
-                  ],
-                ],
+    return GameWorld(
+      title: DinoHubScreen.title,
+      children: [
+        Row(
+          children: [
+            const Buddy(height: 96, mood: BuddyMood.excited),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                DinoHubScreen.welcome,
+                style: textTheme.bodyLarge?.copyWith(color: AppColors.white),
               ),
             ),
-          ),
+          ],
         ),
-      ),
+        const SizedBox(height: 16),
+        if (_loading)
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: CircularProgressIndicator(
+                color: AppColors.white,
+                semanticsLabel: 'Opening Dino Discovery',
+              ),
+            ),
+          )
+        else if (_failed) ...[
+          Text(
+            DinoHubScreen.errorMessage,
+            style: textTheme.bodyLarge?.copyWith(color: AppColors.white),
+          ),
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: PlayButton(
+              label: DinoHubScreen.retryLabel,
+              icon: Icons.refresh_rounded,
+              onPressed: () => unawaited(_load()),
+            ),
+          ),
+        ] else ...[
+          PlayButton(
+            label: DinoHubScreen.guideLabel(
+              DinoRules.foundIn(_best).length,
+              DinoCreature.values.length,
+            ),
+            icon: Icons.menu_book_rounded,
+            onPressed: () => unawaited(_openGuide()),
+          ),
+          const SizedBox(height: 10),
+          FilledButton.icon(
+            onPressed: () => unawaited(
+              showHowToPlay(
+                context,
+                guide: HowToPlay.dino,
+                voice: widget.voice,
+              ),
+            ),
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.white,
+              foregroundColor: AppColors.ink,
+            ),
+            icon: const Icon(Icons.help_outline_rounded),
+            label: const Text(HowToPlaySheet.buttonTooltip),
+          ),
+          for (final place in DinoPlace.values) ...[
+            const SizedBox(height: 14),
+            _PlaceCard(
+              place: place,
+              open: DinoRules.isOpen(place, _best),
+              stars: _best[place.id] ?? 0,
+              onExplore: () => unawaited(_explore(place)),
+            ),
+          ],
+        ],
+      ],
     );
   }
 }
@@ -230,10 +226,10 @@ class _PlaceCard extends StatelessWidget {
           Text(place.era, style: textTheme.bodyMedium),
           const SizedBox(height: 10),
           if (open)
-            OutlinedButton.icon(
+            PlayButton(
+              label: DinoHubScreen.exploreLabel(place),
+              icon: Icons.explore_rounded,
               onPressed: onExplore,
-              icon: const Icon(Icons.explore_rounded),
-              label: Text(DinoHubScreen.exploreLabel(place)),
             )
           else
             Text(

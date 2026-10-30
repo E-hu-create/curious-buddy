@@ -254,6 +254,14 @@ Built before Creative Island at the product owner's request.
 - ⏳ Grown-up review of the creature facts.
 - ⏳ Device test on the Samsung SM-A516U.
 
+## Game Zone: look and instructions ✅ (awaiting device test)
+
+- ✅ Night-sky menus, big game tiles, scoreboard with stars and ranks.
+- ✅ Level map of numbered buttons in the Arena.
+- ✅ How to play for every game: read aloud, automatic on a first game, and
+  available from each menu and during play.
+- ⏳ Device test on the Samsung SM-A516U.
+
 ## Game Zone: What's That Sound?
 
 Needs real recordings with clearly free licences (CC0), approved by the

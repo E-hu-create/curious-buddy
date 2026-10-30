@@ -94,6 +94,7 @@ void main() {
       voice: voice,
       progressRepository: progress,
       random: Random(seed),
+      autoGuide: false,
     ),
   );
 
@@ -296,8 +297,11 @@ void main() {
         await tester.ensureVisible(find.text(kind.title));
         expect(find.text(kind.title), findsOneWidget);
       }
-      expect(find.text('Play Starter'), findsNWidgets(3));
-      expect(find.text(ArenaScreen.lockedLabel('Starter')), findsNWidgets(3));
+      expect(find.bySemanticsLabel('Play Starter'), findsNWidgets(3));
+      expect(
+        find.bySemanticsLabel(ArenaScreen.lockedLabel('Starter')),
+        findsNWidgets(3),
+      );
       expect(find.text(ArenaScreen.quickTitle), findsOneWidget);
     });
 
@@ -407,8 +411,8 @@ void main() {
       await progress.save(LearnerProgress.empty.withGameResult('memory_1', 2));
       await openArena(tester);
 
-      expect(find.text('Play Explorer'), findsOneWidget);
-      await tapText(tester, 'Play Starter');
+      expect(find.bySemanticsLabel('Play Explorer'), findsOneWidget);
+      await tapLabel(tester, 'Play Starter');
       expect(find.text('Memory Match: Starter'), findsOneWidget);
     });
 
@@ -418,7 +422,7 @@ void main() {
       await tester.pumpWidget(const SizedBox());
       await openArena(tester);
 
-      expect(find.text('Play Explorer'), findsOneWidget);
+      expect(find.bySemanticsLabel('Play Explorer'), findsOneWidget);
       expect((await progress.load()).gameBest, {'pattern_1': 3});
     });
 

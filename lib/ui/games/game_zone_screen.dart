@@ -6,19 +6,27 @@ import 'package:flutter/material.dart';
 import '../../app/routes.dart';
 import '../../data/repositories/creations_repository.dart';
 import '../../data/repositories/progress_repository.dart';
+import '../../domain/games/dino.dart';
 import '../../domain/games/game_content.dart';
 import '../../domain/games/games.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
 import '../core/widgets/buddy/buddy.dart';
+import '../core/widgets/motion.dart';
 import '../creative/drawing_screen.dart';
 import '../quiz/widgets/quiz_widgets.dart';
 import 'game_play_screen.dart';
+import 'how_to_play.dart';
+import 'widgets/dino_art.dart';
+import 'widgets/game_world.dart';
+import 'widgets/picture_art.dart';
 
 /// The way into every game.
-class GameZoneScreen extends StatelessWidget {
-  const GameZoneScreen({super.key});
+class GameZoneScreen extends StatefulWidget {
+  const GameZoneScreen({super.key, required this.progressRepository});
+
+  final ProgressRepository progressRepository;
 
   static const title = 'Game Zone';
   static const welcome = 'Ready to play? Pick a game!';
@@ -32,104 +40,245 @@ class GameZoneScreen extends StatelessWidget {
   static const dinoLabel = 'Start exploring';
   static const soundTitle = "What's That Sound?";
 
+  static String starsLabel(int stars, int all) => '$stars of $all stars';
+  static String nextRankLabel(int stars, GameRank next) =>
+      '${next.stars - stars} more to ${next.label}';
+
+  @override
+  State<GameZoneScreen> createState() => _GameZoneScreenState();
+}
+
+class _GameZoneScreenState extends State<GameZoneScreen> {
+  int _stars = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_load());
+  }
+
+  Future<void> _load() async {
+    try {
+      final progress = await widget.progressRepository.load();
+      if (!mounted) return;
+      setState(() => _stars = ArenaRules.totalStars(progress.gameBest));
+    } on Exception {
+      // The games still open; each explains the problem itself.
+    }
+  }
+
+  Future<void> _open(String route) async {
+    await Navigator.of(context).pushNamed(route);
+    await _load();
+  }
+
+  @override
+  Widget build(BuildContext context) => GameWorld(
+    title: GameZoneScreen.title,
+    children: [
+      Row(
+        children: [
+          const Buddy(height: 96, mood: BuddyMood.excited),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              GameZoneScreen.welcome,
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(color: AppColors.white),
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 12),
+      _Scoreboard(stars: _stars),
+      const SizedBox(height: 16),
+      _GameTile(
+        color: AppColors.leafTint,
+        art: const _DinoTileArt(),
+        title: GameZoneScreen.dinoTitle,
+        text: GameZoneScreen.dinoText,
+        button: PlayButton(
+          label: GameZoneScreen.dinoLabel,
+          icon: Icons.explore_rounded,
+          onPressed: () => unawaited(_open(Routes.dino)),
+        ),
+      ),
+      const SizedBox(height: 16),
+      _GameTile(
+        color: AppColors.brandBlueTint,
+        art: const _ArenaTileArt(),
+        title: GameZoneScreen.arenaTitle,
+        text: GameZoneScreen.arenaText,
+        button: PlayButton(
+          label: GameZoneScreen.arenaLabel,
+          icon: Icons.sports_esports_rounded,
+          onPressed: () => unawaited(_open(Routes.arena)),
+        ),
+      ),
+      const SizedBox(height: 16),
+      const _ComingSoon(title: GameZoneScreen.soundTitle),
+    ],
+  );
+}
+
+/// The player's stars and rank. Nothing here can go down.
+class _Scoreboard extends StatelessWidget {
+  const _Scoreboard({required this.stars});
+
+  final int stars;
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-      appBar: AppBar(),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 680),
-              child: Column(
-                crossAxisAlignment: .stretch,
-                children: [
-                  Semantics(
-                    header: true,
-                    child: Text(title, style: textTheme.headlineMedium),
+    final rank = GameRank.of(stars);
+    final next = rank.next;
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: AppShapes.sticker(AppColors.sunTint, depth: 3),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.emoji_events_rounded,
+            size: 40,
+            color: AppColors.ink,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: .start,
+              children: [
+                Text(rank.label, style: textTheme.titleLarge),
+                Text(
+                  GameZoneScreen.starsLabel(stars, ArenaRules.allStars),
+                  style: textTheme.bodyMedium,
+                ),
+                if (next != null)
+                  Text(
+                    GameZoneScreen.nextRankLabel(stars, next),
+                    style: textTheme.bodyMedium,
                   ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      const Buddy(height: 96, mood: BuddyMood.excited),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(welcome, style: textTheme.bodyLarge),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  const _ZoneCard(
-                    color: AppColors.leafTint,
-                    title: dinoTitle,
-                    text: dinoText,
-                    icon: Icons.explore_rounded,
-                    label: dinoLabel,
-                    route: Routes.dino,
-                  ),
-                  const SizedBox(height: 14),
-                  const _ZoneCard(
-                    color: AppColors.brandBlueTint,
-                    title: arenaTitle,
-                    text: arenaText,
-                    icon: Icons.sports_esports_rounded,
-                    label: arenaLabel,
-                    route: Routes.arena,
-                  ),
-                  const SizedBox(height: 14),
-                  const _ComingSoon(title: soundTitle),
-                ],
-              ),
+              ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GameTile extends StatelessWidget {
+  const _GameTile({
+    required this.color,
+    required this.art,
+    required this.title,
+    required this.text,
+    required this.button,
+  });
+
+  final Color color;
+  final Widget art;
+  final String title;
+  final String text;
+  final Widget button;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return PopIn(
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: AppShapes.sticker(color),
+        child: Column(
+          crossAxisAlignment: .stretch,
+          children: [
+            art,
+            const SizedBox(height: 10),
+            Semantics(
+              header: true,
+              child: Text(title, style: textTheme.titleLarge),
+            ),
+            const SizedBox(height: 2),
+            Text(text, style: textTheme.bodyLarge),
+            const SizedBox(height: 10),
+            button,
+          ],
         ),
       ),
     );
   }
 }
 
-class _ZoneCard extends StatelessWidget {
-  const _ZoneCard({
-    required this.color,
-    required this.title,
-    required this.text,
-    required this.icon,
-    required this.label,
-    required this.route,
-  });
-
-  final Color color;
-  final String title;
-  final String text;
-  final IconData icon;
-  final String label;
-  final String route;
+class _DinoTileArt extends StatelessWidget {
+  const _DinoTileArt();
 
   @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: AppShapes.sticker(color),
-      child: Column(
-        crossAxisAlignment: .stretch,
+  Widget build(BuildContext context) => ExcludeSemantics(
+    child: LayoutBuilder(
+      builder: (context, constraints) => DinoScene(
+        place: DinoPlace.openPlains,
         children: [
-          Text(title, style: textTheme.titleLarge),
-          const SizedBox(height: 4),
-          Text(text, style: textTheme.bodyLarge),
-          const SizedBox(height: 12),
-          FilledButton.icon(
-            onPressed: () => unawaited(Navigator.of(context).pushNamed(route)),
-            icon: Icon(icon),
-            label: Text(label),
+          Align(
+            alignment: const Alignment(-0.85, 0.8),
+            child: DinoArt(
+              creature: DinoCreature.triceratops,
+              width: constraints.maxWidth * 0.42,
+            ),
+          ),
+          Align(
+            alignment: const Alignment(0.9, 0.75),
+            child: DinoArt(
+              creature: DinoCreature.tyrannosaurus,
+              width: constraints.maxWidth * 0.5,
+            ),
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
+
+/// A fan of game cards.
+class _ArenaTileArt extends StatelessWidget {
+  const _ArenaTileArt();
+
+  @override
+  Widget build(BuildContext context) => ExcludeSemantics(
+    child: Container(
+      height: 150,
+      decoration: BoxDecoration(
+        color: AppColors.brandBlue,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      padding: const EdgeInsets.all(8),
+      child: FittedBox(
+        child: Row(
+          children: [
+            for (final (picture, turn) in const [
+              (GamePicture.rocket, -0.14),
+              (GamePicture.owl, 0.0),
+              (GamePicture.planet, 0.14),
+            ])
+              Transform.rotate(
+                angle: turn,
+                child: Container(
+                  width: 84,
+                  height: 104,
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  alignment: Alignment.center,
+                  decoration: AppShapes.sticker(
+                    AppColors.white,
+                    depth: 3,
+                    radius: 12,
+                  ),
+                  child: PictureArt(picture: picture, size: 64),
+                ),
+              ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 class _ComingSoon extends StatelessWidget {
@@ -142,14 +291,10 @@ class _ComingSoon extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return Container(
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.ink, width: 1.5),
-      ),
+      decoration: AppShapes.sticker(AppColors.grapeTint),
       child: Row(
         children: [
-          const Icon(Icons.schedule_rounded, color: AppColors.inkSoft),
+          const Icon(Icons.lock_rounded, color: AppColors.ink),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -193,6 +338,9 @@ class ArenaScreen extends StatefulWidget {
   static const retryLabel = 'Try again';
 
   static String lockedLabel(String previous) => 'Earn a star in $previous';
+  static String playLabel(GameLevel level) => 'Play ${level.name}';
+  static String starsValue(int stars) =>
+      '$stars ${stars == 1 ? 'star' : 'stars'}';
 
   @override
   State<ArenaScreen> createState() => _ArenaScreenState();
@@ -277,62 +425,52 @@ class _ArenaScreenState extends State<ArenaScreen> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-      appBar: AppBar(),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 680),
-              child: Column(
-                crossAxisAlignment: .stretch,
-                children: [
-                  Semantics(
-                    header: true,
-                    child: Text(
-                      ArenaScreen.title,
-                      style: textTheme.headlineMedium,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  if (_loading)
-                    const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(24),
-                        child: CircularProgressIndicator(
-                          semanticsLabel: 'Opening the Arena',
-                        ),
-                      ),
-                    )
-                  else if (_failed) ...[
-                    Text(ArenaScreen.errorMessage, style: textTheme.bodyLarge),
-                    const SizedBox(height: 12),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: FilledButton(
-                        onPressed: () => unawaited(_load()),
-                        child: const Text(ArenaScreen.retryLabel),
-                      ),
-                    ),
-                  ] else ...[
-                    for (final kind in GameKind.values) ...[
-                      _GameCard(
-                        kind: kind,
-                        best: _best,
-                        onPlay: (level) => unawaited(_play(level)),
-                      ),
-                      const SizedBox(height: 14),
-                    ],
-                    _quickCreate(textTheme),
-                  ],
-                ],
+    return GameWorld(
+      title: ArenaScreen.title,
+      children: [
+        if (_loading)
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: CircularProgressIndicator(
+                color: AppColors.white,
+                semanticsLabel: 'Opening the Arena',
               ),
             ),
+          )
+        else if (_failed) ...[
+          Text(
+            ArenaScreen.errorMessage,
+            style: textTheme.bodyLarge?.copyWith(color: AppColors.white),
           ),
-        ),
-      ),
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: PlayButton(
+              label: ArenaScreen.retryLabel,
+              icon: Icons.refresh_rounded,
+              onPressed: () => unawaited(_load()),
+            ),
+          ),
+        ] else ...[
+          for (final kind in GameKind.values) ...[
+            _GameCard(
+              kind: kind,
+              best: _best,
+              onPlay: (level) => unawaited(_play(level)),
+              onHowTo: () => unawaited(
+                showHowToPlay(
+                  context,
+                  guide: HowToPlay.of(kind),
+                  voice: widget.voice,
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
+          ],
+          _quickCreate(textTheme),
+        ],
+      ],
     );
   }
 
@@ -345,6 +483,21 @@ class _ArenaScreenState extends State<ArenaScreen> {
         Text(ArenaScreen.quickTitle, style: textTheme.titleLarge),
         const SizedBox(height: 4),
         Text(ArenaScreen.quickText, style: textTheme.bodyMedium),
+        const SizedBox(height: 8),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: OutlinedButton.icon(
+            onPressed: () => unawaited(
+              showHowToPlay(
+                context,
+                guide: HowToPlay.quickCreate,
+                voice: widget.voice,
+              ),
+            ),
+            icon: const Icon(Icons.help_outline_rounded),
+            label: const Text(HowToPlaySheet.buttonTooltip),
+          ),
+        ),
         const SizedBox(height: 10),
         Text(_idea, style: textTheme.titleMedium),
         const SizedBox(height: 10),
@@ -378,11 +531,19 @@ class _GameCard extends StatelessWidget {
     required this.kind,
     required this.best,
     required this.onPlay,
+    required this.onHowTo,
   });
 
   final GameKind kind;
   final Map<String, int> best;
   final ValueChanged<GameLevel> onPlay;
+  final VoidCallback onHowTo;
+
+  static const _colors = {
+    GameKind.memory: AppColors.grapeTint,
+    GameKind.pattern: AppColors.sunTint,
+    GameKind.spot: AppColors.leafTint,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -390,7 +551,7 @@ class _GameCard extends StatelessWidget {
     final levels = ArenaRules.levelsOf(kind);
     return Container(
       padding: const EdgeInsets.all(14),
-      decoration: AppShapes.sticker(AppColors.white),
+      decoration: AppShapes.sticker(_colors[kind]!),
       child: Column(
         crossAxisAlignment: .stretch,
         children: [
@@ -399,26 +560,37 @@ class _GameCard extends StatelessWidget {
             child: Text(kind.title, style: textTheme.titleLarge),
           ),
           Text(kind.tagline, style: textTheme.bodyMedium),
+          const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: .start,
+            children: [
+              for (final (i, level) in levels.indexed)
+                Expanded(
+                  child: _LevelNode(
+                    level: level,
+                    open: ArenaRules.isOpen(level, best),
+                    stars: best[level.id] ?? 0,
+                    previousName: i == 0 ? '' : levels[i - 1].name,
+                    onPlay: () => onPlay(level),
+                  ),
+                ),
+            ],
+          ),
           const SizedBox(height: 10),
-          for (final (i, level) in levels.indexed)
-            Padding(
-              padding: EdgeInsets.only(top: i == 0 ? 0 : 8),
-              child: _LevelRow(
-                level: level,
-                open: ArenaRules.isOpen(level, best),
-                stars: best[level.id] ?? 0,
-                previousName: i == 0 ? '' : levels[i - 1].name,
-                onPlay: () => onPlay(level),
-              ),
-            ),
+          OutlinedButton.icon(
+            onPressed: onHowTo,
+            icon: const Icon(Icons.help_outline_rounded),
+            label: const Text(HowToPlaySheet.buttonTooltip),
+          ),
         ],
       ),
     );
   }
 }
 
-class _LevelRow extends StatelessWidget {
-  const _LevelRow({
+/// One stop on a game's level map: a big numbered button, or a lock.
+class _LevelNode extends StatelessWidget {
+  const _LevelNode({
     required this.level,
     required this.open,
     required this.stars,
@@ -432,35 +604,55 @@ class _LevelRow extends StatelessWidget {
   final String previousName;
   final VoidCallback onPlay;
 
+  static const _size = 60.0;
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Wrap(
-      spacing: 10,
-      runSpacing: 4,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      alignment: WrapAlignment.spaceBetween,
-      children: [
-        Wrap(
-          spacing: 8,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Text(level.name, style: textTheme.titleMedium),
-            QuizStars(stars: stars, size: 20),
-          ],
-        ),
-        if (open)
-          OutlinedButton.icon(
-            onPressed: onPlay,
-            icon: const Icon(Icons.play_arrow_rounded),
-            label: Text('Play ${level.name}'),
-          )
-        else
-          Text(
-            ArenaScreen.lockedLabel(previousName),
-            style: textTheme.bodyMedium,
+    return Semantics(
+      button: open,
+      label: open
+          ? ArenaScreen.playLabel(level)
+          : ArenaScreen.lockedLabel(previousName),
+      value: open ? ArenaScreen.starsValue(stars) : null,
+      excludeSemantics: true,
+      child: StickerPress(
+        enabled: open,
+        child: InkWell(
+          onTap: open ? onPlay : null,
+          borderRadius: BorderRadius.circular(14),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Column(
+              children: [
+                Container(
+                  width: _size,
+                  height: _size,
+                  alignment: Alignment.center,
+                  decoration: AppShapes.sticker(
+                    open ? AppColors.sun : AppColors.white,
+                    depth: 3,
+                    radius: _size / 2,
+                  ),
+                  child: open
+                      ? Text('${level.number}', style: textTheme.titleLarge)
+                      : const Icon(
+                          Icons.lock_rounded,
+                          color: AppColors.inkSoft,
+                        ),
+                ),
+                const SizedBox(height: 6),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(level.name, style: textTheme.titleSmall),
+                ),
+                const SizedBox(height: 2),
+                QuizStars(stars: stars, size: 16),
+              ],
+            ),
           ),
-      ],
+        ),
+      ),
     );
   }
 }

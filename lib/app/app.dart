@@ -140,7 +140,8 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
           progressRepository: dependencies.progressRepository,
           voice: _voice,
         ),
-        Routes.games: (_) => const GameZoneScreen(),
+        Routes.games: (_) =>
+            GameZoneScreen(progressRepository: dependencies.progressRepository),
         Routes.arena: (_) => ArenaScreen(
           progressRepository: dependencies.progressRepository,
           creationsRepository: dependencies.creationsRepository,

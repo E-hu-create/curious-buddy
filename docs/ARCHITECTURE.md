@@ -459,6 +459,15 @@ coming soon.
   the Drawing Studio with an idea.
 - **Saved:** `gameBest` in `LearnerProgress` (schema 6). Game stars count in
   My Discoveries and unlock the Champion cap.
+- **Menus:** `GameWorld` gives the Game Zone, Arena and Dino Discovery menus
+  their night-sky look, and `PlayButton` their yellow start button. The Game
+  Zone shows a scoreboard: total stars and a `GameRank` worked out from them,
+  so a rank can never go down. Arena levels are a map of numbered buttons.
+- **How to play:** `how_to_play.dart` holds short steps for every game and the
+  sheet that shows them while Buddy reads them. It opens by itself on a first
+  game, worked out from `gameBest` (nothing extra is saved), so Delete all
+  progress brings it back. Every game menu has a How to play button, and so
+  does the top of every game.
 - **Art:** `InkPen` draws the sticker style in code. `PictureArt` holds the 12
   Memory Match pictures and `DinoArt` the creatures and scenes, so there are
   no image files or licences to manage.

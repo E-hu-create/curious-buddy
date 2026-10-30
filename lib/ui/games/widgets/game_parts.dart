@@ -10,6 +10,7 @@ import '../../core/widgets/motion.dart';
 import '../../missions/widgets/stage_widgets.dart';
 import '../../quiz/widgets/quiz_widgets.dart';
 import '../game_view_models.dart';
+import '../how_to_play.dart';
 import 'picture_art.dart';
 
 /// Draws a game token: a coloured shape, or a number.
@@ -78,6 +79,7 @@ class GameShell extends StatelessWidget {
     this.nextResult,
     this.backButton = backLabel,
     this.finishExtra,
+    this.onHowToPlay,
   });
 
   final GamePlayViewModel vm;
@@ -91,6 +93,9 @@ class GameShell extends StatelessWidget {
 
   /// Shown under the stars when the game is finished.
   final Widget? finishExtra;
+
+  /// Opens the instructions from the top of the screen.
+  final VoidCallback? onHowToPlay;
 
   static const playAgainLabel = 'Play again';
   static const nextLabel = 'Next level';
@@ -108,7 +113,17 @@ class GameShell extends StatelessWidget {
       listenable: vm,
       celebrationKey: () => vm.isFinished && vm.stars == 3 ? 'stars' : null,
       child: Scaffold(
-        appBar: AppBar(title: Text(vm.gameTitle, style: textTheme.titleMedium)),
+        appBar: AppBar(
+          title: Text(vm.gameTitle, style: textTheme.titleMedium),
+          actions: [
+            if (onHowToPlay != null)
+              IconButton(
+                onPressed: onHowToPlay,
+                tooltip: HowToPlaySheet.buttonTooltip,
+                icon: const Icon(Icons.help_outline_rounded),
+              ),
+          ],
+        ),
         body: SafeArea(
           child: ListenableBuilder(
             listenable: vm,

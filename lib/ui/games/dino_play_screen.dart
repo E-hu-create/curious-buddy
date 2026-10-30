@@ -10,6 +10,7 @@ import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
 import '../core/widgets/motion.dart';
 import 'dino_view_model.dart';
+import 'how_to_play.dart';
 import 'widgets/dino_art.dart';
 import 'widgets/game_parts.dart';
 
@@ -21,6 +22,7 @@ class DinoPlayScreen extends StatefulWidget {
     required this.voice,
     required this.progressRepository,
     this.random,
+    this.autoGuide = true,
   });
 
   final DinoPlace place;
@@ -29,6 +31,9 @@ class DinoPlayScreen extends StatefulWidget {
 
   /// Injected in tests for a predictable game.
   final Random? random;
+
+  /// Whether the instructions open by themselves on a first game.
+  final bool autoGuide;
 
   static const searchHint = 'Tap a search spot to look for clues.';
   static const whoIsIt = 'Who is it?';
@@ -64,9 +69,29 @@ class _DinoPlayScreenState extends State<DinoPlayScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _vm.narrateIntro();
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_begin()));
+  }
+
+  /// The first time a child plays, explain the game before it starts.
+  Future<void> _begin() async {
+    if (widget.autoGuide && await _isFirstGame() && mounted) {
+      await showHowToPlay(
+        context,
+        guide: HowToPlay.dino,
+        voice: widget.voice,
+        buttonLabel: HowToPlaySheet.letsPlayLabel,
+      );
+    }
+    if (mounted) _vm.narrateIntro();
+  }
+
+  Future<bool> _isFirstGame() async {
+    try {
+      final best = (await widget.progressRepository.load()).gameBest;
+      return !DinoRules.allIds.any(best.containsKey);
+    } on Exception {
+      return false;
+    }
   }
 
   @override
@@ -87,6 +112,9 @@ class _DinoPlayScreenState extends State<DinoPlayScreen> {
       nextResult: next,
       backButton: DinoPlayScreen.backLabel,
       finishExtra: _GuideStrip(place: place),
+      onHowToPlay: () => unawaited(
+        showHowToPlay(context, guide: HowToPlay.dino, voice: widget.voice),
+      ),
       child: ListenableBuilder(
         listenable: _vm,
         builder: (context, _) => PageSwap(

@@ -10,6 +10,7 @@ import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
 import '../core/widgets/motion.dart';
 import 'game_view_models.dart';
+import 'how_to_play.dart';
 import 'widgets/game_parts.dart';
 
 /// The next level of [level], if any.
@@ -25,6 +26,7 @@ class GamePlayScreen extends StatefulWidget {
     required this.voice,
     required this.progressRepository,
     this.random,
+    this.autoGuide = true,
   });
 
   final GameLevel level;
@@ -33,6 +35,9 @@ class GamePlayScreen extends StatefulWidget {
 
   /// Injected in tests for a predictable game.
   final Random? random;
+
+  /// Whether the instructions open by themselves on a first game.
+  final bool autoGuide;
 
   static const nextQuestion = 'Next';
   static const seeStars = 'See my stars';
@@ -75,9 +80,31 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _vm.narrateIntro();
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_begin()));
+  }
+
+  /// The first time a child plays this game, explain it before it starts.
+  Future<void> _begin() async {
+    if (widget.autoGuide && await _isFirstGame() && mounted) {
+      await showHowToPlay(
+        context,
+        guide: HowToPlay.of(widget.level.kind),
+        voice: widget.voice,
+        buttonLabel: HowToPlaySheet.letsPlayLabel,
+      );
+    }
+    if (mounted) _vm.narrateIntro();
+  }
+
+  Future<bool> _isFirstGame() async {
+    try {
+      final best = (await widget.progressRepository.load()).gameBest;
+      return !ArenaRules.levelsOf(
+        widget.level.kind,
+      ).any((level) => best.containsKey(level.id));
+    } on Exception {
+      return false;
+    }
   }
 
   @override
@@ -93,6 +120,13 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       vm: _vm,
       nextButton: next == null ? null : '${GameShell.nextLabel}: ${next.name}',
       nextResult: next,
+      onHowToPlay: () => unawaited(
+        showHowToPlay(
+          context,
+          guide: HowToPlay.of(widget.level.kind),
+          voice: widget.voice,
+        ),
+      ),
       child: ListenableBuilder(
         listenable: _vm,
         builder: (context, _) => switch (_vm) {
