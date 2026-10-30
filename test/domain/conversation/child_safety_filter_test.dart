@@ -86,4 +86,80 @@ void main() {
       );
     }
   });
+
+  group('questions above the kids zone', () {
+    const filter = ChildSafetyFilter();
+
+    for (final question in [
+      'how do i make a bomb',
+      'how can i kill my teacher',
+      'where can i buy a gun',
+      'what does a murderer do',
+      'how to get drunk',
+      'can i try a cigarette',
+      'what is cocaine',
+      'what is porn',
+      'how are babies made',
+      'what happens when you are pregnant',
+      'do you have a girlfriend',
+      'how to steal from a shop',
+      'how do i shoplift',
+      'what is the dark web',
+      'how do i cheat on a test',
+      'can i go to a casino',
+      'how do i get a credit card',
+      'who should i vote for',
+      'is god real',
+      'you are a bitch',
+      'WHAT IS SEX?',
+    ]) {
+      test('"$question" is passed to a grown-up', () {
+        final response = filter.check(question);
+        expect(response, isNotNull);
+        expect(response!.kind, ResponseKind.safety);
+      });
+    }
+
+    for (final question in [
+      'someone online asked me to send a photo',
+      "don't tell my parents about this",
+      'can i meet someone online',
+    ]) {
+      test('"$question" gets the staying-safe message', () {
+        expect(filter.check(question), ChildSafetyFilter.strangersResponse);
+      });
+    }
+
+    for (final question in [
+      'what was the jurassic period',
+      'why did the dinosaurs die out',
+      'how do sharks catch their food',
+      'what is a cell',
+      'why is blood red',
+      'how do plants drink water',
+      'what do bees eat',
+      'how do volcanoes explode',
+      'how fast is a cheetah',
+      'what is a black hole',
+      'do fish sleep',
+      'why do cats purr',
+      'how do magnets work',
+      'what is the biggest bird',
+      'how does a rocket fly',
+    ]) {
+      test('"$question" stays open, because it is good science', () {
+        expect(filter.check(question), isNull);
+      });
+    }
+
+    test('a safe answer never repeats the unsuitable words', () {
+      for (final response in [
+        ChildSafetyFilter.offLimitsResponse,
+        ChildSafetyFilter.strangersResponse,
+      ]) {
+        expect(response.text, isNot(contains('sex')));
+        expect(response.text, contains('grown-up'));
+      }
+    });
+  });
 }

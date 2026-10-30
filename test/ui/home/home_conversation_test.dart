@@ -202,7 +202,13 @@ void main() {
     expect(find.text(BuddyStatus.thinking.label), findsNothing);
   });
 
-  testWidgets('long ideas wrap instead of being cut off at 2x text', (
+  testWidgets('the ask box stays small on a normal phone', (tester) async {
+    await openHome(tester);
+
+    expect(tester.getSize(find.byType(AskBuddyPanel)).height, lessThan(240));
+  });
+
+  testWidgets('long ideas slide into view instead of being cut off at 2x', (
     tester,
   ) async {
     usePhoneScreen(tester, logicalSize: const Size(320, 640));
@@ -215,9 +221,10 @@ void main() {
       matching: find.byType(Text),
     );
     await tester.ensureVisible(label);
+    await tester.pumpAndSettle();
     final paragraph = tester.renderObject<RenderParagraph>(label);
     expect(paragraph.didExceedMaxLines, isFalse);
-    expect(paragraph.size.height, greaterThan(40), reason: 'wrapped lines');
+    expect(tester.getRect(label).right, lessThanOrEqualTo(320));
   });
 
   testWidgets('navigating away mid-answer stops speech', (tester) async {

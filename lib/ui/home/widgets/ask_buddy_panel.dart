@@ -113,8 +113,8 @@ class _AskBuddyPanelState extends State<AskBuddyPanel> {
         filled: true,
         fillColor: AppColors.paper,
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
+          horizontal: 14,
+          vertical: 10,
         ),
         border: _border(),
         enabledBorder: _border(),
@@ -132,7 +132,7 @@ class _AskBuddyPanelState extends State<AskBuddyPanel> {
     final notice = widget.notice;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: AppShapes.sticker(AppColors.white, depth: 4),
       child: Column(
         crossAxisAlignment: .stretch,
@@ -146,13 +146,13 @@ class _AskBuddyPanelState extends State<AskBuddyPanel> {
           else
             _TalkButton(onPressed: widget.enabled ? widget.onTalk : null),
           if (notice != null) ...[
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
             Semantics(
               liveRegion: true,
               child: Text(notice, style: textTheme.bodyMedium),
             ),
           ],
-          const SizedBox(height: 14),
+          const SizedBox(height: 10),
           // Side by side normally; stacked with large text or on narrow
           // screens so the box keeps room to show what is typed.
           if (stacked) ...[
@@ -167,19 +167,32 @@ class _AskBuddyPanelState extends State<AskBuddyPanel> {
                 ask,
               ],
             ),
-          const SizedBox(height: 14),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final suggestion in widget.suggestions)
-                SuggestionButton(
-                  label: suggestion,
-                  onPressed: _inputEnabled
-                      ? () => widget.onAsk(suggestion)
-                      : null,
-                ),
-            ],
+          const SizedBox(height: 10),
+          // One line that slides sideways, to keep the box small. Each idea
+          // fits the box, so very large text wraps, not runs off the edge.
+          LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                crossAxisAlignment: .start,
+                children: [
+                  for (final (i, suggestion) in widget.suggestions.indexed) ...[
+                    if (i > 0) const SizedBox(width: 8),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: constraints.maxWidth,
+                      ),
+                      child: SuggestionButton(
+                        label: suggestion,
+                        onPressed: _inputEnabled
+                            ? () => widget.onAsk(suggestion)
+                            : null,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -202,8 +215,8 @@ class _TalkButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FilledButton.icon(
       onPressed: onPressed,
-      style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(72)),
-      icon: const Icon(Icons.mic_rounded, size: 30),
+      style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(54)),
+      icon: const Icon(Icons.mic_rounded, size: 26),
       label: const Text(AskBuddyPanel.talkLabel),
     );
   }
@@ -292,7 +305,7 @@ class SuggestionButton extends StatelessWidget {
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         minimumSize: const Size(48, 48),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         backgroundColor: AppColors.sunTint,
         foregroundColor: AppColors.ink,
         side: const BorderSide(color: AppColors.ink, width: 1.5),

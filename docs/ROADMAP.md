@@ -292,6 +292,18 @@ Built before Creative Island at the product owner's request.
 - ⏳ Grown-up review of the facts.
 - ⏳ Device test on the Samsung SM-A516U.
 
+## Talk to Buddy update ✅ (awaiting device test)
+
+- ✅ A much smaller box on Home; suggestions slide sideways on one line.
+- ✅ A much wider safety filter: weapons, drugs, adult topics, rule-breaking,
+  money, rude words and strangers, for typed and spoken questions alike.
+- ⏳ Decision for the product owner: allow online voice recognition on phones
+  that cannot listen offline. It stays off by default, because it can send a
+  child's voice to the phone's speech service.
+- ⏳ Decision for the product owner: a real AI for children. It needs a paid
+  service, parental consent and a safety and legal review (Stage C).
+- ⏳ Device test on the Samsung SM-A516U.
+
 ## Grown-ups upgrade ✅ (awaiting device test)
 
 - ✅ Grown-ups moved from the top of Home to its own card at the bottom.

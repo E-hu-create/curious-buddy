@@ -296,6 +296,10 @@ user-visible change:
   - [ ] Second game of that kind: it doesn't open by itself.
   - [ ] During a game, the ? at the top opens it. Got it returns to the game
         with nothing lost.
+- [ ] **Talk to Buddy:** the box is smaller, and the suggestions slide sideways.
+      Ask something unsuitable, typed and spoken: Buddy points to a grown-up.
+      Ask a science question: Buddy answers. In Grown-ups → Microphone, see
+      whether this phone can listen offline.
 - [ ] **Grown-ups:** the card is at the bottom of Home, and still asks the parent
       check. Progress at a glance shows real numbers and a next step. Jump links
       move down the page.

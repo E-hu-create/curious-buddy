@@ -55,6 +55,15 @@ class ChildSafetyFilter {
     followUps: ['Teach me something amazing.', 'Tell me an animal fact.'],
   );
 
+  static const strangersResponse = EducationalResponse(
+    text:
+        'Please keep that safe, and never meet or share with someone you '
+        'only know online. '
+        'If anyone asks you to keep a secret, tell $trustedAdult right away.',
+    kind: ResponseKind.safety,
+    hideQuestion: true,
+  );
+
   // Personal information patterns.
   static final _email = RegExp(r'\S+@\S+\.\S+');
   // Phone-shaped only (leading + or 0, or 3-3-4 groups), so big numbers in
@@ -79,6 +88,24 @@ class ChildSafetyFilter {
     'my surname',
     'my school is',
     'i go to school at',
+  ];
+
+  // Being asked for secrets, photos or meetings, usually online.
+  static const _strangers = [
+    'send a photo',
+    'send you a photo',
+    'send me a photo',
+    'send a picture',
+    'send pictures',
+    'meet a stranger',
+    'meet someone online',
+    'met someone online',
+    'someone online asked',
+    'a stranger asked',
+    'keep a secret from my parents',
+    'keep it secret from my parents',
+    'do not tell my parents',
+    "don't tell my parents",
   ];
 
   // Topic phrases, checked in this order.
@@ -110,24 +137,113 @@ class ChildSafetyFilter {
     'how much ibuprofen',
   ];
   static const _offLimits = [
+    // Weapons and violence.
     'gun',
     'guns',
     'bomb',
+    'bombs',
     'weapon',
     'weapons',
+    'grenade',
+    'explosive',
+    'explosives',
     'knife fight',
     'make poison',
+    'kill someone',
+    'kill people',
+    'how to kill',
+    'how do i kill',
+    'how can i kill',
+    'murder',
+    'murderer',
+    'torture',
+    'terrorist',
+    'terrorism',
+    'kidnap',
+    'kidnapping',
+    'beat someone up',
+    'hurt someone',
+    // Drugs, alcohol and smoking.
+    'drug',
     'drugs',
     'alcohol',
+    'beer',
+    'wine',
+    'vodka',
+    'whisky',
+    'whiskey',
+    'get drunk',
+    'getting drunk',
+    'cigarette',
+    'cigarettes',
+    'smoking',
     'vape',
-    'hack',
-    'hacking',
+    'vaping',
+    'weed',
+    'cocaine',
+    'heroin',
+    // Sex, bodies and relationships, which are for a trusted grown-up.
     'sex',
     'sexy',
     'naked',
+    'nude',
+    'nudes',
     'porn',
-    'kill someone',
-    'kill people',
+    'boobs',
+    'breasts',
+    'penis',
+    'vagina',
+    'pregnant',
+    'pregnancy',
+    'my period',
+    'have a period',
+    'how are babies made',
+    'where do babies come from',
+    'boyfriend',
+    'girlfriend',
+    'dating',
+    'french kiss',
+    // Breaking the rules.
+    'hack',
+    'hacking',
+    'how to steal',
+    'how do i steal',
+    'shoplift',
+    'shoplifting',
+    'dark web',
+    'cheat on a test',
+    'cheat in a test',
+    'cheat on my test',
+    'lie to my parents',
+    'run away from home',
+    // Money and gambling.
+    'gambling',
+    'gamble',
+    'casino',
+    'betting',
+    'lottery',
+    'credit card',
+    'bank account',
+    'bitcoin',
+    'crypto',
+    'loan',
+    // Rude words.
+    'fuck',
+    'fucking',
+    'shit',
+    'bitch',
+    'bastard',
+    'asshole',
+    'arsehole',
+    'dick',
+    'pussy',
+    // Grown-up arguments.
+    'who should i vote for',
+    'politics',
+    'political party',
+    'which religion is right',
+    'which religion is best',
+    'is god real',
   ];
 
   EducationalResponse? check(String question) {
@@ -140,6 +256,7 @@ class ChildSafetyFilter {
     }
     final text = normalize(question);
     if (_containsAny(text, _selfHarm)) return selfHarmResponse;
+    if (_containsAny(text, _strangers)) return strangersResponse;
     if (_containsAny(text, _bullying)) return bullyingResponse;
     if (_containsAny(text, _medical)) return medicalResponse;
     if (_containsAny(text, _offLimits)) return offLimitsResponse;
