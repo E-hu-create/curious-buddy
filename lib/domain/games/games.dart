@@ -13,7 +13,8 @@ enum GameKind {
   maze(
     'Treasure Maze',
     'Guide Buddy to the chest, collecting gems on the way.',
-  );
+  ),
+  robot('Code the Robot', 'Plan the steps, press Go, and watch your code run.');
 
   const GameKind(this.title, this.tagline);
 

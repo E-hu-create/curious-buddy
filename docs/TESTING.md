@@ -100,6 +100,8 @@ and ask first.
 | `test/ui/games/dino_screens_test.dart` | View model speech, sounds, saving, failed save, speech stops; hub; every place played through the screens; creatures appear in the scene; wrong picks; next place; Field Guide stays secret and reads aloud; storage error; no typing or microphone; accessibility; no overflow |
 | `test/domain/games/maze_test.dart` | Every cell reachable by one route; passages match; gems and chest placed fairly; levels grow; walls; running; gems; stars |
 | `test/ui/games/maze_screens_test.dart` | Saving, wall bumps, a new maze on replay; arrows reach the chest; swipes; Game Zone tile |
+| `test/domain/games/robot_test.dart` | Every puzzle solvable within its limit; flag never adjacent; repeats only on Expert; run endings; lines tied to moves; add, undo, clear, limit; failed runs; stars; rounds |
+| `test/ui/games/robot_screens_test.dart` | Solving saves stars; failed runs keep code and explain; no editing during a run; leaving mid-run; writing code and Go on screen; Twice on Expert only; Game Zone tile; full code at 2x text |
 | `test/ui/games/how_to_play_test.dart` | Short steps for every game; opens by itself the first time only; help button during a game; menu buttons; closing stops Buddy; ranks; scoreboard; storage error; accessibility; no overflow |
 | `test/ui/stories/stories_accessibility_test.dart` | Tap target, label and contrast guidelines on the shelf, intro, a choice page and an ending; numbered choice labels; picture descriptions; every page of every story without overflow on small phones and 2x text |
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
@@ -277,6 +279,15 @@ user-visible change:
   - [ ] Second game of that kind: it doesn't open by itself.
   - [ ] During a game, the ? at the top opens it. Got it returns to the game
         with nothing lost.
+- [ ] **Code the Robot:**
+  - [ ] Game Zone → Start coding: three levels, with How to play.
+  - [ ] Arrows add steps to Your code; Undo and Clear work; a full line stops
+        adding.
+  - [ ] Go: the robot follows the code step by step, highlighting each line.
+  - [ ] Hit a rock, the edge, or stop short: a note explains, and the code
+        stays to fix.
+  - [ ] Reach the flag: Next puzzle. Three puzzles, then stars.
+  - [ ] Expert: Twice repeats the last step.
 - [ ] **Treasure Maze:**
   - [ ] Game Zone → Find the treasure: three levels, with How to play.
   - [ ] The arrows move Buddy; Buddy runs until a wall, a turning or a gem.

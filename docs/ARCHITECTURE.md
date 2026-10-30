@@ -93,7 +93,7 @@ only used for unknown routes.
 | Living Stories ✅ | `ui/stories/`, `domain/stories/` | story repository, progress repository, BuddyVoice |
 | Quiz Time ✅ | `ui/quiz/`, `domain/quiz/` | quiz repository, progress repository, BuddyVoice |
 | Creative Island ✅ | `ui/creative/`, `domain/creative/` | creations repository (local only), BuddyVoice |
-| Game Zone ✅ (Challenge Arena, Dino Discovery, Treasure Maze) | `ui/games/`, `domain/games/` | progress and creations repositories, BuddyVoice |
+| Game Zone ✅ (Challenge Arena, Dino Discovery, Treasure Maze, Code the Robot) | `ui/games/`, `domain/games/` | progress and creations repositories, BuddyVoice |
 | Buddy's Wardrobe ✅ | `ui/wardrobe/`, `domain/wardrobe/` | progress and content repositories, BuddyWardrobe, BuddyVoice |
 | My Discoveries ✅ | `ui/discoveries/`, `domain/discoveries/` | reads progress, mission, story, quiz and creations repositories; BuddyVoice |
 | Saved progress | `domain/models/`, `data/repositories/` | KeyValueStore |
@@ -480,6 +480,15 @@ goes on the farthest cell and gems go in dead ends first. `go()` runs Buddy
 until a wall, a turning, a gem or the chest. It is a `GameKind` with three
 levels, saved in `gameBest`, but `GameKind.arena` leaves it out of the Arena
 list: it has its own Game Zone tile, which opens `ArenaScreen` with `only` set.
+
+### Code the Robot
+
+`domain/games/robot.dart` makes a new puzzle for each of a level's three
+rounds, only keeping layouts it can solve; the solution sets the line limit.
+`trace()` runs the code and ties each move to its line, which the view model
+plays back one move at a time. A run that goes wrong keeps the code and counts
+against the stars. Expert adds Twice, which repeats the last line. Like the
+maze, it has its own Game Zone tile.
 
 ### Dino Discovery
 

@@ -268,11 +268,14 @@ Built before Creative Island at the product owner's request.
 - ✅ Gems for stars; the chest finishes; no clock; walls cost nothing.
 - ⏳ Device test on the Samsung SM-A516U.
 
-## Game Zone: Code the Robot (next)
+## Game Zone: Code the Robot ✅ (awaiting device test)
 
-Plan a line of arrow commands, press Go, and watch Buddy follow them.
+- ✅ New solvable puzzles every game, three levels of three puzzles.
+- ✅ Write code with arrows, run it, see each line, and fix mistakes.
+- ✅ Twice on Expert, for a first taste of repeats.
+- ⏳ Device test on the Samsung SM-A516U.
 
-## Game Zone: Word Builder
+## Game Zone: Word Builder (next)
 
 Unscramble letters to make science and nature words.
 

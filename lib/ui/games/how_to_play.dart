@@ -112,6 +112,33 @@ class HowToPlay {
     ],
   );
 
+  static const robot = HowToPlay(
+    game: 'Code the Robot',
+    tip: noClock,
+    steps: [
+      HowToStep(
+        Icons.flag_rounded,
+        'Find the robot and the green flag. Plan a way around the rocks.',
+      ),
+      HowToStep(
+        Icons.gamepad_rounded,
+        'Tap arrows to write your code, one step at a time.',
+      ),
+      HowToStep(
+        Icons.play_arrow_rounded,
+        'Press Go. The robot follows your code exactly.',
+      ),
+      HowToStep(
+        Icons.build_rounded,
+        'Something wrong? Your code stays there, so fix it and try again.',
+      ),
+      HowToStep(
+        Icons.repeat_rounded,
+        'On Expert, Twice makes your last step happen two times.',
+      ),
+    ],
+  );
+
   static const dino = HowToPlay(
     game: 'Dino Discovery',
     tip: noClock,
@@ -154,6 +181,7 @@ class HowToPlay {
     GameKind.pattern => pattern,
     GameKind.spot => spot,
     GameKind.maze => maze,
+    GameKind.robot => robot,
   };
 }
 

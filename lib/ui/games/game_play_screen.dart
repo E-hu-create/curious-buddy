@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../data/repositories/progress_repository.dart';
 import '../../domain/games/games.dart';
 import '../../domain/games/maze.dart';
+import '../../domain/games/robot.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
@@ -15,6 +16,7 @@ import 'game_view_models.dart';
 import 'how_to_play.dart';
 import 'widgets/game_parts.dart';
 import 'widgets/maze_art.dart';
+import 'widgets/robot_art.dart';
 
 /// The next level of [level], if any.
 GameLevel? _nextOf(GameLevel level) => level.number < ArenaRules.levelsPerGame
@@ -48,6 +50,22 @@ class GamePlayScreen extends StatefulWidget {
   static const firstPicture = 'First picture';
   static const secondPicture = 'Second picture: tap what changed';
   static const missNote = "That one didn't change. Keep looking!";
+
+  static const goLabel2 = 'Go!';
+  static const undoLabel = 'Undo';
+  static const clearLabel = 'Clear';
+  static const twiceLabel = 'Twice';
+  static const nextPuzzle = 'Next puzzle';
+
+  static String puzzleLabel(int n, int total) => 'Puzzle $n of $total';
+  static String linesLabel(int used, int limit) => 'Your code: $used of $limit';
+  static String lineLabel(int n, RobotStep step) => 'Line $n: ${step.label}';
+  static String gridLabel(RobotPuzzle puzzle, int cell) {
+    String at(int i) =>
+        'row ${i ~/ puzzle.size + 1} column ${i % puzzle.size + 1}';
+    final rocks = puzzle.rocks.map(at).join(', ');
+    return 'Robot at ${at(cell)}. Flag at ${at(puzzle.goal)}. Rocks at $rocks.';
+  }
 
   static String gemsLabel(int found, int all) => 'Gems: $found of $all';
   static String goLabel(MazeDirection direction) => 'Go ${direction.label}';
@@ -87,6 +105,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       random: widget.random,
     ),
     GameKind.maze => MazeViewModel(
+      level: widget.level,
+      voice: widget.voice,
+      progressRepository: widget.progressRepository,
+      random: widget.random,
+    ),
+    GameKind.robot => RobotViewModel(
       level: widget.level,
       voice: widget.voice,
       progressRepository: widget.progressRepository,
@@ -151,6 +175,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           final PatternViewModel vm => _PatternBoard(vm: vm),
           final SpotViewModel vm => _SpotBoard(vm: vm),
           final MazeViewModel vm => _MazeBoard(vm: vm),
+          final RobotViewModel vm => _RobotBoard(vm: vm),
           _ => const SizedBox.shrink(),
         },
       ),
@@ -609,36 +634,296 @@ class _ArrowButton extends StatelessWidget {
   final MazeViewModel vm;
   final MazeDirection direction;
 
-  static const _size = 68.0;
+  @override
+  Widget build(BuildContext context) => _SquareButton(
+    label: GamePlayScreen.goLabel(direction),
+    icon: _arrowOf(direction),
+    onTap: () => vm.go(direction),
+  );
+}
+
+IconData _arrowOf(MazeDirection direction) => switch (direction) {
+  MazeDirection.up => Icons.arrow_upward_rounded,
+  MazeDirection.right => Icons.arrow_forward_rounded,
+  MazeDirection.down => Icons.arrow_downward_rounded,
+  MazeDirection.left => Icons.arrow_back_rounded,
+};
+
+class _SquareButton extends StatelessWidget {
+  const _SquareButton({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+    this.size = 68,
+    this.color = AppColors.sun,
+  });
+
+  final String label;
+  final IconData icon;
+  final VoidCallback? onTap;
+  final double size;
+  final Color color;
 
   @override
   Widget build(BuildContext context) => Semantics(
     button: true,
-    label: GamePlayScreen.goLabel(direction),
+    enabled: onTap != null,
+    label: label,
     excludeSemantics: true,
     child: StickerPress(
+      enabled: onTap != null,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => vm.go(direction),
+          onTap: onTap,
           borderRadius: BorderRadius.circular(18),
           child: Ink(
-            width: _size,
-            height: _size,
-            decoration: AppShapes.sticker(AppColors.sun, depth: 3, radius: 18),
-            child: Icon(
-              switch (direction) {
-                MazeDirection.up => Icons.arrow_upward_rounded,
-                MazeDirection.right => Icons.arrow_forward_rounded,
-                MazeDirection.down => Icons.arrow_downward_rounded,
-                MazeDirection.left => Icons.arrow_back_rounded,
-              },
-              size: 34,
-              color: AppColors.ink,
+            width: size,
+            height: size,
+            decoration: AppShapes.sticker(
+              onTap == null ? AppColors.white : color,
+              depth: 3,
+              radius: 18,
             ),
+            child: Icon(icon, size: size / 2, color: AppColors.ink),
           ),
         ),
       ),
     ),
   );
+}
+
+// ------------------------------------------------------------ Code the Robot
+
+class _RobotBoard extends StatelessWidget {
+  const _RobotBoard({required this.vm});
+
+  final RobotViewModel vm;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final game = vm.game;
+    final puzzle = game.puzzle;
+    final ending = vm.ending;
+    final editable = vm.canEdit;
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        Text(
+          GamePlayScreen.puzzleLabel(game.round + 1, RobotGame.rounds),
+          style: textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 280),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: Semantics(
+                label: GamePlayScreen.gridLabel(puzzle, vm.cell),
+                excludeSemantics: true,
+                child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: AppShapes.sticker(
+                    AppColors.white,
+                    depth: 3,
+                    radius: 12,
+                  ),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final cell = constraints.maxWidth / puzzle.size;
+                      return Stack(
+                        children: [
+                          Positioned.fill(child: RobotGridArt(puzzle: puzzle)),
+                          AnimatedPositioned(
+                            duration: AppMotion.isCalm(context)
+                                ? Duration.zero
+                                : AppMotion.quick,
+                            curve: Curves.easeInOut,
+                            left: vm.cell % puzzle.size * cell,
+                            top: vm.cell ~/ puzzle.size * cell,
+                            width: cell,
+                            height: cell,
+                            child: Padding(
+                              padding: EdgeInsets.all(cell * 0.1),
+                              child: FittedBox(child: RobotFigure(size: cell)),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          GamePlayScreen.linesLabel(game.code.length, puzzle.limit),
+          style: textTheme.titleSmall,
+        ),
+        const SizedBox(height: 6),
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: AppShapes.sticker(AppColors.white, depth: 3, radius: 14),
+          child: Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              for (var i = 0; i < puzzle.limit; i++)
+                _CodeSlot(
+                  number: i + 1,
+                  step: i < game.code.length ? game.code[i] : null,
+                  active: vm.activeLine == i,
+                ),
+            ],
+          ),
+        ),
+        if (ending != null) ...[
+          const SizedBox(height: 10),
+          Semantics(
+            liveRegion: true,
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: AppShapes.sticker(
+                vm.isSolved ? AppColors.leafTint : AppColors.sunTint,
+                depth: 3,
+                radius: 14,
+              ),
+              child: Text(
+                RobotViewModel.noteFor(ending),
+                style: textTheme.bodyLarge,
+              ),
+            ),
+          ),
+        ],
+        const SizedBox(height: 12),
+        if (vm.isSolved)
+          FilledButton.icon(
+            onPressed: () => unawaited(vm.next()),
+            icon: const Icon(Icons.arrow_forward_rounded),
+            label: Text(
+              game.round + 1 < RobotGame.rounds
+                  ? GamePlayScreen.nextPuzzle
+                  : GamePlayScreen.seeStars,
+            ),
+          )
+        else ...[
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              for (final direction in const [
+                MazeDirection.left,
+                MazeDirection.up,
+                MazeDirection.down,
+                MazeDirection.right,
+              ])
+                _SquareButton(
+                  label: GamePlayScreen.goLabel(direction),
+                  icon: _arrowOf(direction),
+                  size: 58,
+                  onTap: editable && !game.isFull
+                      ? () => vm.add(direction)
+                      : null,
+                ),
+              if (game.allowRepeat)
+                _SquareButton(
+                  label: GamePlayScreen.twiceLabel,
+                  icon: Icons.repeat_rounded,
+                  size: 58,
+                  color: AppColors.grapeTint,
+                  onTap: editable && game.code.isNotEmpty
+                      ? vm.toggleRepeat
+                      : null,
+                ),
+              _SquareButton(
+                label: GamePlayScreen.undoLabel,
+                icon: Icons.undo_rounded,
+                size: 58,
+                color: AppColors.coralTint,
+                onTap: editable && game.code.isNotEmpty ? vm.undo : null,
+              ),
+              _SquareButton(
+                label: GamePlayScreen.clearLabel,
+                icon: Icons.delete_outline_rounded,
+                size: 58,
+                color: AppColors.coralTint,
+                onTap: editable && game.code.isNotEmpty ? vm.clear : null,
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          FilledButton.icon(
+            onPressed: editable && game.code.isNotEmpty
+                ? () => unawaited(vm.run())
+                : null,
+            icon: const Icon(Icons.play_arrow_rounded),
+            label: const Text(GamePlayScreen.goLabel2),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _CodeSlot extends StatelessWidget {
+  const _CodeSlot({
+    required this.number,
+    required this.step,
+    required this.active,
+  });
+
+  final int number;
+  final RobotStep? step;
+  final bool active;
+
+  static const _size = 40.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final step = this.step;
+    return Semantics(
+      label: step == null ? null : GamePlayScreen.lineLabel(number, step),
+      excludeSemantics: true,
+      child: Container(
+        width: _size,
+        height: _size,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: active
+              ? AppColors.sun
+              : step == null
+              ? AppColors.paper
+              : AppColors.brandBlueTint,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: step == null ? AppColors.inkSoft : AppColors.ink,
+            width: 1.5,
+          ),
+        ),
+        child: step == null
+            ? null
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    _arrowOf(step.direction),
+                    size: step.times == 1 ? 24 : 18,
+                    color: AppColors.ink,
+                  ),
+                  if (step.times == 2)
+                    Icon(
+                      _arrowOf(step.direction),
+                      size: 18,
+                      color: AppColors.ink,
+                    ),
+                ],
+              ),
+      ),
+    );
+  }
 }

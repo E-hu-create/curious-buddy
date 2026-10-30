@@ -23,6 +23,7 @@ import 'widgets/dino_art.dart';
 import 'widgets/game_world.dart';
 import 'widgets/maze_art.dart';
 import 'widgets/picture_art.dart';
+import 'widgets/robot_art.dart';
 
 /// The way into every game.
 class GameZoneScreen extends StatefulWidget {
@@ -41,6 +42,7 @@ class GameZoneScreen extends StatefulWidget {
       'Explore prehistoric places and name their creatures.';
   static const dinoLabel = 'Start exploring';
   static const mazeLabel = 'Find the treasure';
+  static const robotLabel = 'Start coding';
   static const soundTitle = "What's That Sound?";
 
   static String starsLabel(int stars, int all) => '$stars of $all stars';
@@ -117,6 +119,18 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
           label: GameZoneScreen.mazeLabel,
           icon: Icons.diamond_rounded,
           onPressed: () => unawaited(_open(Routes.maze)),
+        ),
+      ),
+      const SizedBox(height: 16),
+      _GameTile(
+        color: AppColors.grapeTint,
+        art: const _RobotTileArt(),
+        title: GameKind.robot.title,
+        text: GameKind.robot.tagline,
+        button: PlayButton(
+          label: GameZoneScreen.robotLabel,
+          icon: Icons.smart_toy_rounded,
+          onPressed: () => unawaited(_open(Routes.robot)),
         ),
       ),
       const SizedBox(height: 16),
@@ -277,6 +291,47 @@ class _MazeTileArt extends StatelessWidget {
               alignment: Alignment.topLeft,
               child: Buddy(height: 28, waveOnAppear: false),
             ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+/// The robot and a line of code.
+class _RobotTileArt extends StatelessWidget {
+  const _RobotTileArt();
+
+  @override
+  Widget build(BuildContext context) => ExcludeSemantics(
+    child: Container(
+      height: 150,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: AppColors.grape,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: FittedBox(
+        child: Row(
+          children: [
+            const RobotFigure(size: 110),
+            const SizedBox(width: 14),
+            for (final icon in const [
+              Icons.arrow_forward_rounded,
+              Icons.arrow_upward_rounded,
+              Icons.flag_rounded,
+            ])
+              Container(
+                width: 56,
+                height: 56,
+                margin: const EdgeInsets.only(left: 6),
+                decoration: AppShapes.sticker(
+                  AppColors.sun,
+                  depth: 3,
+                  radius: 14,
+                ),
+                child: Icon(icon, color: AppColors.ink, size: 32),
+              ),
           ],
         ),
       ),
@@ -595,6 +650,7 @@ class _GameCard extends StatelessWidget {
     GameKind.pattern: AppColors.sunTint,
     GameKind.spot: AppColors.leafTint,
     GameKind.maze: AppColors.sunTint,
+    GameKind.robot: AppColors.grapeTint,
   };
 
   @override

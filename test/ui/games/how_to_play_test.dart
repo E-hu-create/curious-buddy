@@ -43,6 +43,7 @@ void main() {
     HowToPlay.pattern,
     HowToPlay.spot,
     HowToPlay.maze,
+    HowToPlay.robot,
     HowToPlay.dino,
     HowToPlay.quickCreate,
   ];

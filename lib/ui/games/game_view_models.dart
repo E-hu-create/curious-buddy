@@ -8,6 +8,7 @@ import '../../data/services/sound/sound_effects_service.dart';
 import '../../domain/games/game_content.dart';
 import '../../domain/games/games.dart';
 import '../../domain/games/maze.dart';
+import '../../domain/games/robot.dart';
 import '../../domain/voice/buddy_voice.dart';
 
 enum GameSaveStatus { notSaved, saved, failed }
@@ -115,6 +116,9 @@ abstract class GamePlayViewModel extends ChangeNotifier {
     if (_disposed) return;
     unawaited(_voice.say(text, requested: requested, lead: lead));
   }
+
+  @protected
+  bool get isDisposed => _disposed;
 
   @protected
   void notify() {
@@ -308,6 +312,127 @@ class MazeViewModel extends ArenaViewModel {
 
   @override
   void reset() => _build();
+}
+
+class RobotViewModel extends ArenaViewModel {
+  RobotViewModel({
+    required super.level,
+    required super.voice,
+    required super.progressRepository,
+    Random? random,
+    this.stepTime = const Duration(milliseconds: 380),
+  }) : _random = random ?? Random() {
+    _game = RobotGame(level: level.number, random: _random);
+    _cell = _game.puzzle.start;
+  }
+
+  final Random _random;
+
+  /// How long the robot takes over each move.
+  final Duration stepTime;
+
+  RobotGame get game => _game;
+  late RobotGame _game;
+
+  /// Where the robot is now.
+  int get cell => _cell;
+  late int _cell;
+
+  /// The line of code running now.
+  int? get activeLine => _activeLine;
+  int? _activeLine;
+
+  bool get isRunning => _running;
+  bool _running = false;
+
+  /// How the last run ended, until the code changes.
+  RobotEnding? get ending => _ending;
+  RobotEnding? _ending;
+
+  bool get isSolved => _ending == RobotEnding.goal;
+  bool get canEdit => !_running && !isSolved && !isFinished;
+
+  @override
+  String get introLine =>
+      'Tap the arrows to write your code, then press Go to get the robot '
+      'to the flag.';
+
+  static String noteFor(RobotEnding ending) => switch (ending) {
+    RobotEnding.goal => 'Your code works! The robot reached the flag.',
+    RobotEnding.rock => 'The robot bumped into a rock. Fix your code!',
+    RobotEnding.edge => 'The robot reached the edge. Fix your code!',
+    RobotEnding.short => 'The robot stopped before the flag. Add more steps!',
+  };
+
+  void _edit(bool Function() change) {
+    if (!canEdit || !change()) return;
+    _ending = null;
+    _cell = _game.puzzle.start;
+    sound(SoundEffect.pop);
+    notify();
+  }
+
+  void add(MazeDirection direction) => _edit(() => _game.add(direction));
+
+  void toggleRepeat() => _edit(_game.toggleRepeat);
+
+  void undo() => _edit(() {
+    final had = _game.code.isNotEmpty;
+    _game.undo();
+    return had;
+  });
+
+  void clear() => _edit(() {
+    final had = _game.code.isNotEmpty;
+    _game.clear();
+    return had;
+  });
+
+  /// Runs the code one move at a time, so the child can follow it.
+  Future<void> run() async {
+    if (!canEdit || _game.code.isEmpty) return;
+    _running = true;
+    _ending = null;
+    _cell = _game.puzzle.start;
+    notify();
+    final trace = _game.run();
+    for (final (i, cell) in trace.cells.indexed) {
+      _cell = cell;
+      _activeLine = trace.stepOfCell[i];
+      notify();
+      await Future<void>.delayed(stepTime);
+      if (isDisposed) return;
+    }
+    _running = false;
+    _activeLine = null;
+    _ending = trace.ending;
+    notify();
+    say(
+      noteFor(trace.ending),
+      lead: isSolved ? SoundEffect.correct : SoundEffect.gentle,
+    );
+  }
+
+  /// The next puzzle, or the finish after the last one.
+  Future<void> next() async {
+    if (!isSolved) return;
+    if (!_game.nextRound()) {
+      await finish(_game.stars);
+      return;
+    }
+    _ending = null;
+    _cell = _game.puzzle.start;
+    notify();
+  }
+
+  @override
+  void reset() {
+    _game = RobotGame(level: level.number, random: _random);
+    _cell = _game.puzzle.start;
+    _ending = null;
+    _activeLine = null;
+    _running = false;
+  }
 }
 
 class SpotViewModel extends ArenaViewModel {
