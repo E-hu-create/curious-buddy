@@ -51,6 +51,7 @@ void main() {
     HowToPlay.sort,
     HowToPlay.circuit,
     HowToPlay.sudoku,
+    HowToPlay.parade,
     HowToPlay.dino,
     HowToPlay.quickCreate,
   ];

@@ -307,7 +307,7 @@ Built before Creative Island at the product owner's request.
 - ✅ Sort It! (awaiting device test, and a grown-up review of its sorting).
 - ✅ Circuit Fixer (awaiting device test).
 - ✅ Picture Sudoku (awaiting device test).
-- ⏳ Planet Parade.
+- ✅ Planet Parade (awaiting device test, and a grown-up review of its facts).
 
 ## Later, each needing an approved requirement
 

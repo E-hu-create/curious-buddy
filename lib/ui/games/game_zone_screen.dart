@@ -52,6 +52,7 @@ class GameZoneScreen extends StatefulWidget {
   static const sortLabel = 'Start sorting';
   static const circuitLabel = 'Light the bulb';
   static const sudokuLabel = 'Fill the grid';
+  static const paradeLabel = 'Start the parade';
 
   static String starsLabel(int stars, int all) => '$stars of $all stars';
   static String nextRankLabel(int stars, GameRank next) =>
@@ -211,6 +212,18 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
           label: GameZoneScreen.sudokuLabel,
           icon: Icons.grid_on_rounded,
           onPressed: () => unawaited(_open(Routes.sudoku)),
+        ),
+      ),
+      const SizedBox(height: 16),
+      _GameTile(
+        color: AppColors.brandBlueTint,
+        art: const _ParadeTileArt(),
+        title: GameKind.parade.title,
+        text: GameKind.parade.tagline,
+        button: PlayButton(
+          label: GameZoneScreen.paradeLabel,
+          icon: Icons.public_rounded,
+          onPressed: () => unawaited(_open(Routes.parade)),
         ),
       ),
       const SizedBox(height: 16),
@@ -749,6 +762,46 @@ class _SudokuTileArt extends StatelessWidget {
   );
 }
 
+/// The Sun and a line of planets.
+class _ParadeTileArt extends StatelessWidget {
+  const _ParadeTileArt();
+
+  @override
+  Widget build(BuildContext context) => ExcludeSemantics(
+    child: Container(
+      height: 150,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: AppColors.arcade,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: FittedBox(
+        child: Row(
+          children: [
+            for (final (color, size) in const [
+              (AppColors.sun, 110.0),
+              (AppColors.coral, 36.0),
+              (AppColors.brandBlue, 48.0),
+              (AppColors.grape, 76.0),
+              (AppColors.leaf, 58.0),
+            ])
+              Container(
+                width: size,
+                height: size,
+                margin: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: color,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.ink, width: 2),
+                ),
+              ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 /// A fan of game cards.
 class _ArenaTileArt extends StatelessWidget {
   const _ArenaTileArt();
@@ -1038,6 +1091,7 @@ class _GameCard extends StatelessWidget {
     GameKind.sort: AppColors.sunTint,
     GameKind.circuit: AppColors.grapeTint,
     GameKind.sudoku: AppColors.leafTint,
+    GameKind.parade: AppColors.brandBlueTint,
   };
 
   @override

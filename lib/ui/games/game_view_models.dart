@@ -11,6 +11,7 @@ import '../../domain/games/game_content.dart';
 import '../../domain/games/games.dart';
 import '../../domain/games/maze.dart';
 import '../../domain/games/number_pop.dart';
+import '../../domain/games/parade.dart';
 import '../../domain/games/robot.dart';
 import '../../domain/games/sort_it.dart';
 import '../../domain/games/sound_game.dart';
@@ -887,6 +888,54 @@ class SudokuViewModel extends ArenaViewModel {
 
   @override
   void reset() => _start();
+}
+
+class ParadeViewModel extends ArenaViewModel {
+  ParadeViewModel({
+    required super.level,
+    required super.voice,
+    required super.progressRepository,
+    Random? random,
+  }) : _random = random ?? Random() {
+    _game = ParadeGame(level: level.number, random: _random);
+  }
+
+  final Random _random;
+
+  ParadeGame get game => _game;
+  late ParadeGame _game;
+
+  @override
+  String get introLine => _game.set.question;
+
+  void tap(String item) {
+    if (isFinished) return;
+    switch (_game.tap(item)) {
+      case ParadeTap.ignored:
+        return;
+      case ParadeTap.wrong:
+        sound(SoundEffect.gentle);
+      case ParadeTap.right:
+        sound(SoundEffect.correct);
+      case ParadeTap.finished:
+        say('You did it! ${_game.set.fact}', lead: SoundEffect.correct);
+    }
+    notify();
+  }
+
+  /// The next set, or the finish after the last one.
+  Future<void> next() async {
+    if (!_game.isFinished) return;
+    if (!_game.nextRound()) {
+      await finish(_game.stars);
+      return;
+    }
+    notify();
+    say(_game.set.question);
+  }
+
+  @override
+  void reset() => _game = ParadeGame(level: level.number, random: _random);
 }
 
 class SpotViewModel extends ArenaViewModel {

@@ -507,6 +507,13 @@ SoundPool as the effects, so Android must know each new clip by name.
 sounds off. Then the game shows the clue, so it can always be played, and it
 can be played by a child who can't hear the clips.
 
+### Planet Parade
+
+`domain/games/parade.dart` holds sets of things in the right order, three or
+four per level, and each game uses three. The child taps what comes next, and
+each finished line shows a fact. `paradeProblems()` checks the sets. It has its
+own Game Zone tile.
+
 ### Picture Sudoku
 
 `domain/games/sudoku.dart` shuffles a known solved grid in ways that keep it

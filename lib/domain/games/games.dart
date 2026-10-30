@@ -21,7 +21,8 @@ enum GameKind {
   number('Number Pop', 'Pop every bubble that makes the target number.'),
   sort('Sort It!', 'Put each thing in the right group.'),
   circuit('Circuit Fixer', 'Turn the wires to light the bulb.'),
-  sudoku('Picture Sudoku', 'Fill the grid so no picture repeats.');
+  sudoku('Picture Sudoku', 'Fill the grid so no picture repeats.'),
+  parade('Planet Parade', 'Tap planets and other things into the right order.');
 
   const GameKind(this.title, this.tagline);
 

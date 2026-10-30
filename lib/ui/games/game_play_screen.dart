@@ -9,6 +9,7 @@ import '../../domain/games/four_in_a_row.dart';
 import '../../domain/games/games.dart';
 import '../../domain/games/maze.dart';
 import '../../domain/games/number_pop.dart';
+import '../../domain/games/parade.dart';
 import '../../domain/games/robot.dart';
 import '../../domain/games/sound_game.dart';
 import '../../domain/games/sudoku.dart';
@@ -60,6 +61,14 @@ class GamePlayScreen extends StatefulWidget {
   static const firstPicture = 'First picture';
   static const secondPicture = 'Second picture: tap what changed';
   static const missNote = "That one didn't change. Keep looking!";
+
+  static const nextParade = 'Next line';
+  static const paradeWrong = 'Not that one yet. Try another!';
+
+  static String paradeLabel(int n, int total) => 'Line $n of $total';
+  static String pickLabel(String item) => 'Pick $item';
+  static String placeInLine(int n, String? item) =>
+      'Place $n: ${item ?? 'empty'}';
 
   static const sudokuSolved = 'You solved it!';
   static const sudokuHint = 'Tap a picture to put it in the yellow square.';
@@ -228,6 +237,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       progressRepository: widget.progressRepository,
       random: widget.random,
     ),
+    GameKind.parade => ParadeViewModel(
+      level: widget.level,
+      voice: widget.voice,
+      progressRepository: widget.progressRepository,
+      random: widget.random,
+    ),
   };
 
   @override
@@ -299,6 +314,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           final SortViewModel vm => _SortBoard(vm: vm),
           final CircuitViewModel vm => _CircuitBoard(vm: vm),
           final SudokuViewModel vm => _SudokuBoard(vm: vm),
+          final ParadeViewModel vm => _ParadeBoard(vm: vm),
           _ => const SizedBox.shrink(),
         },
       ),
@@ -2214,4 +2230,185 @@ class _SudokuBoard extends StatelessWidget {
       ),
     );
   }
+}
+
+// ------------------------------------------------------------- Planet Parade
+
+class _ParadeBoard extends StatelessWidget {
+  const _ParadeBoard({required this.vm});
+
+  final ParadeViewModel vm;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final game = vm.game;
+    final set = game.set;
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        Text(
+          GamePlayScreen.paradeLabel(game.round + 1, ParadeGame.rounds),
+          style: textTheme.titleSmall,
+        ),
+        const SizedBox(height: 4),
+        Semantics(
+          header: true,
+          child: Text(set.question, style: textTheme.titleLarge),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: AppShapes.sticker(AppColors.arcade, depth: 3, radius: 16),
+          child: Column(
+            crossAxisAlignment: .stretch,
+            children: [
+              for (var i = 0; i < set.order.length; i++)
+                _ParadeSlot(
+                  number: i + 1,
+                  item: i < game.placed ? set.order[i] : null,
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        if (game.isFinished) ...[
+          Semantics(
+            liveRegion: true,
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: AppShapes.sticker(
+                AppColors.sunTint,
+                depth: 3,
+                radius: 14,
+              ),
+              child: Text(set.fact, style: textTheme.bodyLarge),
+            ),
+          ),
+          const SizedBox(height: 12),
+          FilledButton.icon(
+            onPressed: () => unawaited(vm.next()),
+            icon: const Icon(Icons.arrow_forward_rounded),
+            label: Text(
+              game.round + 1 < ParadeGame.rounds
+                  ? GamePlayScreen.nextParade
+                  : GamePlayScreen.seeStars,
+            ),
+          ),
+        ] else ...[
+          if (game.tried.isNotEmpty) ...[
+            Semantics(
+              liveRegion: true,
+              child: Text(
+                GamePlayScreen.paradeWrong,
+                style: textTheme.bodyLarge,
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final item in game.options)
+                if (!game.isPlaced(item))
+                  _ParadeOption(
+                    item: item,
+                    tried: game.tried.contains(item),
+                    onTap: () => vm.tap(item),
+                  ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _ParadeSlot extends StatelessWidget {
+  const _ParadeSlot({required this.number, required this.item});
+
+  final int number;
+  final String? item;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final item = this.item;
+    return Semantics(
+      label: GamePlayScreen.placeInLine(number, item),
+      excludeSemantics: true,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 3),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 14,
+              backgroundColor: item == null
+                  ? AppColors.arcadeGlow
+                  : AppColors.sun,
+              child: Text(
+                '$number',
+                style: textTheme.titleSmall?.copyWith(
+                  color: item == null ? AppColors.white : AppColors.ink,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: item == null
+                  ? const SizedBox(height: 22)
+                  : PopIn(
+                      child: Text(
+                        item,
+                        style: textTheme.titleMedium?.copyWith(
+                          color: AppColors.white,
+                        ),
+                      ),
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ParadeOption extends StatelessWidget {
+  const _ParadeOption({
+    required this.item,
+    required this.tried,
+    required this.onTap,
+  });
+
+  final String item;
+  final bool tried;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: !tried,
+    label: GamePlayScreen.pickLabel(item),
+    excludeSemantics: true,
+    child: StickerPress(
+      enabled: !tried,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: tried ? null : onTap,
+          borderRadius: BorderRadius.circular(14),
+          child: Ink(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: AppShapes.sticker(
+              tried ? AppColors.coralTint : AppColors.white,
+              depth: 3,
+              radius: 14,
+            ),
+            child: Text(item, style: Theme.of(context).textTheme.titleMedium),
+          ),
+        ),
+      ),
+    ),
+  );
 }

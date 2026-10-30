@@ -295,6 +295,26 @@ class HowToPlay {
     ],
   );
 
+  static const parade = HowToPlay(
+    game: 'Planet Parade',
+    tip: noClock,
+    steps: [
+      HowToStep(Icons.help_outline_rounded, 'Read the question at the top.'),
+      HowToStep(
+        Icons.format_list_numbered_rounded,
+        'Tap the thing that comes first.',
+      ),
+      HowToStep(
+        Icons.touch_app_rounded,
+        'Then tap what comes next, until the line is full.',
+      ),
+      HowToStep(
+        Icons.star_rounded,
+        'Finish 3 lines. Fewer wrong picks earn more stars.',
+      ),
+    ],
+  );
+
   static const dino = HowToPlay(
     game: 'Dino Discovery',
     tip: noClock,
@@ -345,6 +365,7 @@ class HowToPlay {
     GameKind.sort => sort,
     GameKind.circuit => circuit,
     GameKind.sudoku => sudoku,
+    GameKind.parade => parade,
   };
 }
 

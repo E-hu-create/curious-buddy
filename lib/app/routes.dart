@@ -20,5 +20,6 @@ abstract final class Routes {
   static const sort = '/games/sort';
   static const circuit = '/games/circuit';
   static const sudoku = '/games/sudoku';
+  static const parade = '/games/parade';
   static const parentZone = '/parent-zone';
 }
