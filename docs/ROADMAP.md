@@ -292,14 +292,15 @@ Built before Creative Island at the product owner's request.
 - ⏳ Grown-up review of the facts.
 - ⏳ Device test on the Samsung SM-A516U.
 
-## Story Maker ✅ (awaiting device test)
+## Story Maker ✅ (confirmed on device)
 
 - ✅ Children pick a hero, a place and a mystery, or tap Surprise me, and get a
   brand-new branching story with three endings: 512 in all.
 - ✅ Every sentence comes from pieces written in advance, so it is offline and
   safe. Made stories are not saved.
 - ⏳ Grown-up review of the science in the eight mysteries.
-- ⏳ Device test on the Samsung SM-A516U.
+- ✅ Confirmed working on the Samsung SM-A516U by the product owner (2026-10-30),
+  with its own card on Home.
 
 ## Talk to Buddy update ✅ (awaiting device test)
 
