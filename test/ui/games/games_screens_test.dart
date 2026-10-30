@@ -297,10 +297,13 @@ void main() {
         await tester.ensureVisible(find.text(kind.title));
         expect(find.text(kind.title), findsOneWidget);
       }
-      expect(find.bySemanticsLabel('Play Starter'), findsNWidgets(3));
+      expect(
+        find.bySemanticsLabel('Play Starter'),
+        findsNWidgets(GameKind.arena.length),
+      );
       expect(
         find.bySemanticsLabel(ArenaScreen.lockedLabel('Starter')),
-        findsNWidgets(3),
+        findsNWidgets(GameKind.arena.length),
       );
       expect(find.text(ArenaScreen.quickTitle), findsOneWidget);
     });

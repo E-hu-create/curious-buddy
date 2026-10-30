@@ -292,6 +292,11 @@ Built before Creative Island at the product owner's request.
 - ⏳ Grown-up review of the facts.
 - ⏳ Device test on the Samsung SM-A516U.
 
+## Game Zone: six more Arena games
+
+- ✅ Four in a Row against Buddy (awaiting device test).
+- ⏳ Number Pop, Sort It!, Circuit Fixer, Picture Sudoku and Planet Parade.
+
 ## Later, each needing an approved requirement
 
 - `EducationalResponseProvider` beyond scripted answers (AI backend).

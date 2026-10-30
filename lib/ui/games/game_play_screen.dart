@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../data/repositories/progress_repository.dart';
+import '../../domain/games/four_in_a_row.dart';
 import '../../domain/games/games.dart';
 import '../../domain/games/maze.dart';
 import '../../domain/games/robot.dart';
@@ -55,6 +56,15 @@ class GamePlayScreen extends StatefulWidget {
   static const firstPicture = 'First picture';
   static const secondPicture = 'Second picture: tap what changed';
   static const missNote = "That one didn't change. Keep looking!";
+
+  static const yourTurn = 'Your turn';
+  static const buddyTurn = 'Buddy is thinking...';
+  static const youAre = 'You are the stars. Buddy is the circles.';
+
+  static String columnLabel(int n, int free) =>
+      'Column $n, ${free == 0 ? 'full' : '$free free'}';
+  static String buddyMoved(int column) =>
+      'Buddy dropped in column ${column + 1}.';
 
   static const playSoundLabel = 'Play sound';
   static const clueLabel = 'Read a clue';
@@ -151,6 +161,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       progressRepository: widget.progressRepository,
       random: widget.random,
     ),
+    GameKind.four => FourViewModel(
+      level: widget.level,
+      voice: widget.voice,
+      progressRepository: widget.progressRepository,
+      random: widget.random,
+    ),
   };
 
   @override
@@ -196,6 +212,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       vm: _vm,
       nextButton: next == null ? null : '${GameShell.nextLabel}: ${next.name}',
       nextResult: next,
+      finishExtra: switch (_vm) {
+        final FourViewModel vm => _FourGrid(game: vm.game),
+        _ => null,
+      },
       onHowToPlay: () => unawaited(
         showHowToPlay(
           context,
@@ -213,6 +233,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           final RobotViewModel vm => _RobotBoard(vm: vm),
           final WordViewModel vm => _WordBoard(vm: vm),
           final SoundViewModel vm => _SoundBoard(vm: vm),
+          final FourViewModel vm => _FourBoard(vm: vm),
           _ => const SizedBox.shrink(),
         },
       ),
@@ -1329,4 +1350,143 @@ class _SoundOption extends StatelessWidget {
       ),
     ),
   );
+}
+
+// ------------------------------------------------------------- Four in a Row
+
+class _FourBoard extends StatelessWidget {
+  const _FourBoard({required this.vm});
+
+  final FourViewModel vm;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final last = vm.game.lastBuddyColumn;
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        Text(
+          vm.isBuddyThinking
+              ? GamePlayScreen.buddyTurn
+              : GamePlayScreen.yourTurn,
+          style: textTheme.titleLarge,
+        ),
+        Text(GamePlayScreen.youAre, style: textTheme.bodyMedium),
+        const SizedBox(height: 10),
+        _FourGrid(
+          game: vm.game,
+          onColumn: vm.isBuddyThinking
+              ? null
+              : (column) => unawaited(vm.drop(column)),
+        ),
+        if (last != null) ...[
+          const SizedBox(height: 10),
+          Semantics(
+            liveRegion: true,
+            child: Text(
+              GamePlayScreen.buddyMoved(last),
+              style: textTheme.bodyMedium,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// The board. With [onColumn], each column is a big button.
+class _FourGrid extends StatelessWidget {
+  const _FourGrid({required this.game, this.onColumn});
+
+  final FourGame game;
+  final ValueChanged<int>? onColumn;
+
+  @override
+  Widget build(BuildContext context) => Center(
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 420),
+      child: Container(
+        padding: const EdgeInsets.all(5),
+        decoration: AppShapes.sticker(
+          AppColors.brandBlueDeep,
+          depth: 3,
+          radius: 14,
+        ),
+        child: Row(
+          children: [
+            for (var column = 0; column < FourGame.columns; column++)
+              Expanded(child: _column(column)),
+          ],
+        ),
+      ),
+    ),
+  );
+
+  Widget _column(int column) {
+    final tap = onColumn;
+    final cells = Column(
+      children: [
+        for (var row = 0; row < FourGame.rows; row++)
+          AspectRatio(
+            aspectRatio: 1,
+            child: _FourCell(
+              player: game.board[FourGame.cellOf(row, column)],
+              winning: game.winningCells.contains(FourGame.cellOf(row, column)),
+            ),
+          ),
+      ],
+    );
+    if (tap == null) return ExcludeSemantics(child: cells);
+    return Semantics(
+      button: true,
+      enabled: game.canPlay(column),
+      label: GamePlayScreen.columnLabel(column + 1, game.freeIn(column)),
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: game.canPlay(column) ? () => tap(column) : null,
+        borderRadius: BorderRadius.circular(10),
+        child: cells,
+      ),
+    );
+  }
+}
+
+/// A space on the board. The two players differ by shape as well as colour.
+class _FourCell extends StatelessWidget {
+  const _FourCell({required this.player, required this.winning});
+
+  final FourPlayer? player;
+  final bool winning;
+
+  @override
+  Widget build(BuildContext context) {
+    final player = this.player;
+    return Padding(
+      padding: const EdgeInsets.all(2),
+      child: AnimatedContainer(
+        duration: AppMotion.isCalm(context) ? Duration.zero : AppMotion.quick,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: switch (player) {
+            null => AppColors.brandBlueTint,
+            FourPlayer.child => AppColors.coral,
+            FourPlayer.buddy => AppColors.buddyTeal,
+          },
+          border: Border.all(
+            color: winning ? AppColors.sun : AppColors.ink,
+            width: winning ? 4 : 1.5,
+          ),
+        ),
+        child: player == FourPlayer.child
+            ? const FittedBox(
+                child: Padding(
+                  padding: EdgeInsets.all(3),
+                  child: Icon(Icons.star_rounded, color: AppColors.white),
+                ),
+              )
+            : null,
+      ),
+    );
+  }
 }

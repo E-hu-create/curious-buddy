@@ -16,13 +16,14 @@ enum GameKind {
   ),
   robot('Code the Robot', 'Plan the steps, press Go, and watch your code run.'),
   words('Word Builder', 'Unscramble the letters to make science words.'),
-  sounds("What's That Sound?", 'Listen closely and work out what made it.');
+  sounds("What's That Sound?", 'Listen closely and work out what made it.'),
+  four('Four in a Row', 'Line up four counters before Buddy does.');
 
   const GameKind(this.title, this.tagline);
 
   /// The quick games shown together in the Arena. The others have their own
   /// tile in the Game Zone.
-  static const arena = [memory, pattern, spot];
+  static const arena = [memory, pattern, spot, four];
 
   final String title;
   final String tagline;

@@ -107,6 +107,8 @@ and ask first.
 | `test/domain/games/sound_game_test.dart` | Fairness checks; options; levels; wrong and right picks; stars |
 | `test/ui/games/sound_screens_test.dart` | Clips play on request; Buddy stops first; sounds off silences clips and shows the clue; saving; wrong picks; a level on screen; Read a clue; Game Zone tile |
 | `test/android/game_sounds_test.dart` | Each sound has a small clip, is loaded by Android and is listed in docs/SOUNDS.md |
+| `test/domain/games/four_in_a_row_test.dart` | Falling counters, full columns, wins in every direction, draws, stars; Buddy takes wins and blocks; legal moves to a finish; Expert's strength and speed |
+| `test/ui/games/four_screens_test.dart` | Buddy replies; no moves during Buddy's turn; saving; replay; leaving mid-turn; playing on screen |
 | `test/ui/games/how_to_play_test.dart` | Short steps for every game; opens by itself the first time only; help button during a game; menu buttons; closing stops Buddy; ranks; scoreboard; storage error; accessibility; no overflow |
 | `test/ui/stories/stories_accessibility_test.dart` | Tap target, label and contrast guidelines on the shelf, intro, a choice page and an ending; numbered choice labels; picture descriptions; every page of every story without overflow on small phones and 2x text |
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
@@ -284,6 +286,12 @@ user-visible change:
   - [ ] Second game of that kind: it doesn't open by itself.
   - [ ] During a game, the ? at the top opens it. Got it returns to the game
         with nothing lost.
+- [ ] **Four in a Row:**
+  - [ ] Arena → Four in a Row: How to play opens on the first game.
+  - [ ] Tap a column: your star drops, Buddy thinks, then Buddy's circle drops.
+  - [ ] A full column can't be tapped.
+  - [ ] Win, lose and draw each show the board and the right stars.
+  - [ ] Expert feels harder than Starter, but can be beaten.
 - [ ] **What's That Sound?** (media volume up):
   - [ ] Game Zone → Start listening: three levels, with How to play.
   - [ ] Play sound plays a real recording; it can be replayed.

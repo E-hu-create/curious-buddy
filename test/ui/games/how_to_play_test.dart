@@ -46,6 +46,7 @@ void main() {
     HowToPlay.robot,
     HowToPlay.words,
     HowToPlay.sounds,
+    HowToPlay.four,
     HowToPlay.dino,
     HowToPlay.quickCreate,
   ];

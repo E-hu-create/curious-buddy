@@ -507,6 +507,14 @@ SoundPool as the effects, so Android must know each new clip by name.
 sounds off. Then the game shows the clue, so it can always be played, and it
 can be played by a child who can't hear the clips.
 
+### Four in a Row
+
+`domain/games/four_in_a_row.dart` is an Arena game played against Buddy. Starter
+plays anywhere, Explorer takes wins and blocks, and Expert also looks four moves
+ahead. The child goes first, and the two sides differ by shape as well as
+colour. New quick games join `GameKind.arena`, not the Game Zone tiles, to keep
+that screen short.
+
 ### Dino Discovery
 
 `domain/games/dino.dart` holds the creatures, places, missions and

@@ -189,6 +189,33 @@ class HowToPlay {
     ],
   );
 
+  static const four = HowToPlay(
+    game: 'Four in a Row',
+    tip: noClock,
+    steps: [
+      HowToStep(
+        Icons.touch_app_rounded,
+        'Tap a column to drop your star counter in.',
+      ),
+      HowToStep(
+        Icons.swap_horiz_rounded,
+        'Buddy takes a turn next, then it is your go again.',
+      ),
+      HowToStep(
+        Icons.flag_rounded,
+        'Get four in a line: across, up or on a slant.',
+      ),
+      HowToStep(
+        Icons.shield_rounded,
+        'Watch out! Block Buddy from getting four first.',
+      ),
+      HowToStep(
+        Icons.star_rounded,
+        'A win earns 3 stars, a draw 2, and playing to the end 1.',
+      ),
+    ],
+  );
+
   static const dino = HowToPlay(
     game: 'Dino Discovery',
     tip: noClock,
@@ -234,6 +261,7 @@ class HowToPlay {
     GameKind.robot => robot,
     GameKind.words => words,
     GameKind.sounds => sounds,
+    GameKind.four => four,
   };
 }
 

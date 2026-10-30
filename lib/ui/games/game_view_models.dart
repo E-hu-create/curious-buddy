@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../data/repositories/progress_repository.dart';
 import '../../data/services/sound/sound_effects_service.dart';
+import '../../domain/games/four_in_a_row.dart';
 import '../../domain/games/game_content.dart';
 import '../../domain/games/games.dart';
 import '../../domain/games/maze.dart';
@@ -597,6 +598,65 @@ class SoundViewModel extends ArenaViewModel {
   void dispose() {
     stopClip();
     super.dispose();
+  }
+}
+
+class FourViewModel extends ArenaViewModel {
+  FourViewModel({
+    required super.level,
+    required super.voice,
+    required super.progressRepository,
+    Random? random,
+    this.buddyDelay = const Duration(milliseconds: 650),
+  }) : _random = random ?? Random() {
+    _game = FourGame(level: level.number, random: _random);
+  }
+
+  final Random _random;
+
+  /// How long Buddy seems to think, so the child can see each move.
+  final Duration buddyDelay;
+
+  FourGame get game => _game;
+  late FourGame _game;
+
+  bool get isBuddyThinking => _thinking;
+  bool _thinking = false;
+
+  @override
+  String get introLine => 'Tap a column to drop your counter. You go first!';
+
+  @override
+  String get finishLine => switch (_game.result) {
+    FourResult.childWon => 'You beat Buddy! Three stars!',
+    FourResult.draw => "It's a draw! Two stars!",
+    _ => 'Buddy won this one. Here is a star for playing!',
+  };
+
+  Future<void> drop(int column) async {
+    if (isFinished || _thinking || !_game.play(column)) return;
+    sound(SoundEffect.pop);
+    if (_game.isOver) {
+      notify();
+      await finish(_game.stars);
+      return;
+    }
+    _thinking = true;
+    notify();
+    final playing = _game;
+    await Future<void>.delayed(buddyDelay);
+    if (isDisposed || !identical(playing, _game)) return;
+    _game.buddyPlays();
+    _thinking = false;
+    sound(SoundEffect.pop);
+    notify();
+    if (_game.isOver) await finish(_game.stars);
+  }
+
+  @override
+  void reset() {
+    _game = FourGame(level: level.number, random: _random);
+    _thinking = false;
   }
 }
 

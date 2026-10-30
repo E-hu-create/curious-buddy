@@ -734,6 +734,7 @@ class _GameCard extends StatelessWidget {
     GameKind.robot: AppColors.grapeTint,
     GameKind.words: AppColors.coralTint,
     GameKind.sounds: AppColors.grapeTint,
+    GameKind.four: AppColors.brandBlueTint,
   };
 
   @override
