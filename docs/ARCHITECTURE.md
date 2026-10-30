@@ -93,7 +93,7 @@ only used for unknown routes.
 | Living Stories ✅ | `ui/stories/`, `domain/stories/` | story repository, progress repository, BuddyVoice |
 | Quiz Time ✅ | `ui/quiz/`, `domain/quiz/` | quiz repository, progress repository, BuddyVoice |
 | Creative Island ✅ | `ui/creative/`, `domain/creative/` | creations repository (local only), BuddyVoice |
-| Game Zone ✅ (Challenge Arena, Dino Discovery, Treasure Maze, Code the Robot) | `ui/games/`, `domain/games/` | progress and creations repositories, BuddyVoice |
+| Game Zone ✅ (Challenge Arena, Dino Discovery, Treasure Maze, Code the Robot, Word Builder) | `ui/games/`, `domain/games/` | progress and creations repositories, BuddyVoice |
 | Buddy's Wardrobe ✅ | `ui/wardrobe/`, `domain/wardrobe/` | progress and content repositories, BuddyWardrobe, BuddyVoice |
 | My Discoveries ✅ | `ui/discoveries/`, `domain/discoveries/` | reads progress, mission, story, quiz and creations repositories; BuddyVoice |
 | Saved progress | `domain/models/`, `data/repositories/` | KeyValueStore |
@@ -489,6 +489,14 @@ rounds, only keeping layouts it can solve; the solution sets the line limit.
 plays back one move at a time. A run that goes wrong keeps the code and counts
 against the stars. Expert adds Twice, which repeats the last line. Like the
 maze, it has its own Game Zone tile.
+
+### Word Builder
+
+`domain/games/words.dart` holds 35 words in three levels, and `WordGame` picks
+five for each game. Letters go to the first empty space; a full wrong word asks
+the child to move a letter. Hint fixes the next letter and locks it. Words that
+spell another common word when mixed up are left out on purpose, so check any
+new word for that. It has its own Game Zone tile.
 
 ### Dino Discovery
 

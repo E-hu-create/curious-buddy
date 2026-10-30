@@ -43,6 +43,7 @@ class GameZoneScreen extends StatefulWidget {
   static const dinoLabel = 'Start exploring';
   static const mazeLabel = 'Find the treasure';
   static const robotLabel = 'Start coding';
+  static const wordsLabel = 'Build a word';
   static const soundTitle = "What's That Sound?";
 
   static String starsLabel(int stars, int all) => '$stars of $all stars';
@@ -131,6 +132,18 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
           label: GameZoneScreen.robotLabel,
           icon: Icons.smart_toy_rounded,
           onPressed: () => unawaited(_open(Routes.robot)),
+        ),
+      ),
+      const SizedBox(height: 16),
+      _GameTile(
+        color: AppColors.coralTint,
+        art: const _WordTileArt(),
+        title: GameKind.words.title,
+        text: GameKind.words.tagline,
+        button: PlayButton(
+          label: GameZoneScreen.wordsLabel,
+          icon: Icons.abc_rounded,
+          onPressed: () => unawaited(_open(Routes.words)),
         ),
       ),
       const SizedBox(height: 16),
@@ -331,6 +344,54 @@ class _RobotTileArt extends StatelessWidget {
                   radius: 14,
                 ),
                 child: Icon(icon, color: AppColors.ink, size: 32),
+              ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+/// Letter tiles falling into place.
+class _WordTileArt extends StatelessWidget {
+  const _WordTileArt();
+
+  @override
+  Widget build(BuildContext context) => ExcludeSemantics(
+    child: Container(
+      height: 130,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: AppColors.coral,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: FittedBox(
+        child: Row(
+          children: [
+            for (final (letter, turn) in const [
+              ('W', -0.12),
+              ('O', 0.08),
+              ('R', -0.06),
+              ('D', 0.12),
+              ('S', -0.1),
+            ])
+              Transform.rotate(
+                angle: turn,
+                child: Container(
+                  width: 62,
+                  height: 62,
+                  margin: const EdgeInsets.all(3),
+                  alignment: Alignment.center,
+                  decoration: AppShapes.sticker(
+                    AppColors.sun,
+                    depth: 3,
+                    radius: 12,
+                  ),
+                  child: Text(
+                    letter,
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                ),
               ),
           ],
         ),
@@ -651,6 +712,7 @@ class _GameCard extends StatelessWidget {
     GameKind.spot: AppColors.leafTint,
     GameKind.maze: AppColors.sunTint,
     GameKind.robot: AppColors.grapeTint,
+    GameKind.words: AppColors.coralTint,
   };
 
   @override

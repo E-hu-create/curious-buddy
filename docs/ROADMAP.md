@@ -275,11 +275,14 @@ Built before Creative Island at the product owner's request.
 - ✅ Twice on Expert, for a first taste of repeats.
 - ⏳ Device test on the Samsung SM-A516U.
 
-## Game Zone: Word Builder (next)
+## Game Zone: Word Builder ✅ (awaiting device test)
 
-Unscramble letters to make science and nature words.
+- ✅ 35 science and nature words in three levels, five in each game.
+- ✅ Clues read aloud, pictures for some words, hints, and fixing mistakes.
+- ⏳ Grown-up review of the clues.
+- ⏳ Device test on the Samsung SM-A516U.
 
-## Game Zone: What's That Sound?
+## Game Zone: What's That Sound? (next)
 
 Needs real recordings with clearly free licences (CC0), approved by the
 product owner, and written hints for children who cannot hear them.

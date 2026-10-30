@@ -139,6 +139,33 @@ class HowToPlay {
     ],
   );
 
+  static const words = HowToPlay(
+    game: 'Word Builder',
+    tip: noClock,
+    steps: [
+      HowToStep(
+        Icons.lightbulb_rounded,
+        'Read the clue. What could the word be?',
+      ),
+      HowToStep(
+        Icons.touch_app_rounded,
+        'Tap the letters in order to spell the word.',
+      ),
+      HowToStep(
+        Icons.undo_rounded,
+        'Change your mind? Tap a letter in the word to send it back.',
+      ),
+      HowToStep(
+        Icons.tips_and_updates_rounded,
+        'Stuck? Tap Hint and Buddy fills in the next letter.',
+      ),
+      HowToStep(
+        Icons.star_rounded,
+        'Spell all 5 words. Fewer hints and mistakes earn more stars.',
+      ),
+    ],
+  );
+
   static const dino = HowToPlay(
     game: 'Dino Discovery',
     tip: noClock,
@@ -182,6 +209,7 @@ class HowToPlay {
     GameKind.spot => spot,
     GameKind.maze => maze,
     GameKind.robot => robot,
+    GameKind.words => words,
   };
 }
 

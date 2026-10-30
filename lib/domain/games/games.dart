@@ -14,7 +14,8 @@ enum GameKind {
     'Treasure Maze',
     'Guide Buddy to the chest, collecting gems on the way.',
   ),
-  robot('Code the Robot', 'Plan the steps, press Go, and watch your code run.');
+  robot('Code the Robot', 'Plan the steps, press Go, and watch your code run.'),
+  words('Word Builder', 'Unscramble the letters to make science words.');
 
   const GameKind(this.title, this.tagline);
 

@@ -7,6 +7,7 @@ import '../../data/repositories/progress_repository.dart';
 import '../../domain/games/games.dart';
 import '../../domain/games/maze.dart';
 import '../../domain/games/robot.dart';
+import '../../domain/games/words.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
@@ -16,6 +17,7 @@ import 'game_view_models.dart';
 import 'how_to_play.dart';
 import 'widgets/game_parts.dart';
 import 'widgets/maze_art.dart';
+import 'widgets/picture_art.dart';
 import 'widgets/robot_art.dart';
 
 /// The next level of [level], if any.
@@ -50,6 +52,14 @@ class GamePlayScreen extends StatefulWidget {
   static const firstPicture = 'First picture';
   static const secondPicture = 'Second picture: tap what changed';
   static const missNote = "That one didn't change. Keep looking!";
+
+  static const hintLabel = 'Hint';
+  static const nextWord = 'Next word';
+
+  static String wordLabel(int n, int total) => 'Word $n of $total';
+  static String slotLabel(int n, String? letter) =>
+      'Space $n: ${letter ?? 'empty'}';
+  static String tileLabel(String letter) => 'Letter $letter';
 
   static const goLabel2 = 'Go!';
   static const undoLabel = 'Undo';
@@ -116,6 +126,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       progressRepository: widget.progressRepository,
       random: widget.random,
     ),
+    GameKind.words => WordViewModel(
+      level: widget.level,
+      voice: widget.voice,
+      progressRepository: widget.progressRepository,
+      random: widget.random,
+    ),
   };
 
   @override
@@ -176,6 +192,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           final SpotViewModel vm => _SpotBoard(vm: vm),
           final MazeViewModel vm => _MazeBoard(vm: vm),
           final RobotViewModel vm => _RobotBoard(vm: vm),
+          final WordViewModel vm => _WordBoard(vm: vm),
           _ => const SizedBox.shrink(),
         },
       ),
@@ -923,6 +940,200 @@ class _CodeSlot extends StatelessWidget {
                     ),
                 ],
               ),
+      ),
+    );
+  }
+}
+
+// -------------------------------------------------------------- Word Builder
+
+class _WordBoard extends StatelessWidget {
+  const _WordBoard({required this.vm});
+
+  final WordViewModel vm;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final game = vm.game;
+    final puzzle = game.puzzle;
+    final picture = puzzle.picture;
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        Text(
+          GamePlayScreen.wordLabel(game.round + 1, WordGame.rounds),
+          style: textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: AppShapes.sticker(
+            AppColors.sunTint,
+            depth: 3,
+            radius: 16,
+          ),
+          child: Row(
+            children: [
+              if (picture != null) ...[
+                PictureArt(picture: picture, size: 72),
+                const SizedBox(width: 12),
+              ],
+              Expanded(child: Text(puzzle.clue, style: textTheme.bodyLarge)),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 5,
+          runSpacing: 5,
+          children: [
+            for (var slot = 0; slot < game.slots.length; slot++)
+              _letterSpace(slot),
+          ],
+        ),
+        const SizedBox(height: 14),
+        if (game.isSolved) ...[
+          Semantics(
+            liveRegion: true,
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: AppShapes.sticker(
+                AppColors.leafTint,
+                depth: 3,
+                radius: 14,
+              ),
+              child: Text(
+                '$_rightNote ${puzzle.word.toLowerCase()}!',
+                style: textTheme.titleMedium,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          FilledButton.icon(
+            onPressed: () => unawaited(vm.next()),
+            icon: const Icon(Icons.arrow_forward_rounded),
+            label: Text(
+              game.round + 1 < WordGame.rounds
+                  ? GamePlayScreen.nextWord
+                  : GamePlayScreen.seeStars,
+            ),
+          ),
+        ] else ...[
+          if (game.isWrong) ...[
+            Semantics(
+              liveRegion: true,
+              child: Text(
+                WordViewModel.wrongNote,
+                textAlign: TextAlign.center,
+                style: textTheme.bodyLarge,
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              for (var tile = 0; tile < game.tiles.length; tile++)
+                _LetterTile(
+                  label: GamePlayScreen.tileLabel(game.tiles[tile]),
+                  letter: game.isUsed(tile) ? null : game.tiles[tile],
+                  color: AppColors.sun,
+                  onTap: game.isUsed(tile) ? null : () => vm.tapTile(tile),
+                ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          OutlinedButton.icon(
+            onPressed: vm.hint,
+            icon: const Icon(Icons.tips_and_updates_rounded),
+            label: const Text(GamePlayScreen.hintLabel),
+          ),
+        ],
+      ],
+    );
+  }
+
+  static const _rightNote = 'Well done! You spelled';
+
+  Widget _letterSpace(int slot) {
+    final game = vm.game;
+    final tile = game.slots[slot];
+    final letter = tile == null ? null : game.tiles[tile];
+    final locked = game.locked.contains(slot);
+    return _LetterTile(
+      label: GamePlayScreen.slotLabel(slot + 1, letter),
+      letter: letter,
+      color: game.isSolved
+          ? AppColors.leafTint
+          : game.isWrong
+          ? AppColors.coralTint
+          : locked
+          ? AppColors.grapeTint
+          : AppColors.white,
+      onTap: letter == null || locked || game.isSolved
+          ? null
+          : () => vm.tapSlot(slot),
+    );
+  }
+}
+
+/// A square letter. With no letter it is an empty space.
+class _LetterTile extends StatelessWidget {
+  const _LetterTile({
+    required this.label,
+    required this.letter,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String label;
+  final String? letter;
+  final Color color;
+  final VoidCallback? onTap;
+
+  static const _size = AppTheme.minTouchTarget + 2;
+
+  @override
+  Widget build(BuildContext context) {
+    final letter = this.letter;
+    return Semantics(
+      button: onTap != null,
+      label: label,
+      excludeSemantics: true,
+      child: StickerPress(
+        enabled: onTap != null,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(12),
+            child: Ink(
+              width: _size,
+              height: _size,
+              decoration: letter == null
+                  ? BoxDecoration(
+                      color: AppColors.paper,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.inkSoft, width: 1.5),
+                    )
+                  : AppShapes.sticker(color, depth: 2, radius: 12),
+              child: letter == null
+                  ? null
+                  : Center(
+                      child: FittedBox(
+                        child: Text(
+                          letter,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+                    ),
+            ),
+          ),
+        ),
       ),
     );
   }

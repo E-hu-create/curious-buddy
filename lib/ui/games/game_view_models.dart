@@ -9,6 +9,7 @@ import '../../domain/games/game_content.dart';
 import '../../domain/games/games.dart';
 import '../../domain/games/maze.dart';
 import '../../domain/games/robot.dart';
+import '../../domain/games/words.dart';
 import '../../domain/voice/buddy_voice.dart';
 
 enum GameSaveStatus { notSaved, saved, failed }
@@ -433,6 +434,71 @@ class RobotViewModel extends ArenaViewModel {
     _activeLine = null;
     _running = false;
   }
+}
+
+class WordViewModel extends ArenaViewModel {
+  WordViewModel({
+    required super.level,
+    required super.voice,
+    required super.progressRepository,
+    Random? random,
+  }) : _random = random ?? Random() {
+    _game = WordGame(level: level.number, random: _random);
+  }
+
+  final Random _random;
+
+  WordGame get game => _game;
+  late WordGame _game;
+
+  static const wrongNote = 'Not quite. Tap a letter to move it.';
+
+  @override
+  String get introLine => 'Here is your first clue. ${_game.puzzle.clue}';
+
+  void tapTile(int tile) {
+    if (isFinished || !_game.place(tile)) return;
+    _afterChange();
+  }
+
+  void tapSlot(int slot) {
+    if (isFinished || !_game.remove(slot)) return;
+    sound(SoundEffect.pop);
+    notify();
+  }
+
+  void hint() {
+    if (isFinished || !_game.hint()) return;
+    _afterChange();
+  }
+
+  void _afterChange() {
+    notify();
+    if (_game.isSolved) {
+      say(
+        'Yes! ${_game.puzzle.word.toLowerCase()}.',
+        lead: SoundEffect.correct,
+      );
+    } else if (_game.isWrong) {
+      say(wrongNote, lead: SoundEffect.gentle);
+    } else {
+      sound(SoundEffect.pop);
+    }
+  }
+
+  /// The next word, or the finish after the last one.
+  Future<void> next() async {
+    if (!_game.isSolved) return;
+    if (!_game.nextRound()) {
+      await finish(_game.stars);
+      return;
+    }
+    notify();
+    say(_game.puzzle.clue);
+  }
+
+  @override
+  void reset() => _game = WordGame(level: level.number, random: _random);
 }
 
 class SpotViewModel extends ArenaViewModel {
