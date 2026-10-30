@@ -110,4 +110,5 @@ Avoid `git reset --hard` and `git clean`: they discard uncommitted work.
 
 To regenerate the Android launcher icons or splash after changing Buddy:
 `flutter test tool/generate_launcher_icons_test.dart` and
-`flutter test tool/generate_splash_test.dart`
+`flutter test tool/generate_splash_test.dart`. Sound effects come from
+`python tool/generate_sounds.py`.

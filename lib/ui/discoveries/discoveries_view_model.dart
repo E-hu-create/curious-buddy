@@ -7,6 +7,7 @@ import '../../data/repositories/mission_repository.dart';
 import '../../data/repositories/progress_repository.dart';
 import '../../data/repositories/quiz_repository.dart';
 import '../../data/repositories/story_repository.dart';
+import '../../data/services/sound/sound_effects_service.dart';
 import '../../domain/creative/creation.dart';
 import '../../domain/discoveries/discovery_journal.dart';
 import '../../domain/models/learner_progress.dart';
@@ -94,6 +95,7 @@ class DiscoveriesViewModel extends ChangeNotifier {
       creations: shelf?.items.length,
     );
     _rankedUp = before != null && journal.rank.index > before.index;
+    if (_rankedUp) unawaited(_voice.effect(SoundEffect.cheer));
     _status = DiscoveriesStatus.ready;
     _notify();
   }

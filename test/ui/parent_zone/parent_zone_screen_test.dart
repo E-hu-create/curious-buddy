@@ -206,7 +206,9 @@ void main() {
       await tapText(tester, VoiceSettingsSection.talksTitle);
       await tapText(tester, 'Slower');
       await tapText(tester, VoiceSettingsSection.autoReadTitle);
+      await tapText(tester, VoiceSettingsSection.soundsTitle);
 
+      expect(await store.read(BuddyVoice.soundsKey), 'false');
       expect(await store.read(BuddyVoice.mutedKey), 'true');
       expect(await store.read(BuddyVoice.speedKey), 'slower');
       expect(await store.read(BuddyVoice.autoReadKey), 'false');

@@ -440,6 +440,19 @@ it. `BuddyWardrobe` (one instance, owned by the app root) reaches every Buddy
 through `BuddyLookScope`; `BuddyOutfitPainter` draws the items on his grid.
 Saved items that are unknown or in the wrong slot are ignored.
 
+## Sound effects
+
+Four short sounds in `res/raw/`, synthesised by `tool/generate_sounds.py` (no
+third-party audio). `PlatformSoundEffectsService` plays them through Android's
+`SoundPool` over the app's own `curious_buddy/sounds` channel, so no package
+is needed. They follow the media volume, quieter than Buddy.
+
+`BuddyVoice` owns the rule that **sounds never play over speech**: `say(text,
+lead: effect)` ends old speech, plays the effect, waits for it, then speaks,
+and a stop or a newer line cancels the wait. `effect()` plays a small sound
+alone and is skipped while Buddy talks. Sound effects are separate from
+Buddy's voice, with their own Parent Zone switch (`sound.effects`).
+
 ## Look and feel
 
 - **Font:** Nunito, bundled in `assets/fonts/` with its licence (`OFL.txt`,

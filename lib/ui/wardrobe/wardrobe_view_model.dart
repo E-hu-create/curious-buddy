@@ -7,6 +7,7 @@ import '../../data/repositories/mission_repository.dart';
 import '../../data/repositories/progress_repository.dart';
 import '../../data/repositories/quiz_repository.dart';
 import '../../data/repositories/story_repository.dart';
+import '../../data/services/sound/sound_effects_service.dart';
 import '../../domain/discoveries/discovery_journal.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../../domain/wardrobe/buddy_wardrobe.dart';
@@ -96,9 +97,10 @@ class WardrobeViewModel extends ChangeNotifier {
     if (!isUnlocked(item)) return;
     if (look.inSlot(item.slot) == item) {
       unawaited(_wardrobe.takeOff(item.slot));
+      unawaited(_voice.effect(SoundEffect.pop));
     } else {
       unawaited(_wardrobe.wear(item));
-      _say('I love my ${item.title.toLowerCase()}!');
+      _say('I love my ${item.title.toLowerCase()}!', lead: SoundEffect.correct);
     }
   }
 
@@ -109,17 +111,17 @@ class WardrobeViewModel extends ChangeNotifier {
 
   Future<void> stopSpeaking() => _voice.stop();
 
-  void _say(String text) {
+  void _say(String text, {SoundEffect? lead}) {
     final first = _lastSpoken == null;
     _lastSpoken = text;
     // Enables "Hear again" even when nothing is read aloud automatically.
     if (first) _notify();
-    _sayNow(text);
+    _sayNow(text, lead: lead);
   }
 
-  void _sayNow(String text, {bool requested = false}) {
+  void _sayNow(String text, {bool requested = false, SoundEffect? lead}) {
     if (_disposed) return;
-    unawaited(_voice.say(text, requested: requested));
+    unawaited(_voice.say(text, requested: requested, lead: lead));
   }
 
   void _notify() {

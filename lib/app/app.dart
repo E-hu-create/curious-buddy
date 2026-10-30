@@ -41,6 +41,7 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
   late final BuddyVoice _voice = BuddyVoice(
     textToSpeech: widget.dependencies.textToSpeech,
     settings: widget.dependencies.settingsStore,
+    sounds: widget.dependencies.soundEffects,
   );
   late final BuddyListener _listener = BuddyListener(
     recognizer: widget.dependencies.speechRecognition,

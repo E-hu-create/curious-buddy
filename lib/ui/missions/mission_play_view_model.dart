@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../../data/repositories/progress_repository.dart';
+import '../../data/services/sound/sound_effects_service.dart';
 import '../../domain/missions/mission.dart';
 import '../../domain/missions/mission_rules.dart';
 import '../../domain/voice/buddy_voice.dart';
@@ -199,14 +200,14 @@ class MissionPlayViewModel extends ChangeNotifier {
       _current.solved = true;
       _current.firstTry = _current.attempts == 1;
       final explanation = stage is ChoiceStage ? ' ${stage.explanation}' : '';
-      _say('${result.feedback}$explanation');
+      _say('${result.feedback}$explanation', lead: SoundEffect.correct);
     } else {
       // Let the child try a different single answer; keep multi/order work.
       if (stage is ChoiceStage) _selectedChoice = null;
       final nudge = _current.inspected.length < stage.clues.length
           ? ' Have you inspected every clue?'
           : '';
-      _say('${result.feedback}$nudge');
+      _say('${result.feedback}$nudge', lead: SoundEffect.gentle);
     }
     _notify();
   }
@@ -226,6 +227,7 @@ class MissionPlayViewModel extends ChangeNotifier {
     _say(
       'Case solved! ${mission.solution} You earned ${_score!.total} points '
       'and the ${mission.badge} badge!',
+      lead: SoundEffect.cheer,
     );
     await _save(_score!.total);
   }
@@ -284,17 +286,17 @@ class MissionPlayViewModel extends ChangeNotifier {
     _feedback = null;
   }
 
-  void _say(String text, {bool requested = false}) {
+  void _say(String text, {bool requested = false, SoundEffect? lead}) {
     final first = _lastSpoken == null;
     _lastSpoken = text;
     // Enables "Hear again" even when nothing is read aloud automatically.
     if (first) _notify();
-    _sayNow(text, requested: requested);
+    _sayNow(text, requested: requested, lead: lead);
   }
 
-  void _sayNow(String text, {bool requested = false}) {
+  void _sayNow(String text, {bool requested = false, SoundEffect? lead}) {
     if (_disposed) return;
-    unawaited(_voice.say(text, requested: requested));
+    unawaited(_voice.say(text, requested: requested, lead: lead));
   }
 
   void _notify() {

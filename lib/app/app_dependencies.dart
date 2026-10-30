@@ -5,6 +5,7 @@ import '../data/repositories/quiz_repository.dart';
 import '../data/repositories/story_repository.dart';
 import '../data/services/key_value_store.dart';
 import '../data/services/shared_preferences_key_value_store.dart';
+import '../data/services/sound/sound_effects_service.dart';
 import '../data/services/voice/flutter_tts_service.dart';
 import '../data/services/voice/speech_recognition_service.dart';
 import '../data/services/voice/speech_to_text_recognition_service.dart';
@@ -27,6 +28,7 @@ class AppDependencies {
     required this.storyRepository,
     required this.quizRepository,
     required this.creationsRepository,
+    required this.soundEffects,
   });
 
   /// Speech output uses the device's built-in engine. Speech input is
@@ -45,6 +47,7 @@ class AppDependencies {
       storyRepository: BundledStoryRepository(),
       quizRepository: BundledQuizRepository(),
       creationsRepository: LocalCreationsRepository(store),
+      soundEffects: PlatformSoundEffectsService(),
     );
   }
 
@@ -70,4 +73,7 @@ class AppDependencies {
 
   /// Creative Island creations, saved on the device only.
   final CreationsRepository creationsRepository;
+
+  /// Short sounds bundled in the app.
+  final SoundEffectsService soundEffects;
 }

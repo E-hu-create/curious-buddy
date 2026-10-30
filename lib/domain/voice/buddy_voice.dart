@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../../data/services/key_value_store.dart';
+import '../../data/services/sound/sound_effects_service.dart';
 import '../../data/services/voice/text_to_speech_service.dart';
 import 'narrator.dart';
 
@@ -13,21 +14,27 @@ enum VoiceStatus { checking, available, unavailable }
 /// * The grown-up voice settings, saved through [KeyValueStore] so they
 ///   survive restarts: on/off, speaking speed, and whether Buddy reads new
 ///   text automatically or only when the child taps a read button.
+/// * Sound effects, which never play over speech: a line's [say] `lead`
+///   plays first, and Buddy speaks when it has finished.
 /// * The welcome is spoken at most once per app session.
 /// * [stop] also cancels speech that is still waiting for the engine.
 class BuddyVoice extends ChangeNotifier {
   BuddyVoice({
     required TextToSpeechService textToSpeech,
     required KeyValueStore settings,
+    SoundEffectsService? sounds,
   }) : _tts = textToSpeech,
+       _sounds = sounds,
        _settings = settings,
        _narrator = Narrator(textToSpeech);
 
   static const mutedKey = 'voice.muted';
   static const speedKey = 'voice.speed';
   static const autoReadKey = 'voice.autoRead';
+  static const soundsKey = 'sound.effects';
 
   final TextToSpeechService _tts;
+  final SoundEffectsService? _sounds;
   final KeyValueStore _settings;
   final Narrator _narrator;
 
@@ -47,6 +54,10 @@ class BuddyVoice extends ChangeNotifier {
   bool get autoRead => _autoRead;
   bool _autoRead = true;
 
+  /// Sound effects are separate from Buddy's voice.
+  bool get soundsOn => _soundsOn;
+  bool _soundsOn = true;
+
   /// True when Buddy will actually speak if asked.
   bool get canSpeak => _status == VoiceStatus.available && !_muted;
 
@@ -60,11 +71,13 @@ class BuddyVoice extends ChangeNotifier {
 
   bool _disposed = false;
   int _stops = 0;
+  int _says = 0;
 
   Future<void> _init() async {
     try {
       _muted = await _settings.read(mutedKey) == 'true';
       _autoRead = await _settings.read(autoReadKey) != 'false';
+      _soundsOn = await _settings.read(soundsKey) != 'false';
       final speed = await _settings.read(speedKey);
       _speed = SpeechSpeed.values.firstWhere(
         (s) => s.name == speed,
@@ -91,10 +104,30 @@ class BuddyVoice extends ChangeNotifier {
   /// again, a read button). Other lines are automatic narration, which a
   /// grown-up can turn off; then an automatic line silences anything still
   /// playing, so old speech never runs on over a new page.
-  Future<NarrationOutcome> say(String text, {bool requested = false}) async {
+  ///
+  /// [lead] is a sound effect to play first. It plays even if Buddy's voice
+  /// is off, and he starts speaking only when it has finished.
+  Future<NarrationOutcome> say(
+    String text, {
+    bool requested = false,
+    SoundEffect? lead,
+  }) async {
     final stops = _stops;
+    final ticket = ++_says;
     await ready;
     if (_disposed || stops != _stops) return NarrationOutcome.interrupted;
+    if (lead != null && _soundsOn) {
+      // Old speech ends first, so the sound never plays over it.
+      if (_speakingLine != null) {
+        _speakingLine = null;
+        _notify();
+        await _narrator.stop();
+      }
+      await _sounds?.play(lead);
+      if (_disposed || stops != _stops || ticket != _says) {
+        return NarrationOutcome.interrupted;
+      }
+    }
     if (_muted) return NarrationOutcome.muted;
     if (!requested && !_autoRead) {
       await stop();
@@ -111,6 +144,22 @@ class BuddyVoice extends ChangeNotifier {
       _notify();
     }
     return outcome;
+  }
+
+  /// Plays a small effect on its own. Skipped while Buddy is talking, so it
+  /// never plays over him.
+  Future<void> effect(SoundEffect effect) async {
+    await ready;
+    if (_disposed || !_soundsOn || isSpeaking) return;
+    await _sounds?.play(effect);
+  }
+
+  Future<void> setSoundsOn(bool on) async {
+    await ready;
+    if (on == _soundsOn) return;
+    _soundsOn = on;
+    _notify();
+    await _save(soundsKey, '$on');
   }
 
   /// Speaks the welcome the first time it is called in this app session and

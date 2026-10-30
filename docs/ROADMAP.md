@@ -213,8 +213,6 @@ Built before Creative Island at the product owner's request.
 - ✅ All of it follows Calmer animations and the phone's Remove animations.
 - ✅ Device test on the Samsung SM-A516U: motion, font and splash confirmed
   as good by the product owner (30 Oct 2026).
-- Later: sound effects (needs an audio package, sounds with clear rights and
-  a Parent Zone setting).
 
 ## Buddy's Wardrobe ✅ (awaiting device test)
 
@@ -225,6 +223,15 @@ Built before Creative Island at the product owner's request.
   its reset.
 - ✅ Home card (six cards now) and Buddy's answer open it.
 - ⏳ Device test on the Samsung SM-A516U.
+
+## Sound effects ✅ (awaiting device test)
+
+- ✅ Four original sounds (pop, chime, soft notes, fanfare), generated in the
+  repo and played with Android's built-in SoundPool: no new package.
+- ✅ Never play over Buddy: he speaks when the sound has finished.
+- ✅ Parent Zone switch, remembered, separate from Buddy's voice.
+- ⏳ Device test on the Samsung SM-A516U, including how the sounds actually
+  sound.
 
 ## Later, each needing an approved requirement
 

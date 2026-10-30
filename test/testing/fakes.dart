@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:curious_buddy/data/services/key_value_store.dart';
+import 'package:curious_buddy/data/services/sound/sound_effects_service.dart';
 import 'package:curious_buddy/data/services/voice/speech_recognition_service.dart';
 import 'package:curious_buddy/data/services/voice/text_to_speech_service.dart';
 import 'package:curious_buddy/data/services/voice/voice_failure.dart';
@@ -50,6 +51,22 @@ class FakeTextToSpeechService implements TextToSpeechService {
     final playing = _playing;
     _playing = null;
     playing?.complete(result);
+  }
+}
+
+/// Records which sound effects played, in order. Optionally reports what
+/// was already happening, to prove sounds never play over speech.
+class FakeSoundEffectsService implements SoundEffectsService {
+  FakeSoundEffectsService({this.tts});
+
+  final FakeTextToSpeechService? tts;
+  final List<SoundEffect> played = [];
+  int overSpeech = 0;
+
+  @override
+  Future<void> play(SoundEffect effect) async {
+    if (tts?.isSpeaking ?? false) overSpeech++;
+    played.add(effect);
   }
 }
 

@@ -27,6 +27,7 @@ Zone shows the same list to parents, with live values read from storage.
 | `voice.muted` | Voice on/off | Respect the choice to keep Buddy quiet | Kept, unless "Also restore default settings" is ticked |
 | `voice.speed` | Speaking speed (slower / normal / faster) | Grown-up choice | Same as above |
 | `voice.autoRead` | Read aloud automatically, or only when asked | Grown-up choice | Same as above |
+| `sound.effects` | Sound effects on/off | Grown-up choice | Same as above |
 | `voice.allowOnlineRecognition` | Allow online voice recognition, off by default | Grown-up choice about where speech is recognised | Same as above |
 | `display.reduceMotion` | Calmer animations | Accessibility | Same as above |
 | `creations` | Creative Island drawings (brush strokes as numbers) and creatures (chosen parts and a name from a fixed list). No typed text, no photos | The child's own work, shown on their shelf | Deleted (the child can also remove one at a time) |

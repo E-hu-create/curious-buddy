@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 
 import '../../data/repositories/creations_repository.dart';
+import '../../data/services/sound/sound_effects_service.dart';
 import '../../domain/creative/creation.dart';
 import '../../domain/creative/creation_shelf.dart';
 import '../../domain/voice/buddy_voice.dart';
@@ -107,7 +108,7 @@ abstract class CreativeActivityViewModel extends ChangeNotifier {
     try {
       await _repository.add(build);
       _saveStatus = CreationSaveStatus.saved;
-      say(savedLine);
+      say(savedLine, lead: SoundEffect.cheer);
     } on CreationsFullException {
       _saveStatus = CreationSaveStatus.full;
       say(fullLine);
@@ -135,18 +136,22 @@ abstract class CreativeActivityViewModel extends ChangeNotifier {
   Future<void> stopSpeaking() => _voice.stop();
 
   @protected
-  void say(String text, {bool requested = false}) {
+  void say(String text, {bool requested = false, SoundEffect? lead}) {
     final first = _lastSpoken == null;
     _lastSpoken = text;
     // Enables "Hear again" even when nothing is read aloud automatically.
     if (first) _notify();
-    _sayNow(text, requested: requested);
+    _sayNow(text, requested: requested, lead: lead);
   }
 
-  void _sayNow(String text, {bool requested = false}) {
+  void _sayNow(String text, {bool requested = false, SoundEffect? lead}) {
     if (_disposed) return;
-    unawaited(_voice.say(text, requested: requested));
+    unawaited(_voice.say(text, requested: requested, lead: lead));
   }
+
+  /// A small sound for a small choice.
+  @protected
+  void pop() => unawaited(_voice.effect(SoundEffect.pop));
 
   @protected
   void changed() {
@@ -371,7 +376,11 @@ class CreatureViewModel extends CreativeActivityViewModel {
     if (saveStatus == CreationSaveStatus.saved) return;
     _creature = next;
     changed();
-    if (react) say(creatureFact(_creature));
+    if (react) {
+      say(creatureFact(_creature), lead: SoundEffect.pop);
+    } else {
+      pop();
+    }
   }
 
   Creature _randomCreature({String? name}) {

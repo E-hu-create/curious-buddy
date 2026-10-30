@@ -128,12 +128,13 @@ class ParentZoneViewModel extends ChangeNotifier {
     _notify();
   }
 
-  /// Voice on, normal speed, reads automatically, on-device listening only,
-  /// normal motion.
+  /// Voice on, normal speed, reads automatically, sound effects on,
+  /// on-device listening only, normal motion.
   Future<void> restoreDefaultSettings() async {
     await voice.setMuted(false);
     await voice.setSpeed(SpeechSpeed.normal);
     await voice.setAutoRead(true);
+    await voice.setSoundsOn(true);
     await listener.setAllowOnline(false);
     await display.setReduceMotion(false);
   }

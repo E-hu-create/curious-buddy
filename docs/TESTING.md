@@ -93,6 +93,7 @@ and ask first.
 | `test/ui/core/widgets/motion_test.dart` | Confetti and phone tap only at the right moments (perfect quiz, new ending, saved creation, new rank; not for mistakes or repeat endings); confetti ignores touch and screen readers, and ends by itself; calm settings skip everything; stars pop in; bundled font and licence; bold headings; last Home card fills its row |
 | `test/domain/wardrobe/wardrobe_test.dart` | Unlocking from each activity; everything earnable; progress text; one item per slot; saved form and bad entries; schema 5; BuddyWardrobe saving, restart, reset, storage failure |
 | `test/ui/wardrobe/wardrobe_screen_test.dart` | Locked items and how to earn them; wearing and taking off; locked items cannot be worn; Buddy matches on other screens; restart; Buddy's button; storage error; Parent Zone shows and clears the outfit; speech stops; no microphone; every item painted in every mood; accessibility; no overflow |
+| `test/domain/voice/sound_effects_test.dart` | A sound plays before Buddy speaks; old speech stops first; stop and newer lines cancel the wait; works with voice off; sounds off; remembered; small effects skipped during speech; which moments play what; defaults; files exist and match their lengths in the code; native player knows every effect |
 | `test/ui/stories/stories_accessibility_test.dart` | Tap target, label and contrast guidelines on the shelf, intro, a choice page and an ending; numbered choice labels; picture descriptions; every page of every story without overflow on small phones and 2x text |
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
 | `test/domain/conversation/child_safety_filter_test.dart` | Personal info, self-harm, bullying, medical and off-limits detection; ordinary questions (incl. big numbers, look-alike words) pass |
@@ -243,6 +244,14 @@ user-visible change:
       it from its icon: warm paper background, Buddy in the middle, "Curious
       Buddy" at the bottom, then Home with no white or black flash. Repeat
       with the phone in dark mode: the same.
+- [ ] **Sound effects** (media volume up):
+  - [ ] Right answer: a rising chime, then Buddy. Wrong answer: soft notes,
+        never harsh, then Buddy. They never talk over each other.
+  - [ ] Passing a quiz, solving a case, a new story ending and saving a
+        creation: a small fanfare. Choosing creature parts: a light pop.
+  - [ ] The sounds are pleasant, not too loud, and not annoying when repeated.
+  - [ ] Voice off: sounds still play. Parent Zone → Sound effects off: none,
+        and Buddy still speaks. Still off after a force-stop.
 - [ ] **Buddy's Wardrobe:**
   - [ ] Home → Buddy's Wardrobe: earned items can be tapped; locked ones show
         how to earn them.

@@ -118,6 +118,7 @@ class DataOverviewSection extends StatelessWidget {
     voice.isMuted ? 'Voice off' : 'Voice on',
     '${VoiceSettingsSection.speedLabel(voice.speed).toLowerCase()} speed',
     voice.autoRead ? 'reads automatically' : 'reads when asked',
+    voice.soundsOn ? 'sound effects on' : 'sound effects off',
     listener.allowOnline ? 'online recognition allowed' : 'on-device only',
     display.reduceMotion ? 'calmer animations' : 'normal animations',
   ].join(', ');

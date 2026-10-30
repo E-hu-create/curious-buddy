@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../../data/repositories/progress_repository.dart';
+import '../../data/services/sound/sound_effects_service.dart';
 import '../../domain/models/learner_progress.dart';
 import '../../domain/stories/story.dart';
 import '../../domain/stories/story_rules.dart';
@@ -157,7 +158,7 @@ class StoryPlayViewModel extends ChangeNotifier {
     final scene = this.scene;
     if (scene.ending case final ending?) _found.add(ending.id);
     _notify();
-    _say(_sceneNarration());
+    _say(_sceneNarration(), lead: isNewEnding ? SoundEffect.cheer : null);
     _save(scene);
   }
 
@@ -201,17 +202,17 @@ class StoryPlayViewModel extends ChangeNotifier {
     null => progress.withStoryBookmark(story.id, path),
   };
 
-  void _say(String text, {bool requested = false}) {
+  void _say(String text, {bool requested = false, SoundEffect? lead}) {
     final first = _lastSpoken == null;
     _lastSpoken = text;
     // Enables "Hear again" even when nothing is read aloud automatically.
     if (first) _notify();
-    _sayNow(text, requested: requested);
+    _sayNow(text, requested: requested, lead: lead);
   }
 
-  void _sayNow(String text, {bool requested = false}) {
+  void _sayNow(String text, {bool requested = false, SoundEffect? lead}) {
     if (_disposed) return;
-    unawaited(_voice.say(text, requested: requested));
+    unawaited(_voice.say(text, requested: requested, lead: lead));
   }
 
   void _notify() {

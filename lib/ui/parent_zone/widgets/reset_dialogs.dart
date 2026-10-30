@@ -23,8 +23,8 @@ class ResetExplainDialog extends StatefulWidget {
   ];
   static const settingsToo = 'Also restore default settings';
   static const settingsDefaults =
-      'Voice on, normal speed, reads automatically, on-device listening '
-      'only, normal animations.';
+      'Voice on, normal speed, reads automatically, sound effects on, '
+      'on-device listening only, normal animations.';
   static const cannotUndo = 'This cannot be undone.';
   static const cancelLabel = 'Cancel';
   static const continueLabel = 'Continue';

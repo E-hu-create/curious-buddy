@@ -20,6 +20,10 @@ class VoiceSettingsSection extends StatelessWidget {
   static const talksHelp =
       'When off, everything is still shown as text. Your child can also '
       'switch this on the Home screen.';
+  static const soundsTitle = 'Sound effects';
+  static const soundsHelp =
+      'Short chimes for right answers and big moments. They never play over '
+      "Buddy's voice, and follow the phone's media volume.";
   static const speedTitle = 'Speaking speed';
   static const autoReadTitle = 'Read aloud automatically';
   static const autoReadHelp =
@@ -54,6 +58,13 @@ class VoiceSettingsSection extends StatelessWidget {
             subtitle: Text(talksHelp, style: textTheme.bodyMedium),
             value: !voice.isMuted,
             onChanged: (on) => unawaited(voice.setMuted(!on)),
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(soundsTitle, style: textTheme.titleMedium),
+            subtitle: Text(soundsHelp, style: textTheme.bodyMedium),
+            value: voice.soundsOn,
+            onChanged: (on) => unawaited(voice.setSoundsOn(on)),
           ),
           const SizedBox(height: 8),
           Text(speedTitle, style: textTheme.titleMedium),

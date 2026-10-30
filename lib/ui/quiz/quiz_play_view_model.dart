@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 
 import '../../data/repositories/progress_repository.dart';
+import '../../data/services/sound/sound_effects_service.dart';
 import '../../domain/quiz/quiz.dart';
 import '../../domain/quiz/quiz_rules.dart';
 import '../../domain/voice/buddy_voice.dart';
@@ -136,7 +137,10 @@ class QuizPlayViewModel extends ChangeNotifier {
     if (question.optionById(optionId) == null) return;
     _picks[question.id] = optionId;
     _notify();
-    _say(feedbackFor(question, optionId));
+    _say(
+      feedbackFor(question, optionId),
+      lead: pickedCorrect ? SoundEffect.correct : SoundEffect.gentle,
+    );
   }
 
   Future<void> next() async {
@@ -152,7 +156,7 @@ class QuizPlayViewModel extends ChangeNotifier {
     _best[level.id] = max(_best[level.id] ?? 0, correctCount);
     _phase = QuizPhase.summary;
     _notify();
-    _say(summaryNarration());
+    _say(summaryNarration(), lead: passed ? SoundEffect.cheer : null);
     await _save();
   }
 
@@ -245,17 +249,17 @@ class QuizPlayViewModel extends ChangeNotifier {
     return copy;
   }
 
-  void _say(String text, {bool requested = false}) {
+  void _say(String text, {bool requested = false, SoundEffect? lead}) {
     final first = _lastSpoken == null;
     _lastSpoken = text;
     // Enables "Hear again" even when nothing is read aloud automatically.
     if (first) _notify();
-    _sayNow(text, requested: requested);
+    _sayNow(text, requested: requested, lead: lead);
   }
 
-  void _sayNow(String text, {bool requested = false}) {
+  void _sayNow(String text, {bool requested = false, SoundEffect? lead}) {
     if (_disposed) return;
-    unawaited(_voice.say(text, requested: requested));
+    unawaited(_voice.say(text, requested: requested, lead: lead));
   }
 
   void _notify() {
