@@ -24,7 +24,7 @@ enum GameKind {
 
   /// The quick games shown together in the Arena. The others have their own
   /// tile in the Game Zone.
-  static const arena = [memory, pattern, spot, four, number];
+  static const arena = [memory, pattern, spot];
 
   final String title;
   final String tagline;

@@ -46,7 +46,8 @@ class GameZoneScreen extends StatefulWidget {
   static const robotLabel = 'Start coding';
   static const wordsLabel = 'Build a word';
   static const soundsLabel = 'Start listening';
-  static const quickTitle = 'Quick games';
+  static const fourLabel = 'Beat Buddy';
+  static const numberLabel = 'Start popping';
 
   static String starsLabel(int stars, int all) => '$stars of $all stars';
   static String nextRankLabel(int stars, GameRank next) =>
@@ -75,8 +76,8 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
     }
   }
 
-  Future<void> _open(String route, [GameKind? kind]) async {
-    await Navigator.of(context).pushNamed(route, arguments: kind);
+  Future<void> _open(String route) async {
+    await Navigator.of(context).pushNamed(route);
     await _load();
   }
 
@@ -100,18 +101,6 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
       ),
       const SizedBox(height: 12),
       _Scoreboard(stars: _stars),
-      const SizedBox(height: 16),
-      Semantics(
-        header: true,
-        child: Text(
-          GameZoneScreen.quickTitle,
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(color: AppColors.white),
-        ),
-      ),
-      const SizedBox(height: 8),
-      _QuickGames(onOpen: (kind) => unawaited(_open(Routes.arena, kind))),
       const SizedBox(height: 16),
       _GameTile(
         color: AppColors.leafTint,
@@ -158,6 +147,30 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
           label: GameZoneScreen.wordsLabel,
           icon: Icons.abc_rounded,
           onPressed: () => unawaited(_open(Routes.words)),
+        ),
+      ),
+      const SizedBox(height: 16),
+      _GameTile(
+        color: AppColors.leafTint,
+        art: const _FourTileArt(),
+        title: GameKind.four.title,
+        text: GameKind.four.tagline,
+        button: PlayButton(
+          label: GameZoneScreen.fourLabel,
+          icon: Icons.grid_on_rounded,
+          onPressed: () => unawaited(_open(Routes.four)),
+        ),
+      ),
+      const SizedBox(height: 16),
+      _GameTile(
+        color: AppColors.coralTint,
+        art: const _NumberTileArt(),
+        title: GameKind.number.title,
+        text: GameKind.number.tagline,
+        button: PlayButton(
+          label: GameZoneScreen.numberLabel,
+          icon: Icons.bubble_chart_rounded,
+          onPressed: () => unawaited(_open(Routes.number)),
         ),
       ),
       const SizedBox(height: 16),
@@ -231,82 +244,6 @@ class _Scoreboard extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Every Arena game in one tap, so none of them hide further down.
-class _QuickGames extends StatelessWidget {
-  const _QuickGames({required this.onOpen});
-
-  final ValueChanged<GameKind> onOpen;
-
-  static const _gap = 10.0;
-
-  @override
-  Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, constraints) => Wrap(
-      spacing: _gap,
-      runSpacing: _gap,
-      children: [
-        for (final kind in GameKind.arena)
-          SizedBox(
-            width: (constraints.maxWidth - _gap) / 2,
-            child: _QuickTile(kind: kind, onTap: () => onOpen(kind)),
-          ),
-      ],
-    ),
-  );
-}
-
-class _QuickTile extends StatelessWidget {
-  const _QuickTile({required this.kind, required this.onTap});
-
-  final GameKind kind;
-  final VoidCallback onTap;
-
-  static IconData _iconOf(GameKind kind) => switch (kind) {
-    GameKind.memory => Icons.style_rounded,
-    GameKind.pattern => Icons.auto_awesome_rounded,
-    GameKind.spot => Icons.search_rounded,
-    GameKind.four => Icons.grid_on_rounded,
-    GameKind.number => Icons.bubble_chart_rounded,
-    _ => Icons.sports_esports_rounded,
-  };
-
-  @override
-  Widget build(BuildContext context) => Semantics(
-    button: true,
-    label: kind.title,
-    excludeSemantics: true,
-    child: StickerPress(
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          child: Ink(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-            decoration: AppShapes.sticker(
-              _GameCard.colorOf(kind),
-              depth: 3,
-              radius: 16,
-            ),
-            child: Row(
-              children: [
-                Icon(_iconOf(kind), color: AppColors.ink, size: 28),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    kind.title,
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
 }
 
 class _GameTile extends StatelessWidget {
@@ -531,6 +468,112 @@ class _SoundTileArt extends StatelessWidget {
                   radius: 14,
                 ),
                 child: SoundArt(sound: sound, size: 72),
+              ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+/// A winning line of stars on the board.
+class _FourTileArt extends StatelessWidget {
+  const _FourTileArt();
+
+  static const _rows = [
+    [null, null, null, null, null],
+    [null, false, null, null, null],
+    [false, false, true, null, false],
+    [true, true, true, true, false],
+  ];
+
+  @override
+  Widget build(BuildContext context) => ExcludeSemantics(
+    child: Container(
+      height: 150,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: AppColors.brandBlueDeep,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: FittedBox(
+        child: Column(
+          children: [
+            for (final row in _rows)
+              Row(
+                children: [
+                  for (final star in row)
+                    Container(
+                      width: 40,
+                      height: 40,
+                      margin: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: switch (star) {
+                          null => AppColors.brandBlueTint,
+                          true => AppColors.coral,
+                          false => AppColors.buddyTeal,
+                        },
+                        border: Border.all(color: AppColors.ink, width: 1.5),
+                      ),
+                      child: star == true
+                          ? const Icon(
+                              Icons.star_rounded,
+                              color: AppColors.white,
+                              size: 28,
+                            )
+                          : null,
+                    ),
+                ],
+              ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+/// Bubbles of sums, floating up.
+class _NumberTileArt extends StatelessWidget {
+  const _NumberTileArt();
+
+  @override
+  Widget build(BuildContext context) => ExcludeSemantics(
+    child: Container(
+      height: 150,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: AppColors.brandBlue,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: FittedBox(
+        child: Row(
+          children: [
+            for (final (sum, lift) in const [
+              ('6 × 6', 14.0),
+              ('9 + 3', -14.0),
+              ('8 − 2', 14.0),
+            ])
+              Transform.translate(
+                offset: Offset(0, lift),
+                child: Container(
+                  width: 96,
+                  height: 96,
+                  margin: const EdgeInsets.all(5),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: const RadialGradient(
+                      center: Alignment(-0.4, -0.5),
+                      colors: [AppColors.white, AppColors.brandBlueTint],
+                    ),
+                    border: Border.all(color: AppColors.ink, width: 2),
+                  ),
+                  child: Text(
+                    sum,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
               ),
           ],
         ),
@@ -815,8 +858,6 @@ class _GameCard extends StatelessWidget {
   final ValueChanged<GameLevel> onPlay;
   final VoidCallback onHowTo;
 
-  static Color colorOf(GameKind kind) => _colors[kind]!;
-
   static const _colors = {
     GameKind.memory: AppColors.grapeTint,
     GameKind.pattern: AppColors.sunTint,
@@ -835,7 +876,7 @@ class _GameCard extends StatelessWidget {
     final levels = ArenaRules.levelsOf(kind);
     return Container(
       padding: const EdgeInsets.all(14),
-      decoration: AppShapes.sticker(colorOf(kind)),
+      decoration: AppShapes.sticker(_colors[kind]!),
       child: Column(
         crossAxisAlignment: .stretch,
         children: [

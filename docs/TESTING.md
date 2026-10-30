@@ -293,15 +293,15 @@ user-visible change:
   - [ ] Opening the app: the splash shows Buddy on the sun, and the name.
   - [ ] Home: the logo sits at the top, with Grown-ups still working.
 - [ ] **Number Pop:**
-  - [ ] Arena → Number Pop: How to play opens on the first game.
+  - [ ] Game Zone → Start popping: three levels, and How to play opens on the
+        first game.
   - [ ] Pop the bubbles that make the target; right ones pop away.
   - [ ] A wrong bubble turns pink and can't be tapped again.
   - [ ] Three right clears the round; five rounds, then stars.
   - [ ] Expert has times sums.
-- [ ] **Quick games:** the Game Zone lists every Arena game near the top, and
-      each one opens in one tap.
 - [ ] **Four in a Row:**
-  - [ ] Arena → Four in a Row: How to play opens on the first game.
+  - [ ] Game Zone → Beat Buddy: three levels, and How to play opens on the
+        first game.
   - [ ] Tap a column: your star drops, Buddy thinks, then Buddy's circle drops.
   - [ ] A full column can't be tapped.
   - [ ] Win, lose and draw each show the board and the right stars.

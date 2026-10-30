@@ -262,25 +262,19 @@ void main() {
       );
     });
 
-    testWidgets('every Arena game opens from the Game Zone in one tap', (
-      tester,
-    ) async {
-      await openZone(tester);
+    for (final (kind, label) in [
+      (GameKind.four, GameZoneScreen.fourLabel),
+      (GameKind.number, GameZoneScreen.numberLabel),
+    ]) {
+      testWidgets('${kind.title} has its own big tile', (tester) async {
+        await openZone(tester);
 
-      for (final kind in GameKind.arena) {
-        final tile = find.bySemanticsLabel(kind.title);
-        await tester.ensureVisible(tile);
-        await tester.pumpAndSettle();
-        await tester.tap(tile);
-        await tester.pumpAndSettle();
+        await tapText(tester, label);
 
         expect(find.text(kind.tagline), findsOneWidget);
         expect(find.bySemanticsLabel('Play Starter'), findsOneWidget);
-
-        await tester.pageBack();
-        await tester.pumpAndSettle();
-      }
-    });
+      });
+    }
 
     testWidgets('a storage error still opens the Game Zone', (tester) async {
       usePhoneScreen(tester);

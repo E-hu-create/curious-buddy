@@ -300,7 +300,7 @@ Built before Creative Island at the product owner's request.
 - ⏳ Device test on the Samsung SM-A516U, including how the icon looks on the
   phone's home screen.
 
-## Game Zone: six more Arena games
+## Game Zone: six more games
 
 - ✅ Four in a Row against Buddy (awaiting device test).
 - ✅ Number Pop (awaiting device test).
