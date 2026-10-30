@@ -216,6 +216,23 @@ class HowToPlay {
     ],
   );
 
+  static const number = HowToPlay(
+    game: 'Number Pop',
+    tip: noClock,
+    steps: [
+      HowToStep(Icons.flag_rounded, 'Look at the target number at the top.'),
+      HowToStep(Icons.calculate_rounded, 'Work out the sum in each bubble.'),
+      HowToStep(
+        Icons.touch_app_rounded,
+        'Pop the 3 bubbles that make the target number.',
+      ),
+      HowToStep(
+        Icons.star_rounded,
+        'Clear 5 rounds. Fewer wrong taps earn more stars.',
+      ),
+    ],
+  );
+
   static const dino = HowToPlay(
     game: 'Dino Discovery',
     tip: noClock,
@@ -262,6 +279,7 @@ class HowToPlay {
     GameKind.words => words,
     GameKind.sounds => sounds,
     GameKind.four => four,
+    GameKind.number => number,
   };
 }
 

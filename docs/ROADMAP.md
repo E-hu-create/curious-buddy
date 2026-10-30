@@ -295,7 +295,8 @@ Built before Creative Island at the product owner's request.
 ## Game Zone: six more Arena games
 
 - ✅ Four in a Row against Buddy (awaiting device test).
-- ⏳ Number Pop, Sort It!, Circuit Fixer, Picture Sudoku and Planet Parade.
+- ✅ Number Pop (awaiting device test).
+- ⏳ Sort It!, Circuit Fixer, Picture Sudoku and Planet Parade.
 
 ## Later, each needing an approved requirement
 

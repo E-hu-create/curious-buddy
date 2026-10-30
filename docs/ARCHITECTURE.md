@@ -507,6 +507,13 @@ SoundPool as the effects, so Android must know each new clip by name.
 sounds off. Then the game shows the clue, so it can always be played, and it
 can be played by a child who can't hear the clips.
 
+### Number Pop
+
+`domain/games/number_pop.dart` builds each round from the level's sums: three
+that make the target and six close to it, so a guess rarely works. Starter is
+adding, Explorer adds taking away, and Expert always includes a times sum. The
+bubbles stay still on purpose, so there is no hidden clock.
+
 ### Four in a Row
 
 `domain/games/four_in_a_row.dart` is an Arena game played against Buddy. Starter

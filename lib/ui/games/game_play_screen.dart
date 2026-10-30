@@ -7,6 +7,7 @@ import '../../data/repositories/progress_repository.dart';
 import '../../domain/games/four_in_a_row.dart';
 import '../../domain/games/games.dart';
 import '../../domain/games/maze.dart';
+import '../../domain/games/number_pop.dart';
 import '../../domain/games/robot.dart';
 import '../../domain/games/sound_game.dart';
 import '../../domain/games/words.dart';
@@ -56,6 +57,10 @@ class GamePlayScreen extends StatefulWidget {
   static const firstPicture = 'First picture';
   static const secondPicture = 'Second picture: tap what changed';
   static const missNote = "That one didn't change. Keep looking!";
+
+  static String roundLabel(int n, int total) => 'Round $n of $total';
+  static String targetLabel(int target) => 'Make $target';
+  static String toGoLabel(int left) => '$left to go';
 
   static const yourTurn = 'Your turn';
   static const buddyTurn = 'Buddy is thinking...';
@@ -167,6 +172,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       progressRepository: widget.progressRepository,
       random: widget.random,
     ),
+    GameKind.number => NumberViewModel(
+      level: widget.level,
+      voice: widget.voice,
+      progressRepository: widget.progressRepository,
+      random: widget.random,
+    ),
   };
 
   @override
@@ -234,6 +245,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           final WordViewModel vm => _WordBoard(vm: vm),
           final SoundViewModel vm => _SoundBoard(vm: vm),
           final FourViewModel vm => _FourBoard(vm: vm),
+          final NumberViewModel vm => _NumberBoard(vm: vm),
           _ => const SizedBox.shrink(),
         },
       ),
@@ -1487,6 +1499,148 @@ class _FourCell extends StatelessWidget {
               )
             : null,
       ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------- Number Pop
+
+class _NumberBoard extends StatelessWidget {
+  const _NumberBoard({required this.vm});
+
+  final NumberViewModel vm;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final game = vm.game;
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        Text(
+          GamePlayScreen.roundLabel(game.round + 1, NumberPopGame.rounds),
+          style: textTheme.titleSmall,
+        ),
+        const SizedBox(height: 6),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: AppShapes.sticker(AppColors.sun, depth: 3, radius: 16),
+          child: Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 12,
+            children: [
+              Text(
+                GamePlayScreen.targetLabel(game.target),
+                style: textTheme.headlineMedium,
+              ),
+              Text(
+                GamePlayScreen.toGoLabel(game.left),
+                style: textTheme.titleMedium,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: AppShapes.sticker(
+            AppColors.brandBlue,
+            depth: 3,
+            radius: 18,
+          ),
+          child: Column(
+            children: [
+              for (var row = 0; row < 3; row++)
+                Row(
+                  children: [
+                    for (var column = 0; column < 3; column++)
+                      Expanded(
+                        child: _Bubble(
+                          key: ValueKey('${game.round}-${row * 3 + column}'),
+                          sum: game.bubbles[row * 3 + column],
+                          popped: game.popped.contains(row * 3 + column),
+                          tried: game.tried.contains(row * 3 + column),
+                          // A little unevenness, so it feels like bubbles.
+                          lift: (row + column).isEven ? 0 : 8,
+                          onTap: () => vm.tap(row * 3 + column),
+                        ),
+                      ),
+                  ],
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Bubble extends StatelessWidget {
+  const _Bubble({
+    super.key,
+    required this.sum,
+    required this.popped,
+    required this.tried,
+    required this.lift,
+    required this.onTap,
+  });
+
+  final BubbleSum sum;
+  final bool popped;
+  final bool tried;
+  final double lift;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final bubble = AspectRatio(
+      aspectRatio: 1,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(4, 4 + lift, 4, 12 - lift),
+        child: AnimatedScale(
+          scale: popped ? 0 : 1,
+          duration: AppMotion.isCalm(context) ? Duration.zero : AppMotion.quick,
+          curve: Curves.easeInBack,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: popped || tried ? null : onTap,
+              customBorder: const CircleBorder(),
+              child: Ink(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    center: const Alignment(-0.4, -0.5),
+                    colors: tried
+                        ? const [AppColors.white, AppColors.coralTint]
+                        : const [AppColors.white, AppColors.brandBlueTint],
+                  ),
+                  border: Border.all(color: AppColors.ink, width: 2),
+                ),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: FittedBox(
+                      child: Text(
+                        sum.text,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    if (popped) return ExcludeSemantics(child: bubble);
+    return Semantics(
+      button: !tried,
+      label: sum.spoken,
+      excludeSemantics: true,
+      child: bubble,
     );
   }
 }

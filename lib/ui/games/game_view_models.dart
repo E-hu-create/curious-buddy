@@ -9,6 +9,7 @@ import '../../domain/games/four_in_a_row.dart';
 import '../../domain/games/game_content.dart';
 import '../../domain/games/games.dart';
 import '../../domain/games/maze.dart';
+import '../../domain/games/number_pop.dart';
 import '../../domain/games/robot.dart';
 import '../../domain/games/sound_game.dart';
 import '../../domain/games/words.dart';
@@ -658,6 +659,45 @@ class FourViewModel extends ArenaViewModel {
     _game = FourGame(level: level.number, random: _random);
     _thinking = false;
   }
+}
+
+class NumberViewModel extends ArenaViewModel {
+  NumberViewModel({
+    required super.level,
+    required super.voice,
+    required super.progressRepository,
+    Random? random,
+  }) : _random = random ?? Random() {
+    _game = NumberPopGame(level: level.number, random: _random);
+  }
+
+  final Random _random;
+
+  NumberPopGame get game => _game;
+  late NumberPopGame _game;
+
+  @override
+  String get introLine => 'Pop every bubble that makes ${_game.target}.';
+
+  void tap(int index) {
+    if (isFinished) return;
+    switch (_game.tap(index)) {
+      case PopResult.ignored:
+        return;
+      case PopResult.wrong:
+        sound(SoundEffect.gentle);
+      case PopResult.popped:
+        sound(SoundEffect.pop);
+      case PopResult.cleared:
+        say(introLine, lead: SoundEffect.correct);
+      case PopResult.won:
+        unawaited(finish(_game.stars));
+    }
+    notify();
+  }
+
+  @override
+  void reset() => _game = NumberPopGame(level: level.number, random: _random);
 }
 
 class SpotViewModel extends ArenaViewModel {
