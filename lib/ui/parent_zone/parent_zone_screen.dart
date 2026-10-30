@@ -10,11 +10,13 @@ import '../../domain/voice/buddy_listener.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../../domain/wardrobe/buddy_wardrobe.dart';
 import '../core/themes/app_colors.dart';
+import '../core/widgets/motion.dart';
 import 'parent_zone_view_model.dart';
 import 'widgets/data_overview.dart';
 import 'widgets/parent_gate_view.dart';
 import 'widgets/parent_section.dart';
 import 'widgets/parent_settings.dart';
+import 'widgets/progress_overview.dart';
 import 'widgets/reset_dialogs.dart';
 
 /// Grown-ups only: a parent check, then settings, an overview of everything
@@ -46,6 +48,12 @@ class ParentZoneScreen extends StatefulWidget {
 
   static const title = 'Parent Zone';
   static const backToBuddy = 'Back to Buddy';
+  static const jumpProgress = 'Progress';
+  static const jumpVoice = 'Voice';
+  static const jumpListening = 'Microphone';
+  static const jumpDisplay = 'Animations';
+  static const jumpData = 'Saved data';
+  static const jumpDelete = 'Delete';
   static const resetTitle = 'Delete progress';
   static const resetHelp =
       "Deletes your child's mission results, story endings, quiz results, "
@@ -69,6 +77,13 @@ class ParentZoneScreen extends StatefulWidget {
 }
 
 class _ParentZoneScreenState extends State<ParentZoneScreen> {
+  final _progressKey = GlobalKey();
+  final _voiceKey = GlobalKey();
+  final _listeningKey = GlobalKey();
+  final _displayKey = GlobalKey();
+  final _dataKey = GlobalKey();
+  final _deleteKey = GlobalKey();
+
   late final ParentZoneViewModel _vm = ParentZoneViewModel(
     progressRepository: widget.progressRepository,
     creationsRepository: widget.creationsRepository,
@@ -171,18 +186,54 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
     );
   }
 
+  void _jumpTo(GlobalKey key) {
+    final target = key.currentContext;
+    if (target == null) return;
+    unawaited(
+      Scrollable.ensureVisible(
+        target,
+        duration: AppMotion.isCalm(context) ? Duration.zero : AppMotion.quick,
+      ),
+    );
+  }
+
   Widget _unlockedBody() => Column(
     crossAxisAlignment: .stretch,
     children: [
-      VoiceSettingsSection(voice: widget.voice),
+      ParentJumpBar(
+        links: [
+          (ParentZoneScreen.jumpProgress, () => _jumpTo(_progressKey)),
+          (ParentZoneScreen.jumpVoice, () => _jumpTo(_voiceKey)),
+          (ParentZoneScreen.jumpListening, () => _jumpTo(_listeningKey)),
+          (ParentZoneScreen.jumpDisplay, () => _jumpTo(_displayKey)),
+          (ParentZoneScreen.jumpData, () => _jumpTo(_dataKey)),
+          (ParentZoneScreen.jumpDelete, () => _jumpTo(_deleteKey)),
+        ],
+      ),
       const SizedBox(height: 16),
-      ListeningSettingsSection(listener: widget.listener),
+      ProgressOverviewSection(key: _progressKey, vm: _vm),
       const SizedBox(height: 16),
-      DisplaySettingsSection(display: widget.display),
+      KeyedSubtree(
+        key: _voiceKey,
+        child: VoiceSettingsSection(voice: widget.voice),
+      ),
       const SizedBox(height: 16),
-      DataOverviewSection(vm: _vm),
+      KeyedSubtree(
+        key: _listeningKey,
+        child: ListeningSettingsSection(listener: widget.listener),
+      ),
       const SizedBox(height: 16),
-      _resetSection(),
+      KeyedSubtree(
+        key: _displayKey,
+        child: DisplaySettingsSection(display: widget.display),
+      ),
+      const SizedBox(height: 16),
+      KeyedSubtree(
+        key: _dataKey,
+        child: DataOverviewSection(vm: _vm),
+      ),
+      const SizedBox(height: 16),
+      KeyedSubtree(key: _deleteKey, child: _resetSection()),
       const SizedBox(height: 16),
       const ParentNote(ParentZoneScreen.legalNote),
     ],

@@ -296,6 +296,9 @@ user-visible change:
   - [ ] Second game of that kind: it doesn't open by itself.
   - [ ] During a game, the ? at the top opens it. Got it returns to the game
         with nothing lost.
+- [ ] **Grown-ups:** the card is at the bottom of Home, and still asks the parent
+      check. Progress at a glance shows real numbers and a next step. Jump links
+      move down the page.
 - [ ] **Quiz Time update:** ten topics, each with its own icon. Play a new
       topic: answers, explanations and read aloud work, and stars count on the
       Quiz screen and in My Discoveries.

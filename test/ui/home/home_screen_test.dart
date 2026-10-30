@@ -113,11 +113,11 @@ void main() {
     expect(find.text(HomeViewModel.greeting), findsOneWidget);
   });
 
-  testWidgets('Grown-ups button opens the Parent Zone placeholder', (
-    tester,
-  ) async {
+  testWidgets('Grown-ups card opens the Parent Zone', (tester) async {
     await openHome(tester);
 
+    await tester.ensureVisible(find.text('Grown-ups'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Grown-ups'));
     await tester.pumpAndSettle();
 

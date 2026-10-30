@@ -292,6 +292,14 @@ Built before Creative Island at the product owner's request.
 - ⏳ Grown-up review of the facts.
 - ⏳ Device test on the Samsung SM-A516U.
 
+## Grown-ups upgrade ✅ (awaiting device test)
+
+- ✅ Grown-ups moved from the top of Home to its own card at the bottom.
+- ✅ Parent Zone opens with Progress at a glance, worked out from saved
+  progress, so nothing new is stored.
+- ✅ Jump links to each part of the page.
+- ⏳ Device test on the Samsung SM-A516U.
+
 ## Quiz Time update ✅ (awaiting device test)
 
 - ✅ Six new topics: Dinosaurs & Fossils, Oceans, Plants & Bugs, Electricity &

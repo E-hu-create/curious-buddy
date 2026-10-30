@@ -8,6 +8,8 @@ import '../../data/repositories/progress_repository.dart';
 import '../../domain/voice/buddy_listener.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../../domain/voice/educational_response_provider.dart';
+import '../core/themes/app_colors.dart';
+import '../core/themes/app_theme.dart';
 import '../core/widgets/app_logo.dart';
 import '../core/widgets/buddy/buddy.dart';
 import 'buddy_action_routes.dart';
@@ -38,6 +40,8 @@ class HomeScreen extends StatefulWidget {
   final BuddyVoice voice;
   final BuddyListener listener;
 
+  static const grownUpsLabel = 'Grown-ups';
+  static const grownUpsHelp = 'Progress, settings and privacy';
   static const micTitle = 'Can Buddy use the microphone?';
   static const micMessage =
       'Buddy needs the microphone to hear your question. '
@@ -154,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Column(
                     crossAxisAlignment: .stretch,
                     children: [
-                      _Header(onGrownUps: () => _open(Routes.parentZone)),
+                      const AppLogo(),
                       const SizedBox(height: 20),
                       BuddyGreeting(
                         text: _chat.message,
@@ -222,6 +226,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         destinations: HomeDestination.values,
                         onSelected: (destination) => _open(destination.route),
                       ),
+                      const SizedBox(height: 28),
+                      _GrownUpsCard(onTap: () => _open(Routes.parentZone)),
                     ],
                   );
                 },
@@ -234,26 +240,58 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class _Header extends StatelessWidget {
-  const _Header({required this.onGrownUps});
+/// The way into the Parent Zone. It sits below everything a child plays
+/// with, so it is easy for a grown-up to find and out of the way in play.
+class _GrownUpsCard extends StatelessWidget {
+  const _GrownUpsCard({required this.onTap});
 
-  final VoidCallback onGrownUps;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      alignment: WrapAlignment.spaceBetween,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      spacing: 12,
-      runSpacing: 12,
-      children: [
-        const AppLogo(),
-        OutlinedButton.icon(
-          onPressed: onGrownUps,
-          icon: const Icon(Icons.lock_rounded, size: 20),
-          label: const Text('Grown-ups'),
+    final textTheme = Theme.of(context).textTheme;
+    return Semantics(
+      button: true,
+      label: HomeScreen.grownUpsLabel,
+      hint: HomeScreen.grownUpsHelp,
+      excludeSemantics: true,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppShapes.radius),
+          child: Ink(
+            padding: const EdgeInsets.all(14),
+            decoration: AppShapes.sticker(AppColors.white, depth: 3),
+            child: Row(
+              children: [
+                const CircleAvatar(
+                  radius: 22,
+                  backgroundColor: AppColors.arcade,
+                  child: Icon(Icons.lock_rounded, color: AppColors.white),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      Text(
+                        HomeScreen.grownUpsLabel,
+                        style: textTheme.titleMedium,
+                      ),
+                      Text(
+                        HomeScreen.grownUpsHelp,
+                        style: textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right_rounded, color: AppColors.ink),
+              ],
+            ),
+          ),
         ),
-      ],
+      ),
     );
   }
 }
