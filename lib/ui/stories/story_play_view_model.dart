@@ -178,6 +178,7 @@ class StoryPlayViewModel extends ChangeNotifier {
   Future<void> _saving = Future.value();
 
   void _save(StoryScene scene) {
+    if (!story.remember) return;
     final path = List.of(_path);
     _saveStatus = StorySaveStatus.saving;
     _saving = _saving.then((_) async {

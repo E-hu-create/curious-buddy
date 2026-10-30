@@ -119,6 +119,7 @@ class Story {
     required this.intro,
     required this.startSceneId,
     required this.scenes,
+    this.remember = true,
   });
 
   final String id;
@@ -132,6 +133,10 @@ class Story {
   final String intro;
   final String startSceneId;
   final List<StoryScene> scenes;
+
+  /// False for stories made by Story Maker, which are not saved: no
+  /// bookmarks, and no endings in the collection.
+  final bool remember;
 
   StoryScene? sceneById(String id) {
     for (final scene in scenes) {

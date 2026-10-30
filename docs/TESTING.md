@@ -296,6 +296,9 @@ user-visible change:
   - [ ] Second game of that kind: it doesn't open by itself.
   - [ ] During a game, the ? at the top opens it. Got it returns to the game
         with nothing lost.
+- [ ] **Story Maker:** Stories → Make a new story. Pick, or tap Surprise me,
+      then Make my story. It plays like a normal story, with three endings.
+      Afterwards, the endings count on Stories has not changed.
 - [ ] **Talk to Buddy:** the box is smaller, and the suggestions slide sideways.
       Ask something unsuitable, typed and spoken: Buddy points to a grown-up.
       Ask a science question: Buddy answers. In Grown-ups → Microphone, see

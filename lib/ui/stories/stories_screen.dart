@@ -9,6 +9,7 @@ import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
 import '../core/widgets/buddy/buddy.dart';
 import 'stories_view_model.dart';
+import 'story_maker_screen.dart';
 import 'story_play_screen.dart';
 import 'widgets/story_picture.dart';
 import 'widgets/story_widgets.dart';
@@ -41,6 +42,10 @@ class StoriesScreen extends StatefulWidget {
   static const allFoundLabel = 'Read it again';
   static const newLabel = 'New story';
   static const inProgressLabel = 'Reading';
+  static const makerTitle = 'Story Maker';
+  static const makerText =
+      'Make a brand-new story: pick a hero, a place and a mystery.';
+  static const makerLabel = 'Make a new story';
 
   static String endingsLabel(int found, int total) =>
       '$found of $total endings found';
@@ -84,6 +89,16 @@ class _StoriesScreenState extends State<StoriesScreen> {
     // Show new endings and where the child stopped.
     await _vm.load();
   }
+
+  Future<void> _openMaker() => Navigator.of(context).push(
+    MaterialPageRoute<void>(
+      settings: const RouteSettings(name: '/stories/maker'),
+      builder: (_) => StoryMakerScreen(
+        voice: widget.voice,
+        progressRepository: widget.progressRepository,
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -179,6 +194,42 @@ class _StoriesScreenState extends State<StoriesScreen> {
                     ),
                     style: textTheme.titleMedium,
                   ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: AppShapes.sticker(AppColors.sunTint, depth: 4),
+            child: Column(
+              crossAxisAlignment: .stretch,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.auto_fix_high_rounded,
+                      color: AppColors.ink,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Semantics(
+                        header: true,
+                        child: Text(
+                          StoriesScreen.makerTitle,
+                          style: textTheme.titleLarge,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(StoriesScreen.makerText, style: textTheme.bodyLarge),
+                const SizedBox(height: 10),
+                FilledButton.icon(
+                  onPressed: () => unawaited(_openMaker()),
+                  icon: const Icon(Icons.auto_fix_high_rounded),
+                  label: const Text(StoriesScreen.makerLabel),
                 ),
               ],
             ),
