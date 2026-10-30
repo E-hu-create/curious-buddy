@@ -50,6 +50,7 @@ void main() {
     HowToPlay.number,
     HowToPlay.sort,
     HowToPlay.circuit,
+    HowToPlay.sudoku,
     HowToPlay.dino,
     HowToPlay.quickCreate,
   ];

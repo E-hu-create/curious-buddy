@@ -20,7 +20,8 @@ enum GameKind {
   four('Four in a Row', 'Line up four counters before Buddy does.'),
   number('Number Pop', 'Pop every bubble that makes the target number.'),
   sort('Sort It!', 'Put each thing in the right group.'),
-  circuit('Circuit Fixer', 'Turn the wires to light the bulb.');
+  circuit('Circuit Fixer', 'Turn the wires to light the bulb.'),
+  sudoku('Picture Sudoku', 'Fill the grid so no picture repeats.');
 
   const GameKind(this.title, this.tagline);
 

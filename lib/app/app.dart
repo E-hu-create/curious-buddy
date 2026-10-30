@@ -196,6 +196,12 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
           creationsRepository: dependencies.creationsRepository,
           voice: _voice,
         ),
+        Routes.sudoku: (_) => ArenaScreen(
+          only: GameKind.sudoku,
+          progressRepository: dependencies.progressRepository,
+          creationsRepository: dependencies.creationsRepository,
+          voice: _voice,
+        ),
         Routes.dino: (_) => DinoHubScreen(
           progressRepository: dependencies.progressRepository,
           voice: _voice,

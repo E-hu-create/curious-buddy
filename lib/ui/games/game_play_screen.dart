@@ -11,6 +11,7 @@ import '../../domain/games/maze.dart';
 import '../../domain/games/number_pop.dart';
 import '../../domain/games/robot.dart';
 import '../../domain/games/sound_game.dart';
+import '../../domain/games/sudoku.dart';
 import '../../domain/games/words.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
@@ -59,6 +60,20 @@ class GamePlayScreen extends StatefulWidget {
   static const firstPicture = 'First picture';
   static const secondPicture = 'Second picture: tap what changed';
   static const missNote = "That one didn't change. Keep looking!";
+
+  static const sudokuSolved = 'You solved it!';
+  static const sudokuHint = 'Tap a picture to put it in the yellow square.';
+
+  static String sudokuLabel(int n, int total) => 'Puzzle $n of $total';
+  static String placeLabel(String picture) => 'Place $picture';
+  static String squareLabel(int row, int column, String? picture) =>
+      'Row $row, column $column: ${picture ?? 'empty'}';
+  static String clashNote(SudokuClash clash) => switch (clash) {
+    SudokuClash.row => 'That picture is already in this row.',
+    SudokuClash.column => 'That picture is already in this column.',
+    SudokuClash.box => 'That picture is already in this box.',
+    SudokuClash.other => "That one doesn't work here. Try another!",
+  };
 
   static const nextCircuit = 'Next circuit';
   static const batteryLabel = 'Battery';
@@ -207,6 +222,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       progressRepository: widget.progressRepository,
       random: widget.random,
     ),
+    GameKind.sudoku => SudokuViewModel(
+      level: widget.level,
+      voice: widget.voice,
+      progressRepository: widget.progressRepository,
+      random: widget.random,
+    ),
   };
 
   @override
@@ -277,6 +298,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           final NumberViewModel vm => _NumberBoard(vm: vm),
           final SortViewModel vm => _SortBoard(vm: vm),
           final CircuitViewModel vm => _CircuitBoard(vm: vm),
+          final SudokuViewModel vm => _SudokuBoard(vm: vm),
           _ => const SizedBox.shrink(),
         },
       ),
@@ -2032,4 +2054,164 @@ class _WirePiece extends StatelessWidget {
       ),
     ),
   );
+}
+
+// ------------------------------------------------------------ Picture Sudoku
+
+class _SudokuBoard extends StatelessWidget {
+  const _SudokuBoard({required this.vm});
+
+  final SudokuViewModel vm;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final game = vm.game;
+    final puzzle = game.puzzle;
+    final clash = vm.lastClash;
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        Text(
+          GamePlayScreen.sudokuLabel(game.round + 1, SudokuGame.rounds),
+          style: textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 380),
+            child: Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: AppShapes.sticker(
+                AppColors.white,
+                depth: 3,
+                radius: 10,
+              ),
+              child: Column(
+                children: [
+                  for (var row = 0; row < puzzle.size; row++)
+                    Row(
+                      children: [
+                        for (var column = 0; column < puzzle.size; column++)
+                          Expanded(child: _square(row, column)),
+                      ],
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        if (puzzle.isSolved) ...[
+          Semantics(
+            liveRegion: true,
+            child: Text(
+              GamePlayScreen.sudokuSolved,
+              textAlign: TextAlign.center,
+              style: textTheme.titleLarge,
+            ),
+          ),
+          const SizedBox(height: 10),
+          FilledButton.icon(
+            onPressed: () => unawaited(vm.next()),
+            icon: const Icon(Icons.arrow_forward_rounded),
+            label: Text(
+              game.round + 1 < SudokuGame.rounds
+                  ? GamePlayScreen.nextPuzzle
+                  : GamePlayScreen.seeStars,
+            ),
+          ),
+        ] else ...[
+          Semantics(
+            liveRegion: true,
+            child: Text(
+              clash == null
+                  ? GamePlayScreen.sudokuHint
+                  : GamePlayScreen.clashNote(clash),
+              style: textTheme.bodyLarge,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              for (final (value, picture) in game.pictures.indexed)
+                Semantics(
+                  button: true,
+                  label: GamePlayScreen.placeLabel(picture.label),
+                  excludeSemantics: true,
+                  child: StickerPress(
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => vm.place(value),
+                        borderRadius: BorderRadius.circular(14),
+                        child: Ink(
+                          width: 60,
+                          height: 60,
+                          decoration: AppShapes.sticker(
+                            AppColors.white,
+                            depth: 3,
+                            radius: 14,
+                          ),
+                          child: Center(
+                            child: PictureArt(picture: picture, size: 44),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _square(int row, int column) {
+    final game = vm.game;
+    final puzzle = game.puzzle;
+    final cell = row * puzzle.size + column;
+    final value = puzzle.board[cell];
+    final picture = value == null ? null : game.pictures[value];
+    const thin = BorderSide(color: AppColors.inkSoft, width: 0.5);
+    const thick = BorderSide(color: AppColors.ink, width: 2);
+    return Semantics(
+      button: value == null,
+      selected: vm.selected == cell,
+      label: GamePlayScreen.squareLabel(row + 1, column + 1, picture?.label),
+      excludeSemantics: true,
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: InkWell(
+          onTap: value == null ? () => vm.select(cell) : null,
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: vm.selected == cell
+                  ? AppColors.sun
+                  : puzzle.given.contains(cell)
+                  ? AppColors.brandBlueTint
+                  : AppColors.white,
+              border: Border(
+                right: (column + 1) % puzzle.boxColumns == 0 ? thick : thin,
+                bottom: (row + 1) % puzzle.boxRows == 0 ? thick : thin,
+              ),
+            ),
+            child: picture == null
+                ? null
+                : LayoutBuilder(
+                    builder: (context, constraints) => PictureArt(
+                      picture: picture,
+                      size: constraints.maxWidth,
+                    ),
+                  ),
+          ),
+        ),
+      ),
+    );
+  }
 }

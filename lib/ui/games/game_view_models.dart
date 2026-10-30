@@ -14,6 +14,7 @@ import '../../domain/games/number_pop.dart';
 import '../../domain/games/robot.dart';
 import '../../domain/games/sort_it.dart';
 import '../../domain/games/sound_game.dart';
+import '../../domain/games/sudoku.dart';
 import '../../domain/games/words.dart';
 import '../../domain/voice/buddy_voice.dart';
 
@@ -798,6 +799,94 @@ class CircuitViewModel extends ArenaViewModel {
 
   @override
   void reset() => _game = CircuitGame(level: level.number, random: _random);
+}
+
+class SudokuViewModel extends ArenaViewModel {
+  SudokuViewModel({
+    required super.level,
+    required super.voice,
+    required super.progressRepository,
+    Random? random,
+  }) : _random = random ?? Random() {
+    _start();
+  }
+
+  final Random _random;
+
+  SudokuGame get game => _game;
+  late SudokuGame _game;
+
+  /// The square the next picture goes in.
+  int? get selected => _selected;
+  int? _selected;
+
+  /// Why the last picture didn't fit.
+  SudokuClash? get lastClash => _lastClash;
+  SudokuClash? _lastClash;
+
+  @override
+  String get introLine =>
+      'Tap a square, then a picture. No picture can repeat.';
+
+  void _start() {
+    _game = SudokuGame(level: level.number, random: _random);
+    _selected = _game.puzzle.firstEmpty;
+    _lastClash = null;
+  }
+
+  void select(int cell) {
+    if (isFinished || _game.puzzle.board[cell] != null) return;
+    _selected = cell;
+    _lastClash = null;
+    sound(SoundEffect.pop);
+    notify();
+  }
+
+  void place(int value) {
+    final cell = _selected;
+    if (isFinished || cell == null) return;
+    final clash = _game.puzzle.clashAt(cell, value);
+    switch (_game.place(cell, value)) {
+      case SudokuMove.ignored:
+        return;
+      case SudokuMove.clash:
+        _lastClash = clash;
+        sound(SoundEffect.gentle);
+      case SudokuMove.placed:
+        _lastClash = null;
+        _selected = _nextEmpty(cell);
+        sound(SoundEffect.correct);
+      case SudokuMove.solved:
+        _lastClash = null;
+        _selected = null;
+        say('You solved it!', lead: SoundEffect.correct);
+    }
+    notify();
+  }
+
+  /// The next empty square after [cell], wrapping round the grid.
+  int? _nextEmpty(int cell) {
+    final board = _game.puzzle.board;
+    for (var step = 1; step < board.length; step++) {
+      final next = (cell + step) % board.length;
+      if (board[next] == null) return next;
+    }
+    return null;
+  }
+
+  /// The next puzzle, or the finish after the last one.
+  Future<void> next() async {
+    if (!_game.puzzle.isSolved) return;
+    if (!_game.nextRound()) {
+      await finish(_game.stars);
+      return;
+    }
+    _selected = _game.puzzle.firstEmpty;
+    notify();
+  }
+
+  @override
+  void reset() => _start();
 }
 
 class SpotViewModel extends ArenaViewModel {

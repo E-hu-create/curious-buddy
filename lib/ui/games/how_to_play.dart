@@ -271,6 +271,30 @@ class HowToPlay {
     ],
   );
 
+  static const sudoku = HowToPlay(
+    game: 'Picture Sudoku',
+    tip: noClock,
+    steps: [
+      HowToStep(Icons.grid_on_rounded, 'Tap an empty square to choose it.'),
+      HowToStep(
+        Icons.touch_app_rounded,
+        'Tap a picture below to put it there.',
+      ),
+      HowToStep(
+        Icons.table_rows_rounded,
+        'Each picture goes once in every row and column.',
+      ),
+      HowToStep(
+        Icons.crop_square_rounded,
+        'Each picture also goes once in every thick-lined box.',
+      ),
+      HowToStep(
+        Icons.star_rounded,
+        'Fill both grids. Fewer wrong picks earn more stars.',
+      ),
+    ],
+  );
+
   static const dino = HowToPlay(
     game: 'Dino Discovery',
     tip: noClock,
@@ -320,6 +344,7 @@ class HowToPlay {
     GameKind.number => number,
     GameKind.sort => sort,
     GameKind.circuit => circuit,
+    GameKind.sudoku => sudoku,
   };
 }
 

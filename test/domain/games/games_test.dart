@@ -9,7 +9,7 @@ int? _nextByCheck(List<int> shown, int Function(List<int>) rule) => rule(shown);
 void main() {
   group('levels', () {
     test('each game has its levels, with unique ids', () {
-      expect(ArenaRules.allLevelIds, hasLength(36));
+      expect(ArenaRules.allLevelIds, hasLength(39));
       expect(ArenaRules.allLevelIds, contains('memory_1'));
       expect(const GameLevel(GameKind.spot, 3).name, 'Expert');
     });

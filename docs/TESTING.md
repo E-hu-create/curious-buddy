@@ -115,6 +115,8 @@ and ask first.
 | `test/ui/games/sort_screens_test.dart` | Saving; wrong picks; the question read aloud; replay; sorting on screen; three groups at 2x text; Game Zone tile |
 | `test/domain/games/circuit_test.dart` | Pieces turn; circuits never start lit and can always be fixed; routes wander; battery and bulb sides; taps; rounds; stars |
 | `test/ui/games/circuit_screens_test.dart` | Saving; the fact read aloud; replay; lighting the bulb on screen; biggest board at 2x text; Game Zone tile; titles |
+| `test/domain/games/sudoku_test.dart` | Valid grids with exactly one answer; sizes by level; placing; clashes named; fixed squares; rounds; stars |
+| `test/ui/games/sudoku_screens_test.dart` | Saving; selecting squares; wrong pictures; notes; solving on screen; the 6 by 6 grid at 2x text; Game Zone tile |
 | `test/ui/games/how_to_play_test.dart` | Short steps for every game; opens by itself the first time only; help button during a game; menu buttons; closing stops Buddy; ranks; scoreboard; storage error; accessibility; no overflow |
 | `test/ui/stories/stories_accessibility_test.dart` | Tap target, label and contrast guidelines on the shelf, intro, a choice page and an ending; numbered choice labels; picture descriptions; every page of every story without overflow on small phones and 2x text |
 | `test/ui/home/buddy_chat_view_model_test.dart` | Thinking state and repeat-submission guard; new question interrupts; stop; replay; voice off; hidden personal info; provider failure and recovery; length cap; nothing written to storage; dispose |
@@ -296,6 +298,13 @@ user-visible change:
   - [ ] Phone home screen: the icon stands out, and nothing is cut off.
   - [ ] Opening the app: the splash shows Buddy on the sun, and the name.
   - [ ] Home: the logo sits at the top, with Grown-ups still working.
+- [ ] **Picture Sudoku:**
+  - [ ] Game Zone → Fill the grid: three levels, and How to play opens on the
+        first game.
+  - [ ] The yellow square shows where the next picture goes; tap another empty
+        square to change it.
+  - [ ] A wrong picture stays out, and a note says why.
+  - [ ] Two grids, then stars. Expert is 6 by 6, with clear thick boxes.
 - [ ] **Circuit Fixer:**
   - [ ] Game Zone → Light the bulb: three levels, and How to play opens on the
         first game.

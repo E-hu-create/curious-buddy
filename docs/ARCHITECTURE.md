@@ -507,6 +507,14 @@ SoundPool as the effects, so Android must know each new clip by name.
 sounds off. Then the game shows the clue, so it can always be played, and it
 can be played by a child who can't hear the clips.
 
+### Picture Sudoku
+
+`domain/games/sudoku.dart` shuffles a known solved grid in ways that keep it
+valid, then empties squares one at a time, keeping only those that leave one
+answer. Starter and Explorer are 4 by 4, and Expert is 6 by 6 with boxes of 2 by
+3. A wrong picture isn't placed; the game says which row, column or box it
+clashes with. It has its own Game Zone tile.
+
 ### Circuit Fixer
 
 `domain/games/circuit.dart` first walks a route from the battery to the bulb,
