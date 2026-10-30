@@ -14,5 +14,6 @@ abstract final class Routes {
   static const maze = '/games/maze';
   static const robot = '/games/robot';
   static const words = '/games/words';
+  static const sounds = '/games/sounds';
   static const parentZone = '/parent-zone';
 }

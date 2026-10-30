@@ -68,6 +68,18 @@ class FakeSoundEffectsService implements SoundEffectsService {
     if (tts?.isSpeaking ?? false) overSpeech++;
     played.add(effect);
   }
+
+  final List<String> clips = [];
+  int clipStops = 0;
+
+  @override
+  Future<void> playClip(String name) async {
+    if (tts?.isSpeaking ?? false) overSpeech++;
+    clips.add(name);
+  }
+
+  @override
+  Future<void> stopClip() async => clipStops++;
 }
 
 /// Store whose writes fail, to simulate a full or broken disk.

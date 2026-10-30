@@ -10,6 +10,7 @@ import '../../domain/games/dino.dart';
 import '../../domain/games/game_content.dart';
 import '../../domain/games/games.dart';
 import '../../domain/games/maze.dart';
+import '../../domain/games/sound_game.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
@@ -24,6 +25,7 @@ import 'widgets/game_world.dart';
 import 'widgets/maze_art.dart';
 import 'widgets/picture_art.dart';
 import 'widgets/robot_art.dart';
+import 'widgets/sound_art.dart';
 
 /// The way into every game.
 class GameZoneScreen extends StatefulWidget {
@@ -36,7 +38,6 @@ class GameZoneScreen extends StatefulWidget {
   static const arenaTitle = "Buddy's Challenge Arena";
   static const arenaText = 'Quick games for your memory, logic and eyes.';
   static const arenaLabel = 'Enter the Arena';
-  static const comingSoon = 'Coming soon';
   static const dinoTitle = 'Dino Discovery';
   static const dinoText =
       'Explore prehistoric places and name their creatures.';
@@ -44,7 +45,7 @@ class GameZoneScreen extends StatefulWidget {
   static const mazeLabel = 'Find the treasure';
   static const robotLabel = 'Start coding';
   static const wordsLabel = 'Build a word';
-  static const soundTitle = "What's That Sound?";
+  static const soundsLabel = 'Start listening';
 
   static String starsLabel(int stars, int all) => '$stars of $all stars';
   static String nextRankLabel(int stars, GameRank next) =>
@@ -159,7 +160,17 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
         ),
       ),
       const SizedBox(height: 16),
-      const _ComingSoon(title: GameZoneScreen.soundTitle),
+      _GameTile(
+        color: AppColors.grapeTint,
+        art: const _SoundTileArt(),
+        title: GameKind.sounds.title,
+        text: GameKind.sounds.tagline,
+        button: PlayButton(
+          label: GameZoneScreen.soundsLabel,
+          icon: Icons.hearing_rounded,
+          onPressed: () => unawaited(_open(Routes.sounds)),
+        ),
+      ),
     ],
   );
 }
@@ -400,6 +411,45 @@ class _WordTileArt extends StatelessWidget {
   );
 }
 
+/// A speaker, and some of the things that make sounds.
+class _SoundTileArt extends StatelessWidget {
+  const _SoundTileArt();
+
+  @override
+  Widget build(BuildContext context) => ExcludeSemantics(
+    child: Container(
+      height: 130,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: AppColors.buddyTeal,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: FittedBox(
+        child: Row(
+          children: [
+            const Icon(Icons.volume_up_rounded, size: 84, color: AppColors.ink),
+            for (final sound in const [
+              GameSound.rooster,
+              GameSound.thunder,
+              GameSound.train,
+            ])
+              Container(
+                margin: const EdgeInsets.only(left: 8),
+                padding: const EdgeInsets.all(6),
+                decoration: AppShapes.sticker(
+                  AppColors.white,
+                  depth: 3,
+                  radius: 14,
+                ),
+                child: SoundArt(sound: sound, size: 72),
+              ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 /// A fan of game cards.
 class _ArenaTileArt extends StatelessWidget {
   const _ArenaTileArt();
@@ -441,36 +491,6 @@ class _ArenaTileArt extends StatelessWidget {
       ),
     ),
   );
-}
-
-class _ComingSoon extends StatelessWidget {
-  const _ComingSoon({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: AppShapes.sticker(AppColors.grapeTint),
-      child: Row(
-        children: [
-          const Icon(Icons.lock_rounded, color: AppColors.ink),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: .start,
-              children: [
-                Text(title, style: textTheme.titleMedium),
-                Text(GameZoneScreen.comingSoon, style: textTheme.bodyMedium),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 /// Buddy's Challenge Arena: the games, their levels, and Quick Create.
@@ -713,6 +733,7 @@ class _GameCard extends StatelessWidget {
     GameKind.maze: AppColors.sunTint,
     GameKind.robot: AppColors.grapeTint,
     GameKind.words: AppColors.coralTint,
+    GameKind.sounds: AppColors.grapeTint,
   };
 
   @override

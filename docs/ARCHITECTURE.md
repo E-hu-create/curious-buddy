@@ -93,7 +93,7 @@ only used for unknown routes.
 | Living Stories ✅ | `ui/stories/`, `domain/stories/` | story repository, progress repository, BuddyVoice |
 | Quiz Time ✅ | `ui/quiz/`, `domain/quiz/` | quiz repository, progress repository, BuddyVoice |
 | Creative Island ✅ | `ui/creative/`, `domain/creative/` | creations repository (local only), BuddyVoice |
-| Game Zone ✅ (Challenge Arena, Dino Discovery, Treasure Maze, Code the Robot, Word Builder) | `ui/games/`, `domain/games/` | progress and creations repositories, BuddyVoice |
+| Game Zone ✅ (Challenge Arena, Dino Discovery, Treasure Maze, Code the Robot, Word Builder, What's That Sound?) | `ui/games/`, `domain/games/` | progress and creations repositories, BuddyVoice |
 | Buddy's Wardrobe ✅ | `ui/wardrobe/`, `domain/wardrobe/` | progress and content repositories, BuddyWardrobe, BuddyVoice |
 | My Discoveries ✅ | `ui/discoveries/`, `domain/discoveries/` | reads progress, mission, story, quiz and creations repositories; BuddyVoice |
 | Saved progress | `domain/models/`, `data/repositories/` | KeyValueStore |
@@ -443,9 +443,7 @@ Saved items that are unknown or in the wrong slot are ignored.
 
 ## Game Zone
 
-The Home card opens `GameZoneScreen`, the way into every game. Buddy's
-Challenge Arena and Dino Discovery are built; What's That Sound? is shown as
-coming soon.
+The Home card opens `GameZoneScreen`, the way into every game.
 
 - **Logic:** `domain/games/games.dart` holds `MemoryGame`, `SpotGame`, pattern
   rounds and `ArenaRules`, with no Flutter. `game_content.dart` holds the
@@ -497,6 +495,17 @@ five for each game. Letters go to the first empty space; a full wrong word asks
 the child to move a letter. Hint fixes the next letter and locks it. Words that
 spell another common word when mixed up are left out on purpose, so check any
 new word for that. It has its own Game Zone tile.
+
+### What's That Sound?
+
+`domain/games/sound_game.dart` holds 13 sounds, each with a written clue and a
+fact, and `SoundQuiz` runs five of them per level. The recordings are real CC0
+clips in `res/raw/snd_*.wav`, listed in `docs/SOUNDS.md`; check the licence of
+any new recording before adding it. `MainActivity` plays them through the same
+SoundPool as the effects, so Android must know each new clip by name.
+`BuddyVoice.clip` stops Buddy first and stays silent if a grown-up has turned
+sounds off. Then the game shows the clue, so it can always be played, and it
+can be played by a child who can't hear the clips.
 
 ### Dino Discovery
 

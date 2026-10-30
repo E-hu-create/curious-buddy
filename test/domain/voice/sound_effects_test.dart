@@ -23,6 +23,12 @@ import '../../testing/fakes.dart';
 
 /// A sound that keeps "playing" until told to finish.
 class _HeldSounds implements SoundEffectsService {
+  @override
+  Future<void> playClip(String name) async {}
+
+  @override
+  Future<void> stopClip() async {}
+
   Completer<void>? playing;
   final List<SoundEffect> played = [];
 

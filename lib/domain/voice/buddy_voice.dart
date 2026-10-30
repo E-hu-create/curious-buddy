@@ -154,6 +154,18 @@ class BuddyVoice extends ChangeNotifier {
     await _sounds?.play(effect);
   }
 
+  /// Plays a recorded clip, which a game has asked the child to listen to.
+  /// Buddy stops first, so nothing plays over it. It stays silent when a
+  /// grown-up has turned sounds off.
+  Future<void> clip(String name) async {
+    await ready;
+    if (_disposed || !_soundsOn) return;
+    await stop();
+    await _sounds?.playClip(name);
+  }
+
+  Future<void> stopClip() async => _sounds?.stopClip();
+
   Future<void> setSoundsOn(bool on) async {
     await ready;
     if (on == _soundsOn) return;

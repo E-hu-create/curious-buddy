@@ -282,10 +282,15 @@ Built before Creative Island at the product owner's request.
 - ⏳ Grown-up review of the clues.
 - ⏳ Device test on the Samsung SM-A516U.
 
-## Game Zone: What's That Sound? (next)
+## Game Zone: What's That Sound? ✅ (awaiting device test)
 
-Needs real recordings with clearly free licences (CC0), approved by the
-product owner, and written hints for children who cannot hear them.
+- ✅ 13 real CC0 recordings, approved by the product owner (see
+  `docs/SOUNDS.md`), with drawings, written clues and facts.
+- ✅ Three levels of five sounds; replay as often as you like.
+- ✅ Playable with sounds off, or without being able to hear them.
+- ⏳ Listening check: the clips were prepared by measuring them, not by ear.
+- ⏳ Grown-up review of the facts.
+- ⏳ Device test on the Samsung SM-A516U.
 
 ## Later, each needing an approved requirement
 

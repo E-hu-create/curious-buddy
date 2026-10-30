@@ -11,6 +11,8 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
     private var soundPool: SoundPool? = null
     private val sounds = mutableMapOf<String, Int>()
+    private val clips = mutableMapOf<String, Int>()
+    private var clipStream = 0
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -39,6 +41,17 @@ class MainActivity : FlutterActivity() {
                         }
                         result.success(null)
                     }
+                    "playClip" -> {
+                        soundPool?.stop(clipStream)
+                        clips[call.arguments as? String]?.let { id ->
+                            clipStream = soundPool?.play(id, 1f, 1f, 1, 0, 1f) ?: 0
+                        }
+                        result.success(null)
+                    }
+                    "stopClip" -> {
+                        soundPool?.stop(clipStream)
+                        result.success(null)
+                    }
                     else -> result.notImplemented()
                 }
             }
@@ -58,6 +71,22 @@ class MainActivity : FlutterActivity() {
         sounds["correct"] = pool.load(this, R.raw.sfx_correct, 1)
         sounds["gentle"] = pool.load(this, R.raw.sfx_gentle, 1)
         sounds["cheer"] = pool.load(this, R.raw.sfx_cheer, 1)
+        // What's That Sound? recordings. See docs/SOUNDS.md.
+        mapOf(
+            "rooster" to R.raw.snd_rooster,
+            "cow" to R.raw.snd_cow,
+            "sheep" to R.raw.snd_sheep,
+            "dog" to R.raw.snd_dog,
+            "cat" to R.raw.snd_cat,
+            "frog" to R.raw.snd_frog,
+            "bee" to R.raw.snd_bee,
+            "thunder" to R.raw.snd_thunder,
+            "rain" to R.raw.snd_rain,
+            "sea" to R.raw.snd_sea,
+            "train" to R.raw.snd_train,
+            "helicopter" to R.raw.snd_helicopter,
+            "clock" to R.raw.snd_clock,
+        ).forEach { (name, id) -> clips[name] = pool.load(this, id, 1) }
         soundPool = pool
     }
 

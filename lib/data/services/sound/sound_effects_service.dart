@@ -18,6 +18,11 @@ enum SoundEffect {
 /// sound cannot play. Completes when the sound has finished.
 abstract interface class SoundEffectsService {
   Future<void> play(SoundEffect effect);
+
+  /// Plays a recorded clip by name, replacing any clip still playing.
+  Future<void> playClip(String name);
+
+  Future<void> stopClip();
 }
 
 /// Plays the bundled sounds through Android's SoundPool (see MainActivity).
@@ -36,5 +41,21 @@ class PlatformSoundEffectsService implements SoundEffectsService {
       return;
     }
     await Future<void>.delayed(effect.length);
+  }
+
+  @override
+  Future<void> playClip(String name) => _send('playClip', name);
+
+  @override
+  Future<void> stopClip() => _send('stopClip');
+
+  Future<void> _send(String method, [String? name]) async {
+    try {
+      await _channel.invokeMethod<void>(method, name);
+    } on PlatformException catch (error) {
+      debugPrint('Sounds: could not $method ($error)');
+    } on MissingPluginException {
+      return;
+    }
   }
 }

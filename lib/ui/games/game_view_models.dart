@@ -9,6 +9,7 @@ import '../../domain/games/game_content.dart';
 import '../../domain/games/games.dart';
 import '../../domain/games/maze.dart';
 import '../../domain/games/robot.dart';
+import '../../domain/games/sound_game.dart';
 import '../../domain/games/words.dart';
 import '../../domain/voice/buddy_voice.dart';
 
@@ -118,6 +119,15 @@ abstract class GamePlayViewModel extends ChangeNotifier {
     unawaited(_voice.say(text, requested: requested, lead: lead));
   }
 
+  /// Whether a grown-up has left sounds on.
+  bool get soundsOn => _voice.soundsOn;
+
+  @protected
+  void clip(String name) => unawaited(_voice.clip(name));
+
+  @protected
+  void stopClip() => unawaited(_voice.stopClip());
+
   @protected
   bool get isDisposed => _disposed;
 
@@ -150,7 +160,10 @@ abstract class ArenaViewModel extends GamePlayViewModel {
   String get gameId => level.id;
 
   @override
-  String get gameTitle => '${level.kind.title}: ${level.name}';
+  String get gameTitle {
+    final title = level.kind.title;
+    return '${title.endsWith('?') ? title : '$title:'} ${level.name}';
+  }
 }
 
 class MemoryViewModel extends ArenaViewModel {
@@ -499,6 +512,92 @@ class WordViewModel extends ArenaViewModel {
 
   @override
   void reset() => _game = WordGame(level: level.number, random: _random);
+}
+
+class SoundViewModel extends ArenaViewModel {
+  SoundViewModel({
+    required super.level,
+    required super.voice,
+    required super.progressRepository,
+    Random? random,
+  }) : _random = random ?? Random() {
+    _game = SoundQuiz(level: level.number, random: _random);
+  }
+
+  final Random _random;
+
+  SoundQuiz get game => _game;
+  late SoundQuiz _game;
+
+  /// Whether the written clue is showing. It always shows when sounds are off,
+  /// so the game can still be played.
+  bool get isClueShowing => _clueAsked || !soundsOn;
+  bool _clueAsked = false;
+
+  /// The last wrong pick, to explain it on the screen.
+  GameSound? get lastWrong => _lastWrong;
+  GameSound? _lastWrong;
+
+  @override
+  String get introLine => 'Tap Play sound and listen closely.';
+
+  void playSound() {
+    if (isFinished || _game.isSolved) return;
+    clip(_game.sound.name);
+  }
+
+  void showClue() {
+    if (_clueAsked) return;
+    _clueAsked = true;
+    notify();
+    say(_game.sound.clue);
+  }
+
+  void pick(GameSound choice) {
+    if (isFinished) return;
+    switch (_game.pick(choice)) {
+      case SoundPick.ignored:
+        return;
+      case SoundPick.wrong:
+        _lastWrong = choice;
+        _clueAsked = true;
+        stopClip();
+        notify();
+        say(
+          "It's not ${choice.title}. ${_game.sound.clue}",
+          lead: SoundEffect.gentle,
+        );
+      case SoundPick.right:
+        _lastWrong = null;
+        stopClip();
+        notify();
+        say("That's right! ${_game.sound.fact}", lead: SoundEffect.correct);
+    }
+  }
+
+  /// The next sound, or the finish after the last one.
+  Future<void> next() async {
+    if (!_game.isSolved) return;
+    if (!_game.nextRound()) {
+      await finish(_game.stars);
+      return;
+    }
+    _clueAsked = false;
+    notify();
+  }
+
+  @override
+  void reset() {
+    _game = SoundQuiz(level: level.number, random: _random);
+    _clueAsked = false;
+    _lastWrong = null;
+  }
+
+  @override
+  void dispose() {
+    stopClip();
+    super.dispose();
+  }
 }
 
 class SpotViewModel extends ArenaViewModel {

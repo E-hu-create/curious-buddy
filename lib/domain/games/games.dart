@@ -15,7 +15,8 @@ enum GameKind {
     'Guide Buddy to the chest, collecting gems on the way.',
   ),
   robot('Code the Robot', 'Plan the steps, press Go, and watch your code run.'),
-  words('Word Builder', 'Unscramble the letters to make science words.');
+  words('Word Builder', 'Unscramble the letters to make science words.'),
+  sounds("What's That Sound?", 'Listen closely and work out what made it.');
 
   const GameKind(this.title, this.tagline);
 

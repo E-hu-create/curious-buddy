@@ -7,6 +7,7 @@ import '../../data/repositories/progress_repository.dart';
 import '../../domain/games/games.dart';
 import '../../domain/games/maze.dart';
 import '../../domain/games/robot.dart';
+import '../../domain/games/sound_game.dart';
 import '../../domain/games/words.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
@@ -16,9 +17,11 @@ import '../core/widgets/motion.dart';
 import 'game_view_models.dart';
 import 'how_to_play.dart';
 import 'widgets/game_parts.dart';
+import 'widgets/game_world.dart';
 import 'widgets/maze_art.dart';
 import 'widgets/picture_art.dart';
 import 'widgets/robot_art.dart';
+import 'widgets/sound_art.dart';
 
 /// The next level of [level], if any.
 GameLevel? _nextOf(GameLevel level) => level.number < ArenaRules.levelsPerGame
@@ -52,6 +55,16 @@ class GamePlayScreen extends StatefulWidget {
   static const firstPicture = 'First picture';
   static const secondPicture = 'Second picture: tap what changed';
   static const missNote = "That one didn't change. Keep looking!";
+
+  static const playSoundLabel = 'Play sound';
+  static const clueLabel = 'Read a clue';
+  static const nextSound = 'Next sound';
+  static const soundsOffNote =
+      'Sounds are turned off, so use the clue. A grown-up can turn them on in '
+      'the Parent Zone.';
+
+  static String soundLabel(int n, int total) => 'Sound $n of $total';
+  static String notThisLabel(GameSound sound) => "It's not ${sound.title}.";
 
   static const hintLabel = 'Hint';
   static const nextWord = 'Next word';
@@ -132,6 +145,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       progressRepository: widget.progressRepository,
       random: widget.random,
     ),
+    GameKind.sounds => SoundViewModel(
+      level: widget.level,
+      voice: widget.voice,
+      progressRepository: widget.progressRepository,
+      random: widget.random,
+    ),
   };
 
   @override
@@ -193,6 +212,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           final MazeViewModel vm => _MazeBoard(vm: vm),
           final RobotViewModel vm => _RobotBoard(vm: vm),
           final WordViewModel vm => _WordBoard(vm: vm),
+          final SoundViewModel vm => _SoundBoard(vm: vm),
           _ => const SizedBox.shrink(),
         },
       ),
@@ -1137,4 +1157,176 @@ class _LetterTile extends StatelessWidget {
       ),
     );
   }
+}
+
+// --------------------------------------------------------- What's That Sound?
+
+class _SoundBoard extends StatelessWidget {
+  const _SoundBoard({required this.vm});
+
+  final SoundViewModel vm;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final game = vm.game;
+    final sound = game.sound;
+    final solved = game.isSolved;
+    final wrong = vm.lastWrong;
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        Text(
+          GamePlayScreen.soundLabel(game.round + 1, game.rounds),
+          style: textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        if (solved)
+          Semantics(
+            liveRegion: true,
+            child: Container(
+              padding: const EdgeInsets.all(14),
+              decoration: AppShapes.sticker(
+                AppColors.leafTint,
+                depth: 3,
+                radius: 18,
+              ),
+              child: Column(
+                children: [
+                  PopIn(child: SoundArt(sound: sound, size: 110)),
+                  const SizedBox(height: 8),
+                  Text(sound.title, style: textTheme.titleLarge),
+                  const SizedBox(height: 4),
+                  Text(
+                    sound.fact,
+                    style: textTheme.bodyLarge,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          )
+        else ...[
+          if (vm.soundsOn)
+            PlayButton(
+              label: GamePlayScreen.playSoundLabel,
+              icon: Icons.volume_up_rounded,
+              onPressed: vm.playSound,
+            )
+          else
+            Text(GamePlayScreen.soundsOffNote, style: textTheme.bodyLarge),
+          const SizedBox(height: 8),
+          if (vm.isClueShowing)
+            Semantics(
+              liveRegion: true,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: AppShapes.sticker(
+                  AppColors.sunTint,
+                  depth: 3,
+                  radius: 14,
+                ),
+                child: Column(
+                  crossAxisAlignment: .stretch,
+                  children: [
+                    if (wrong != null)
+                      Text(
+                        GamePlayScreen.notThisLabel(wrong),
+                        style: textTheme.bodyMedium,
+                      ),
+                    Text(sound.clue, style: textTheme.bodyLarge),
+                  ],
+                ),
+              ),
+            )
+          else
+            OutlinedButton.icon(
+              onPressed: vm.showClue,
+              icon: const Icon(Icons.lightbulb_rounded),
+              label: const Text(GamePlayScreen.clueLabel),
+            ),
+        ],
+        const SizedBox(height: 12),
+        if (solved)
+          FilledButton.icon(
+            onPressed: () => unawaited(vm.next()),
+            icon: const Icon(Icons.arrow_forward_rounded),
+            label: Text(
+              game.round + 1 < game.rounds
+                  ? GamePlayScreen.nextSound
+                  : GamePlayScreen.seeStars,
+            ),
+          )
+        else
+          Row(
+            crossAxisAlignment: .start,
+            children: [
+              for (final (i, option) in game.options.indexed) ...[
+                if (i > 0) const SizedBox(width: 8),
+                Expanded(
+                  child: _SoundOption(
+                    sound: option,
+                    tried: game.wrongPicks.contains(option),
+                    onTap: () => vm.pick(option),
+                  ),
+                ),
+              ],
+            ],
+          ),
+      ],
+    );
+  }
+}
+
+class _SoundOption extends StatelessWidget {
+  const _SoundOption({
+    required this.sound,
+    required this.tried,
+    required this.onTap,
+  });
+
+  final GameSound sound;
+  final bool tried;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: !tried,
+    label: sound.title,
+    excludeSemantics: true,
+    child: StickerPress(
+      enabled: !tried,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: tried ? null : onTap,
+          borderRadius: BorderRadius.circular(14),
+          child: Ink(
+            padding: const EdgeInsets.all(8),
+            decoration: AppShapes.sticker(
+              tried ? AppColors.coralTint : AppColors.white,
+              depth: 3,
+              radius: 14,
+            ),
+            child: LayoutBuilder(
+              builder: (context, constraints) => Column(
+                children: [
+                  SoundArt(sound: sound, size: constraints.maxWidth),
+                  const SizedBox(height: 4),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      sound.title,
+                      style: Theme.of(context).textTheme.titleSmall,
+                      maxLines: 1,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

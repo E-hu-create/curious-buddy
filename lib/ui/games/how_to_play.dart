@@ -166,6 +166,29 @@ class HowToPlay {
     ],
   );
 
+  static const sounds = HowToPlay(
+    game: "What's That Sound?",
+    tip: noClock,
+    steps: [
+      HowToStep(
+        Icons.volume_up_rounded,
+        'Tap Play sound. Listen as many times as you like.',
+      ),
+      HowToStep(
+        Icons.touch_app_rounded,
+        'Tap the picture of what you think made the sound.',
+      ),
+      HowToStep(
+        Icons.lightbulb_rounded,
+        "Can't tell, or can't hear it? Tap Read a clue.",
+      ),
+      HowToStep(
+        Icons.star_rounded,
+        'Finish all 5 sounds. Fewer wrong picks earn more stars.',
+      ),
+    ],
+  );
+
   static const dino = HowToPlay(
     game: 'Dino Discovery',
     tip: noClock,
@@ -210,6 +233,7 @@ class HowToPlay {
     GameKind.maze => maze,
     GameKind.robot => robot,
     GameKind.words => words,
+    GameKind.sounds => sounds,
   };
 }
 

@@ -305,12 +305,20 @@ void main() {
       expect(find.text(ArenaScreen.quickTitle), findsOneWidget);
     });
 
-    testWidgets('the game still to come is honestly marked', (tester) async {
+    testWidgets('the Game Zone has a tile for every game', (tester) async {
       await startApp(tester);
       await tapText(tester, HomeDestination.games.title);
 
-      expect(find.text(GameZoneScreen.soundTitle), findsOneWidget);
-      expect(find.text(GameZoneScreen.comingSoon), findsOneWidget);
+      for (final title in [
+        GameZoneScreen.dinoTitle,
+        GameZoneScreen.arenaTitle,
+        ...GameKind.values
+            .where((kind) => !GameKind.arena.contains(kind))
+            .map((kind) => kind.title),
+      ]) {
+        await tester.ensureVisible(find.text(title));
+        expect(find.text(title), findsOneWidget);
+      }
     });
 
     testWidgets('Buddy opens the Game Zone from his answer', (tester) async {

@@ -45,6 +45,7 @@ void main() {
     HowToPlay.maze,
     HowToPlay.robot,
     HowToPlay.words,
+    HowToPlay.sounds,
     HowToPlay.dino,
     HowToPlay.quickCreate,
   ];
