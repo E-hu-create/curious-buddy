@@ -19,6 +19,8 @@ class FakeTtsPlatform {
   final List<MethodCall> calls = [];
   Object speakReturns = 1;
   bool throwOnSpeak = false;
+  List<String> engines = const [];
+  List<Map<String, String>> voices = const [];
 
   List<String> get methods => [for (final call in calls) call.method];
 
@@ -32,6 +34,10 @@ class FakeTtsPlatform {
           throw PlatformException(code: 'TtsError', message: 'engine died');
         }
         return speakReturns;
+      case 'getEngines':
+        return engines;
+      case 'getVoices':
+        return voices;
       default:
         return 1;
     }
@@ -57,6 +63,72 @@ void main() {
 
   setUp(() => platform = FakeTtsPlatform());
   tearDown(() => platform.detach());
+
+  group('a calm, clear voice', () {
+    Object? argument(String method) =>
+        platform.calls.lastWhere((c) => c.method == method).arguments;
+
+    test('natural pitch, a little slower, British first', () async {
+      platform.installed = {'en-US', 'en-GB'};
+      final service = FlutterTtsService();
+
+      expect(await service.isAvailable(), isTrue);
+      expect(service.language, 'en-GB');
+      expect(argument('setPitch'), 1.0);
+      expect(argument('setSpeechRate'), 0.43);
+    });
+
+    test('uses the Google engine when the phone has it', () async {
+      platform.engines = [FlutterTtsService.preferredEngine, 'com.samsung.SMT'];
+      await FlutterTtsService().isAvailable();
+
+      expect(argument('setEngine'), FlutterTtsService.preferredEngine);
+    });
+
+    test('keeps the phone engine otherwise', () async {
+      platform.engines = ['com.samsung.SMT'];
+      await FlutterTtsService().isAvailable();
+
+      expect(platform.methods, isNot(contains('setEngine')));
+    });
+
+    test('picks the best offline voice, never a network one', () async {
+      platform
+        ..installed = {'en-GB'}
+        ..voices = [
+          {
+            'name': 'en-gb-x-aaa-network',
+            'locale': 'en-GB',
+            'quality': 'very high',
+            'network_required': '1',
+          },
+          {
+            'name': 'en-gb-x-bbb-local',
+            'locale': 'en-GB',
+            'quality': 'normal',
+            'network_required': '0',
+          },
+          {
+            'name': 'en-gb-x-ccc-local',
+            'locale': 'en-GB',
+            'quality': 'high',
+            'network_required': '0',
+          },
+          {
+            'name': 'en-us-x-ddd-local',
+            'locale': 'en-US',
+            'quality': 'very high',
+            'network_required': '0',
+          },
+        ];
+      await FlutterTtsService().isAvailable();
+
+      expect(argument('setVoice'), {
+        'name': 'en-gb-x-ccc-local',
+        'locale': 'en-GB',
+      });
+    });
+  });
 
   test('the plugin is created on first use, not on construction', () async {
     // Regression: building the service at the top of main() crashed on a
@@ -127,6 +199,7 @@ void main() {
     });
 
     test('is checked once and cached', () async {
+      platform.installed = {'en-GB'};
       final service = FlutterTtsService();
       await service.isAvailable();
       await service.isAvailable();

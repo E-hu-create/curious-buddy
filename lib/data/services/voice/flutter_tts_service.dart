@@ -17,9 +17,9 @@ import 'voice_failure.dart';
 class FlutterTtsService implements TextToSpeechService {
   FlutterTtsService({
     FlutterTts Function() createTts = FlutterTts.new,
-    this.languages = const ['en-US', 'en-GB', 'en-AU', 'en-CA', 'en-IN'],
-    this.speechRate = 0.5,
-    this.pitch = 1.15,
+    this.languages = const ['en-GB', 'en-US', 'en-AU', 'en-CA', 'en-IN'],
+    this.speechRate = 0.43,
+    this.pitch = 1.0,
     Duration setupTimeout = const Duration(seconds: 8),
     Duration Function(String text)? timeoutFor,
   }) : _createTts = createTts,
@@ -29,9 +29,22 @@ class FlutterTtsService implements TextToSpeechService {
   /// Tried in order; the first one installed on the device is used.
   final List<String> languages;
 
-  /// Android scale: 0.5 is the engine's normal speed.
+  /// Android scale: 0.5 is the engine's normal speed. A little slower than
+  /// that, at a natural pitch, sounds calm and clear rather than cartoonish.
   final double speechRate;
   final double pitch;
+
+  /// Google's engine usually has clearer voices than a phone maker's. Used
+  /// when installed; otherwise the phone's own engine stays.
+  static const preferredEngine = 'com.google.android.tts';
+
+  static const _qualityRank = {
+    'very high': 4,
+    'high': 3,
+    'normal': 2,
+    'low': 1,
+    'very low': 0,
+  };
 
   final FlutterTts Function() _createTts;
 
@@ -75,9 +88,11 @@ class FlutterTtsService implements TextToSpeechService {
           ),
         );
       await _tts.awaitSpeakCompletion(false);
+      await _preferClearEngine();
       for (final language in languages) {
         if (await _tts.isLanguageAvailable(language) == true) {
           await _tts.setLanguage(language);
+          await _pickClearVoice(language);
           await _tts.setSpeechRate(speechRate * _speed.factor);
           await _tts.setPitch(pitch);
           await _tts.setVolume(1.0);
@@ -91,6 +106,51 @@ class FlutterTtsService implements TextToSpeechService {
       // MissingPluginException (no engine/plugin) and PlatformException.
       debugPrint('TTS: unavailable ($error)');
       return false;
+    }
+  }
+
+  Future<void> _preferClearEngine() async {
+    try {
+      final engines = await _tts.getEngines;
+      if (engines is! List || !engines.contains(preferredEngine)) return;
+      await _tts.setEngine(preferredEngine).timeout(const Duration(seconds: 3));
+    } on Exception catch (error) {
+      debugPrint('TTS: keeping the default engine ($error)');
+    }
+  }
+
+  /// The best voice for [language] that works offline, because Buddy must
+  /// never need the internet to speak. If none is listed, the engine's
+  /// default stays.
+  Future<void> _pickClearVoice(String language) async {
+    try {
+      final voices = await _tts.getVoices;
+      if (voices is! List) return;
+      String tag(Object? locale) =>
+          locale.toString().replaceAll('_', '-').toLowerCase();
+      final offline = [
+        for (final voice in voices.whereType<Map<Object?, Object?>>())
+          if (tag(voice['locale']) == language.toLowerCase() &&
+              voice['network_required'] != '1' &&
+              !voice['name'].toString().contains('network'))
+            voice,
+      ];
+      if (offline.isEmpty) return;
+      int rank(Map<Object?, Object?> v) => _qualityRank[v['quality']] ?? 2;
+      offline.sort((a, b) {
+        final byQuality = rank(b).compareTo(rank(a));
+        return byQuality != 0
+            ? byQuality
+            : a['name'].toString().compareTo(b['name'].toString());
+      });
+      final best = offline.first;
+      debugPrint('TTS: voice ${best['name']} (${best['quality']})');
+      await _tts.setVoice({
+        'name': best['name'].toString(),
+        'locale': best['locale'].toString(),
+      });
+    } on Exception catch (error) {
+      debugPrint('TTS: keeping the default voice ($error)');
     }
   }
 

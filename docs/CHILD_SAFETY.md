@@ -92,6 +92,9 @@ Release builds request exactly (verified in the merged manifest):
 ## Buddy's voice
 
 - Uses the phone's own text-to-speech engine (e.g. Google or Samsung TTS).
+  Google's engine is preferred when installed, with the best offline British
+  voice, a natural pitch and a slightly slower pace. Network voices are never
+  chosen, so Buddy's voice works without the internet.
   No paid voice service, API key or app-run server.
 - Buddy only speaks the app's own scripted text, which is always also on
   screen. No child input is ever passed to the speech engine.
