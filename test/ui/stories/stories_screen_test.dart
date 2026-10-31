@@ -7,6 +7,7 @@ import 'package:curious_buddy/domain/models/learner_progress.dart';
 import 'package:curious_buddy/domain/stories/more_stories.dart';
 import 'package:curious_buddy/domain/stories/story.dart';
 import 'package:curious_buddy/domain/stories/story_content.dart';
+import 'package:curious_buddy/domain/stories/world_stories.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
 import 'package:curious_buddy/ui/home/home_view_model.dart';
 import 'package:curious_buddy/ui/missions/widgets/stage_widgets.dart';
@@ -64,13 +65,28 @@ void main() {
 
   /// Opens the forest story and reads to the Rainbow Mist ending.
   Future<void> readToMist(WidgetTester tester) async {
-    await tapText(tester, StoriesScreen.startLabel);
+    await tapFinder(tester, storyCardButton(StoriesScreen.startLabel));
     await tapText(tester, StoryPlayScreen.beginLabel);
     await tapText(tester, 'Follow the stream that still sparkles');
     await tapText(tester, 'Splash the waterfall to make a big mist');
   }
 
   Future<LearnerProgress> saved() => LocalProgressRepository(store).load();
+
+  testWidgets('the newest stories come first, under their own heading', (
+    tester,
+  ) async {
+    await openStories(tester);
+
+    double top(String text) => tester.getTopLeft(find.text(text)).dy;
+    final newest = top(StoriesScreen.newestHeading);
+    final older = top(StoriesScreen.olderHeading);
+    expect(newest, lessThan(older));
+    for (final story in worldStories) {
+      expect(top(story.title), inExclusiveRange(newest, older));
+    }
+    expect(top(starterStories.first.title), greaterThan(older));
+  });
 
   testWidgets('Home opens the real Living Stories screen with every story', (
     tester,
@@ -152,7 +168,7 @@ void main() {
     tester,
   ) async {
     await openStories(tester);
-    await tapText(tester, StoriesScreen.startLabel);
+    await tapFinder(tester, storyCardButton(StoriesScreen.startLabel));
 
     expect(find.text(forest.intro), findsOneWidget);
     expect(tts.spoken.last, forest.intro);
@@ -230,7 +246,7 @@ void main() {
     tester,
   ) async {
     await openStories(tester);
-    await tapText(tester, StoriesScreen.startLabel);
+    await tapFinder(tester, storyCardButton(StoriesScreen.startLabel));
     await tapText(tester, StoryPlayScreen.beginLabel);
     await tapText(tester, 'Walk up to the Sun Crystal in the old oak');
     await tester.pageBack();
@@ -244,7 +260,7 @@ void main() {
     await tester.pumpWidget(buildTestApp(tts: tts, store: store));
     await tester.pumpAndSettle();
     await tapText(tester, HomeDestination.stories.title);
-    await tapText(tester, StoriesScreen.continueLabel);
+    await tapFinder(tester, storyCardButton(StoriesScreen.continueLabel));
 
     expect(find.text('The Dusty Crystal'), findsOneWidget);
     expect(find.text(StoryPlayScreen.welcomeBack), findsOneWidget);
@@ -259,13 +275,13 @@ void main() {
     tester,
   ) async {
     await openStories(tester);
-    await tapText(tester, StoriesScreen.startLabel);
+    await tapFinder(tester, storyCardButton(StoriesScreen.startLabel));
     await tapText(tester, StoryPlayScreen.beginLabel);
     await tapText(tester, 'Walk up to the Sun Crystal in the old oak');
     await tester.pageBack();
     await tester.pumpAndSettle();
 
-    await tapText(tester, StoriesScreen.startAgainLabel);
+    await tapFinder(tester, storyCardButton(StoriesScreen.startAgainLabel));
 
     expect(find.text(StoryPlayScreen.beginLabel), findsOneWidget);
     expect(find.text(forest.intro), findsOneWidget);
@@ -294,7 +310,7 @@ void main() {
   ) async {
     tts.holdSpeech = true;
     await openStories(tester);
-    await tapText(tester, StoriesScreen.startLabel);
+    await tapFinder(tester, storyCardButton(StoriesScreen.startLabel));
     expect(tts.isSpeaking, isTrue);
 
     await tester.pageBack();
@@ -307,7 +323,7 @@ void main() {
   testWidgets('turning the page interrupts the last narration', (tester) async {
     tts.holdSpeech = true;
     await openStories(tester);
-    await tapText(tester, StoriesScreen.startLabel);
+    await tapFinder(tester, storyCardButton(StoriesScreen.startLabel));
     final stops = tts.stopCalls;
 
     await tapText(tester, StoryPlayScreen.beginLabel);
@@ -321,7 +337,7 @@ void main() {
   ) async {
     tts.holdSpeech = true;
     await openStories(tester);
-    await tapText(tester, StoriesScreen.startLabel);
+    await tapFinder(tester, storyCardButton(StoriesScreen.startLabel));
 
     await tapText(tester, MissionVoiceBar.stopLabel);
 
@@ -332,7 +348,7 @@ void main() {
 
   testWidgets('Read the choices reads them aloud in order', (tester) async {
     await openStories(tester);
-    await tapText(tester, StoriesScreen.startLabel);
+    await tapFinder(tester, storyCardButton(StoriesScreen.startLabel));
     await tapText(tester, StoryPlayScreen.beginLabel);
 
     await tapText(tester, StoryPlayScreen.readChoicesLabel);

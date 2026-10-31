@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/repositories/progress_repository.dart';
 import '../../data/repositories/story_repository.dart';
+import '../../domain/stories/world_stories.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
@@ -46,6 +47,8 @@ class StoriesScreen extends StatefulWidget {
   static const makerText =
       'Make a brand-new story: pick a hero, a place and a mystery.';
   static const makerLabel = 'Make a new story';
+  static const newestHeading = 'New: stories from around the world';
+  static const olderHeading = 'More stories';
 
   static String endingsLabel(int found, int total) =>
       '$found of $total endings found';
@@ -235,15 +238,32 @@ class _StoriesScreenState extends State<StoriesScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          for (final summary in _vm.summaries)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 18),
-              child: _StoryCard(
-                summary: summary,
-                onOpen: ({required resume}) =>
-                    unawaited(_open(summary, resume: resume)),
+          // The newest stories come first, under their own heading, so
+          // they are easy to find.
+          for (final (heading, newest) in [
+            (StoriesScreen.newestHeading, true),
+            (StoriesScreen.olderHeading, false),
+          ])
+            if (_vm.summaries.any(
+              (s) => worldStories.contains(s.story) == newest,
+            )) ...[
+              Semantics(
+                header: true,
+                child: Text(heading, style: textTheme.titleLarge),
               ),
-            ),
+              const SizedBox(height: 10),
+              for (final summary in _vm.summaries.where(
+                (s) => worldStories.contains(s.story) == newest,
+              ))
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 18),
+                  child: _StoryCard(
+                    summary: summary,
+                    onOpen: ({required resume}) =>
+                        unawaited(_open(summary, resume: resume)),
+                  ),
+                ),
+            ],
         ];
     }
   }

@@ -68,3 +68,21 @@ void useReducedMotion(WidgetTester tester) {
       const FakeAccessibilityFeatures(disableAnimations: true);
   addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
 }
+
+/// A button on one story's card in Living Stories. The forest story by
+/// default, since many tests read it.
+Finder storyCardButton(
+  String label, {
+  String story = 'The Forest That Forgot Its Colours',
+}) => find.descendant(
+  of: find.ancestor(of: find.text(story), matching: find.byType(Column)).first,
+  matching: find.text(label),
+);
+
+/// Scrolls [target] into view and taps it.
+Future<void> tapFinder(WidgetTester tester, Finder target) async {
+  await tester.ensureVisible(target);
+  await tester.pumpAndSettle();
+  await tester.tap(target);
+  await tester.pumpAndSettle();
+}

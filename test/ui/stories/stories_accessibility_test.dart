@@ -88,7 +88,7 @@ void main() {
     await tester.pumpWidget(buildTestApp());
     await tester.pumpAndSettle();
     await _tapText(tester, HomeDestination.stories.title);
-    await _tapText(tester, StoriesScreen.startLabel);
+    await tapFinder(tester, storyCardButton(StoriesScreen.startLabel));
     await _expectGuidelines(tester);
 
     await _tapText(tester, StoryPlayScreen.beginLabel);

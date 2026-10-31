@@ -285,7 +285,7 @@ void main() {
       await tapText(tester, HomeDestination.stories.title);
       final spokenBefore = tts.spoken.length;
 
-      await tapText(tester, StoriesScreen.startLabel);
+      await tapFinder(tester, storyCardButton(StoriesScreen.startLabel));
 
       expect(tts.spoken.length, spokenBefore, reason: 'intro not read');
       await tapText(tester, 'Hear again');
