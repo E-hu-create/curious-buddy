@@ -367,6 +367,20 @@ Built before Creative Island at the product owner's request.
 - ✅ Picture Sudoku (awaiting device test).
 - ✅ Planet Parade (awaiting device test, and a grown-up review of its facts).
 
+## Content audit fixes ✅ (confirmed on device)
+
+- ✅ All 546 review items audited for accuracy, safety and tone.
+- ✅ Critical: being hurt or unsafe, and secrets, get safety replies; feelings
+  are heard before other topics.
+- ✅ High, Medium and Low fixes to stories, facts and wording; Buddy no longer
+  says "I love".
+- ✅ 11 new Ghana and Africa topics (review items 547 to 557).
+- ✅ Confirmed working on the Samsung SM-A516U by the product owner
+  (2026-10-31).
+- ⏳ Grown-up review of the new Ghana and Africa answers.
+- ⏳ Review of How to Play and in-game spoken lines (only partly audited).
+- ⏳ Four repeated quiz questions kept, because each has its own ID.
+
 ## Later, each needing an approved requirement
 
 - `EducationalResponseProvider` beyond scripted answers (AI backend).
