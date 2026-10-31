@@ -41,6 +41,11 @@ class AppDependencies {
   /// test build. Store builds always lock.
   static const previewLocks = bool.fromEnvironment('PREVIEW_LOCKS');
 
+  /// Set with --dart-define=FRIEND_TEST=true for the file shared with
+  /// friends: a small release build with nothing locked. Never used for the
+  /// store build.
+  static const friendTest = bool.fromEnvironment('FRIEND_TEST');
+
   /// Speech output uses the device's built-in engine. Speech input is
   /// tap-to-talk on Android's recogniser, on-device only unless a grown-up
   /// allows online recognition. Answers come from reviewed offline content.
@@ -49,7 +54,7 @@ class AppDependencies {
     final store = SharedPreferencesKeyValueStore();
     // Purchases only work in the version from Google Play, so test builds
     // are fully open and never contact the store.
-    const locksOn = kReleaseMode || previewLocks;
+    const locksOn = (kReleaseMode && !friendTest) || previewLocks;
     return AppDependencies(
       textToSpeech: FlutterTtsService(),
       speechRecognition: SpeechToTextRecognitionService(),
