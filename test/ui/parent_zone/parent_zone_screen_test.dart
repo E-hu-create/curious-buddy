@@ -206,7 +206,8 @@ void main() {
       await unlock(tester);
 
       await tapText(tester, VoiceSettingsSection.talksTitle);
-      await tapText(tester, 'Slower');
+      tester.widget<Slider>(find.byType(Slider)).onChanged!(1);
+      await tester.pumpAndSettle();
       await tapText(tester, VoiceSettingsSection.autoReadTitle);
       await tapText(tester, VoiceSettingsSection.soundsTitle);
 
@@ -256,7 +257,10 @@ void main() {
     testWidgets('settings survive an app restart', (tester) async {
       await startApp(tester);
       await unlock(tester);
-      await tapText(tester, 'Faster');
+      tester.widget<Slider>(find.byType(Slider)).onChanged!(
+        SpeechSpeed.faster.index.toDouble(),
+      );
+      await tester.pumpAndSettle();
       await tapText(tester, DisplaySettingsSection.motionTitle);
       await tapText(tester, ListeningSettingsSection.onlineTitle);
 
@@ -264,10 +268,8 @@ void main() {
       await startApp(tester);
       await unlock(tester);
 
-      final speed = tester.widget<SegmentedButton<SpeechSpeed>>(
-        find.byType(SegmentedButton<SpeechSpeed>),
-      );
-      expect(speed.selected, {SpeechSpeed.faster});
+      final speed = tester.widget<Slider>(find.byType(Slider));
+      expect(speed.value, SpeechSpeed.faster.index);
       bool switchValue(String title) => tester
           .widget<SwitchListTile>(find.widgetWithText(SwitchListTile, title))
           .value;

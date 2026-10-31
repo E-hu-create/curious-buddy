@@ -12,6 +12,7 @@ import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
 import '../core/widgets/app_logo.dart';
 import '../core/widgets/buddy/buddy.dart';
+import '../core/widgets/voice_speed_slider.dart';
 import 'buddy_action_routes.dart';
 import 'buddy_chat_view_model.dart';
 import 'home_destination.dart';
@@ -188,6 +189,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             : () => unawaited(_chat.replay()),
                         onStop: () => unawaited(_chat.stopSpeaking()),
                         onToggleMuted: () => unawaited(_home.toggleMuted()),
+                        onSpeed: () => unawaited(
+                          showVoiceSpeedSheet(context, widget.voice),
+                        ),
                       ),
                       const SizedBox(height: 20),
                       AskBuddyPanel(

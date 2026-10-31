@@ -22,6 +22,7 @@ class BuddyGreeting extends StatelessWidget {
     required this.isMuted,
     this.onReplay,
     required this.onToggleMuted,
+    this.onSpeed,
     this.isSpeaking = false,
     this.onStop,
     this.mood = BuddyMood.happy,
@@ -51,6 +52,10 @@ class BuddyGreeting extends StatelessWidget {
   final VoidCallback? onStop;
   final VoidCallback onToggleMuted;
 
+  /// Opens the voice speed slider.
+  final VoidCallback? onSpeed;
+
+  static const speedLabel = 'Voice speed';
   static const replayLabel = 'Hear again';
   static const stopLabel = 'Stop talking';
   static const voiceOffLabel = 'Voice off';
@@ -233,6 +238,12 @@ extension on BuddyGreeting {
                       : BuddyGreeting.voiceOffLabel,
                 ),
               ),
+              if (!isMuted && onSpeed != null)
+                OutlinedButton.icon(
+                  onPressed: onSpeed,
+                  icon: const Icon(Icons.speed_rounded),
+                  label: const Text(BuddyGreeting.speedLabel),
+                ),
             ],
           ),
         ];

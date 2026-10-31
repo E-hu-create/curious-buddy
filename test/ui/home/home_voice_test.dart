@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:curious_buddy/data/services/key_value_store.dart';
+import 'package:curious_buddy/data/services/voice/text_to_speech_service.dart';
 import 'package:curious_buddy/domain/voice/buddy_voice.dart';
+import 'package:curious_buddy/ui/core/widgets/voice_speed_slider.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
 import 'package:curious_buddy/ui/home/home_view_model.dart';
 import 'package:curious_buddy/ui/home/widgets/buddy_greeting.dart';
@@ -15,6 +17,8 @@ import '../../testing/test_app.dart';
 const greeting = HomeViewModel.greeting;
 
 void main() {
+  _speedSliderTests();
+
   late FakeTextToSpeechService tts;
   late InMemoryKeyValueStore store;
 
@@ -273,4 +277,29 @@ class SlowStartTextToSpeechService extends FakeTextToSpeechService {
 
   @override
   Future<bool> isAvailable() => _started.future;
+}
+
+void _speedSliderTests() {
+  testWidgets('a child can slide Buddy slower, and it is remembered', (
+    tester,
+  ) async {
+    usePhoneScreen(tester);
+    final tts = FakeTextToSpeechService();
+    final store = InMemoryKeyValueStore();
+    await tester.pumpWidget(buildTestApp(tts: tts, store: store));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(BuddyGreeting.speedLabel));
+    await tester.pumpAndSettle();
+    expect(find.byType(Slider), findsOneWidget);
+
+    final slider = tester.widget<Slider>(find.byType(Slider));
+    slider.onChanged!(SpeechSpeed.slowest.index.toDouble());
+    slider.onChangeEnd!(SpeechSpeed.slowest.index.toDouble());
+    await tester.pumpAndSettle();
+
+    expect(tts.speed, SpeechSpeed.slowest);
+    expect(await store.read(BuddyVoice.speedKey), 'slowest');
+    expect(tts.spoken.last, VoiceSpeedSlider.sample);
+  });
 }

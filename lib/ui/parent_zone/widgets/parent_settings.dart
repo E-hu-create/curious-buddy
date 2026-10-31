@@ -7,6 +7,7 @@ import '../../../domain/settings/display_settings.dart';
 import '../../../domain/voice/buddy_listener.dart';
 import '../../../domain/voice/buddy_voice.dart';
 import '../../core/themes/app_colors.dart';
+import '../../core/widgets/voice_speed_slider.dart';
 import 'parent_section.dart';
 
 /// Buddy's voice: on/off, speed, and automatic reading.
@@ -35,11 +36,7 @@ class VoiceSettingsSection extends StatelessWidget {
       'only. You can add one in the phone\'s Settings (search for '
       '"Text-to-speech").';
 
-  static String speedLabel(SpeechSpeed speed) => switch (speed) {
-    SpeechSpeed.slower => 'Slower',
-    SpeechSpeed.normal => 'Normal',
-    SpeechSpeed.faster => 'Faster',
-  };
+  static String speedLabel(SpeechSpeed speed) => VoiceSpeedSlider.label(speed);
 
   @override
   Widget build(BuildContext context) {
@@ -69,16 +66,7 @@ class VoiceSettingsSection extends StatelessWidget {
           const SizedBox(height: 8),
           Text(speedTitle, style: textTheme.titleMedium),
           const SizedBox(height: 8),
-          SegmentedButton<SpeechSpeed>(
-            showSelectedIcon: false,
-            segments: [
-              for (final speed in SpeechSpeed.values)
-                ButtonSegment(value: speed, label: Text(speedLabel(speed))),
-            ],
-            selected: {voice.speed},
-            onSelectionChanged: (picked) =>
-                unawaited(voice.setSpeed(picked.single)),
-          ),
+          VoiceSpeedSlider(voice: voice),
           const SizedBox(height: 8),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,

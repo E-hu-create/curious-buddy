@@ -2,9 +2,11 @@ import 'voice_failure.dart';
 
 /// How fast Buddy talks, relative to the engine's normal speed.
 enum SpeechSpeed {
-  slower(0.8),
+  slowest(0.7),
+  slower(0.85),
   normal(1),
-  faster(1.2);
+  faster(1.15),
+  fastest(1.3);
 
   const SpeechSpeed(this.factor);
 
