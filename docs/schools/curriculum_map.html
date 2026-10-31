@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Curriculum Map</title>
+<style>
+  :root {
+    --ink: #1f2a44; --muted: #55607a; --line: #c9cfdb; --paper: #ffffff;
+    --bg: #fff8ee; --accent: #2a68c9; --strong: #1b7a45; --some: #9a6a00;
+    --none: #a33a3a; --chip: #eef3fb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #e8ecf5; --muted: #a9b3c7; --line: #3a4560; --paper: #1b2234;
+      --bg: #121826; --accent: #7fb0ff; --strong: #5fd193; --some: #f0c35a;
+      --none: #ff8a8a; --chip: #24304a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #e8ecf5; --muted: #a9b3c7; --line: #3a4560; --paper: #1b2234;
+    --bg: #121826; --accent: #7fb0ff; --strong: #5fd193; --some: #f0c35a;
+    --none: #ff8a8a; --chip: #24304a;
+  }
+  * { box-sizing: border-box; }
+  body { font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+         color: var(--ink); background: var(--bg); margin: 0; }
+  main { max-width: 1040px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 30px; margin: 0 0 4px; }
+  h2 { margin: 40px 0 8px; padding-bottom: 4px; border-bottom: 3px solid var(--ink); }
+  h3 { margin: 26px 0 6px; color: var(--accent); }
+  .draft { display: inline-block; background: var(--none); color: #fff;
+           font-weight: 700; padding: 2px 10px; border-radius: 6px; font-size: 13px; }
+  .lead { font-size: 17px; color: var(--muted); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+           gap: 12px; margin: 18px 0; }
+  .card { background: var(--paper); border: 1.5px solid var(--line); border-radius: 12px;
+          padding: 12px 14px; }
+  .card b { display: block; font-size: 26px; }
+  .wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; background: var(--paper);
+          font-size: 14px; margin: 8px 0; }
+  th, td { border: 1px solid var(--line); padding: 7px 9px; vertical-align: top;
+           text-align: left; }
+  th { background: var(--chip); }
+  td.items { white-space: nowrap; color: var(--muted); font-size: 13px; }
+  code { font-size: 12.5px; background: var(--chip); padding: 0 4px; border-radius: 4px; }
+  .s { color: var(--strong); font-weight: 700; }
+  .m { color: var(--some); font-weight: 700; }
+  .n { color: var(--none); font-weight: 700; }
+  .note { color: var(--muted); font-size: 13px; }
+  .box { background: var(--paper); border-left: 5px solid var(--accent);
+         padding: 10px 14px; margin: 14px 0; border-radius: 6px; }
+  ul { padding-left: 22px; }
+  @media print {
+    body { background: #fff; color: #000; font-size: 11.5px; }
+    .draft { border: 1px solid #000; color: #000; background: #fff; }
+    h2 { break-before: page; } h2.first { break-before: auto; }
+    table { font-size: 10.5px; } tr { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<p><span class="draft">DRAFT, to be checked by a teacher</span></p>
+<h1>Curious Buddy: curriculum map</h1>
+<p class="lead">Where Curious Buddy's games, stories, missions and quizzes fit three
+international primary science curricula, for ages 7 to 11.</p>
+
+<div class="cards">
+  <div class="card"><b>25 of 28</b>UK primary science units touched, 13 of them strongly</div>
+  <div class="card"><b>60+</b>Cambridge Primary Science objectives, Stages 3 to 6</div>
+  <div class="card"><b>30+</b>US NGSS performance expectations, grades 2 to 5</div>
+  <div class="card"><b>557</b>reviewed items: facts, questions, clues and story scenes</div>
+</div>
+
+<div class="box">
+  <b>Safe for school use.</b> Curious Buddy works fully offline. It has no accounts,
+  no ads, no chat with strangers and no data collection, and it never asks a child
+  for personal details. When a child shares a worry, Buddy points them to a trusted
+  grown-up.
+</div>
+
+<h2 class="first">How to read this map</h2>
+<ul>
+  <li><b>Part 1, by activity:</b> what each game, story, mission or quiz teaches.</li>
+  <li><b>Part 2, by lesson:</b> pick a UK unit and see everything that supports it.</li>
+  <li><b>Part 3, gaps:</b> lessons the app does not cover yet.</li>
+  <li><b>Items</b> are the numbers on the app's content review page
+      (<code>docs/review/content_review.html</code>), so a teacher can read every
+      fact behind a match.</li>
+  <li><b>Strong</b> means the activity teaches the idea directly. <b>Some</b> means
+      it introduces or practises part of it. Only clear matches are listed.</li>
+  <li><b>Curricula used:</b> the National Curriculum in England (science, Years 1 to
+      6), Cambridge Primary Science 0097 (framework for first teaching from 2021) and
+      the US Next Generation Science Standards (NGSS). Sources are at the end.</li>
+  <li><b>Ages:</b> UK Year 3 and Cambridge Stage 3 are about age 7 to 8. US grade 3
+      is about age 8 to 9.</li>
+</ul>
+
+<h2>Part 1: by activity</h2>
+
+<h3>Mystery Missions (step-by-step detective cases)</h3>
+<div class="wrap"><table>
+<tr><th>Activity</th><th>What it teaches</th><th>UK National Curriculum</th><th>Cambridge Primary</th><th>US NGSS</th><th>Items</th></tr>
+<tr><td>The Lighthouse That Went Dark</td><td>Complete circuits, finding a break, conductors and insulators, electrical safety</td><td>Year 4 Electricity</td><td><code>4Pe.01</code> <code>4Pe.04</code></td><td><code>4-PS3-2</code> Energy transfer</td><td class="items">297–302</td></tr>
+<tr><td>The Case of the Shrinking Shadow</td><td>How shadows form, and how they change as the Earth spins</td><td>Year 3 Light; Year 5 Earth and space</td><td><code>3Ps.02</code> <code>4ESs.01</code></td><td><code>5-ESS1-2</code> Daily and seasonal sky changes</td><td class="items">327–332</td></tr>
+<tr><td>The Puddle That Vanished</td><td>Evaporation, the water cycle, fair tests</td><td>Year 4 States of matter</td><td><code>5Cc.01</code> <code>5ESc.01</code> <code>5TWSp.04</code></td><td><code>5-PS1-1</code> Particle model of matter</td><td class="items">291–296</td></tr>
+<tr><td>The Secret of the Wilting Garden</td><td>What plants need (including air at the roots), fair tests</td><td>Year 2 Plants; Year 3 Plants</td><td><code>3Bp.03</code> <code>5TWSp.04</code></td><td><code>2-LS2-1</code> Plant needs</td><td class="items">279–284</td></tr>
+<tr><td>The Quiet Orchard</td><td>Pollination by bees, comparing to find the cause</td><td>Year 3 Plants</td><td><code>5Bp.03</code> <code>5Be.02</code></td><td><code>2-LS2-2</code> Pollination</td><td class="items">321–326</td></tr>
+<tr><td>The Strange Tracks on the Beach</td><td>Sea turtle nesting and life cycle, protecting nests</td><td>Year 5 Living things (life cycles)</td><td><code>4Be.01</code></td><td><code>3-LS1-1</code> Life cycles</td><td class="items">309–314</td></tr>
+<tr><td>The Case of the Flat Loaf</td><td>Yeast is alive and makes carbon dioxide; warmth matters</td><td>Year 6 Living things (micro-organisms)</td><td><code>5Cm.02</code> <code>6Cc.05</code></td><td><code>5-PS1-4</code> Mixing substances</td><td class="items">315–320</td></tr>
+<tr><td>The Mystery Postcards</td><td>Planets, their features and their order</td><td>Year 5 Earth and space</td><td><code>4ESs.02</code> <code>6ESs.01</code></td><td><code>MS-ESS1-3</code> Solar System scale (middle school)</td><td class="items">303–308</td></tr>
+<tr><td>The Missing Moonstone</td><td>Using evidence, ignoring irrelevant clues, testing a claim</td><td>Working scientifically (all years)</td><td><code>4TWSa.03</code> <code>5TWSa.03</code></td><td>Science practices (evidence and argument)</td><td class="items">273–278</td></tr>
+<tr><td>The Case of the Mixed-Up Signals</td><td>Number and letter patterns, doubling, simple codes</td><td>Maths: number patterns (see the maths table)</td><td>Thinking and working scientifically: patterns</td><td><code>4-PS4-3</code> Information transfer (patterns)</td><td class="items">285–290</td></tr>
+</table></div>
+
+<h3>Living Stories (read-aloud stories where the child chooses)</h3>
+<div class="wrap"><table>
+<tr><th>Activity</th><th>What it teaches</th><th>UK National Curriculum</th><th>Cambridge Primary</th><th>US NGSS</th><th>Items</th></tr>
+<tr><td>The Mystery in the Cliff</td><td>How fossils form, rock layers, careful fossil hunting</td><td>Year 3 Rocks; Year 6 Evolution and inheritance</td><td><code>3ESp.02</code> <code>6ESp.02</code></td><td><code>4-ESS1-1</code> Rock layers; <code>3-LS4-1</code> Fossils</td><td class="items">426–433</td></tr>
+<tr><td>The Whale Who Lost Her Song</td><td>Sound travels through water; whales are mammals</td><td>Year 4 Sound</td><td><code>5Ps.01</code> <code>5Ps.02</code></td><td><code>4-PS4-1</code> Wave model</td><td class="items">362–369</td></tr>
+<tr><td>The Little Seed's Long Journey</td><td>Seed dispersal by wind, water and animals</td><td>Year 3 Plants</td><td><code>5Bp.03</code> <code>5Be.02</code></td><td><code>2-LS2-2</code> Seed dispersal</td><td class="items">410–417</td></tr>
+<tr><td>The Bee Who Danced a Map</td><td>The waggle dance, pollination, how bees make honey</td><td>Year 3 Plants</td><td><code>5Bp.03</code></td><td><code>3-LS2-1</code> Animal groups</td><td class="items">378–385</td></tr>
+<tr><td>The Great Butterfly Journey</td><td>Monarch migration, life cycle, food plants</td><td>Year 5 Living things (life cycles)</td><td><code>3Bp.04</code></td><td><code>3-LS1-1</code> Life cycles</td><td class="items">434–441</td></tr>
+<tr><td>The Secret of the Six-Sided Snowflake</td><td>Ice crystals, frost, why ice floats</td><td>Year 4 States of matter</td><td><code>5Cp.02</code> <code>4Cc.01</code></td><td><code>2-PS1-4</code> Reversible changes</td><td class="items">370–377</td></tr>
+<tr><td>The Lost Signal from Planet Luma</td><td>Light signals, number patterns, solar power, weaker gravity</td><td>Year 5 Forces (gravity)</td><td><code>6Pf.02</code></td><td><code>4-PS4-3</code> Information transfer; <code>5-PS2-1</code> Gravity</td><td class="items">343–351</td></tr>
+<tr><td>Rusty and the Dusty Solar Panels</td><td>Solar panels, batteries, dust on Mars</td><td>Year 4 Electricity (some)</td><td><code>4Pf.02</code></td><td><code>4-PS3-4</code> Energy conversion; <code>4-ESS3-1</code> Energy resources</td><td class="items">418–425</td></tr>
+<tr><td>The Tiny Inventor's Big Idea</td><td>Pulleys, counterweights, storing energy, teamwork in engineering</td><td>Year 5 Forces (pulleys)</td><td>Not in the primary framework</td><td><code>3-5-ETS1-1</code> <code>3-5-ETS1-2</code> Engineering design</td><td class="items">352–361</td></tr>
+<tr><td>The Mountain That Kept Warm</td><td>Hot springs, geysers, geothermal energy</td><td>Not a primary unit</td><td><code>4ESp.01</code> <code>4ESp.02</code></td><td><code>4-ESS3-1</code> Energy resources</td><td class="items">402–409</td></tr>
+<tr><td>The Forest That Forgot Its Colours</td><td>White light is many colours; rainbows and prisms</td><td>Key Stage 3 (light and colour), as an extension</td><td><code>6Ps.02</code></td><td>Extension (middle school light)</td><td class="items">333–342</td></tr>
+<tr><td>The Library of Old Starlight</td><td>Light takes time to travel; stars and meteors</td><td>Year 5 Earth and space (extension)</td><td><code>4ESs.04</code></td><td><code>5-ESS1-1</code> Stellar brightness and distance (some)</td><td class="items">394–401</td></tr>
+<tr><td>The Dragon Who Sneezed Bubbles</td><td>Why bubbles are round, colourful and pop</td><td colspan="3">Enrichment: no direct curriculum match</td><td class="items">386–393</td></tr>
+</table></div>
+
+<h3>Story Maker (512 made-up stories from eight science mysteries)</h3>
+<div class="wrap"><table>
+<tr><th>Mystery</th><th>What it teaches</th><th>UK National Curriculum</th><th>Cambridge Primary</th><th>US NGSS</th><th>Items</th></tr>
+<tr><td>The Lantern That Went Out</td><td>Complete circuits, conductors and insulators, battery safety</td><td>Year 4 Electricity</td><td><code>4Pe.01</code> <code>4Pe.04</code></td><td><code>4-PS3-2</code></td><td class="items">450</td></tr>
+<tr><td>The Sunken Toolbox</td><td>Magnets attract iron and steel; a free magnet points north</td><td>Year 3 Forces and magnets</td><td><code>3Pe.01</code> <code>3Pe.03</code> <code>5Pe.01</code></td><td><code>3-PS2-3</code> <code>3-PS2-4</code></td><td class="items">444</td></tr>
+<tr><td>The Dark Cave Map</td><td>Light travels in straight lines and reflects; sunlight safety</td><td>Year 3 Light; Year 6 Light</td><td><code>4Ps.01</code> <code>4Ps.02</code> <code>6Ps.01</code></td><td><code>4-PS4-2</code> Light and vision</td><td class="items">445</td></tr>
+<tr><td>The Droopy Plants</td><td>Plants need light to make food</td><td>Year 2 Plants; Year 3 Plants</td><td><code>3Bp.03</code> <code>4Bp.03</code></td><td><code>2-LS2-1</code></td><td class="items">446</td></tr>
+<tr><td>The Disappearing Pond</td><td>Evaporation, shade, the water cycle</td><td>Year 4 States of matter</td><td><code>5Cc.01</code> <code>5ESc.01</code></td><td><code>5-PS1-1</code></td><td class="items">449</td></tr>
+<tr><td>The Wide River</td><td>Floating, displacement and boat shape; river safety</td><td>Year 5 Forces (some)</td><td><code>5Pf.01</code> <code>6Pf.05</code></td><td>Not an elementary standard</td><td class="items">448</td></tr>
+<tr><td>The Rock in the Road</td><td>Levers make a small push lift a big load</td><td>Year 5 Forces (levers)</td><td>Not in the primary framework</td><td><code>3-5-ETS1-2</code> (some)</td><td class="items">451</td></tr>
+<tr><td>The Lost Little One</td><td>Sound spreads out and fades; echoes; staying put when lost</td><td>Year 4 Sound</td><td><code>5Ps.02</code> (some)</td><td><code>4-PS4-1</code> (some)</td><td class="items">447</td></tr>
+</table></div>
+
+<h3>Game Zone (science games)</h3>
+<div class="wrap"><table>
+<tr><th>Game</th><th>What it teaches</th><th>UK National Curriculum</th><th>Cambridge Primary</th><th>US NGSS</th><th>Items</th></tr>
+<tr><td>Circuit Fixer</td><td>Building complete circuits, the job of a battery, copper wires</td><td>Year 4 Electricity</td><td><code>4Pe.01</code> <code>4Pe.03</code> <code>4Pe.04</code></td><td><code>4-PS3-2</code></td><td class="items">543–545</td></tr>
+<tr><td>Sort It!</td><td>Living, once-living or never alive; habitats; diets; animal groups; states of matter; space objects</td><td>Year 1 Animals; Year 2 Living things and habitats; Year 4 States of matter; Year 6 Classification</td><td><code>3Bp.01</code> <code>3Bs.02</code> <code>4Be.01</code> <code>4Be.03</code> <code>3Cm.01</code> <code>4ESs.04</code></td><td><code>2-PS1-1</code> Material properties; <code>3-LS4-3</code> Habitats</td><td class="items">512–517</td></tr>
+<tr><td>Planet Parade</td><td>Life cycles of a butterfly, frog and plant; the planets in order and size; Earth's layers; a food chain</td><td>Year 4 Food chains; Year 5 Life cycles; Year 5 Earth and space</td><td><code>3Bp.04</code> <code>5Bp.02</code> <code>4ESs.02</code> <code>4ESp.01</code> <code>4Be.03</code> <code>6Be.03</code></td><td><code>3-LS1-1</code> Life cycles; <code>5-LS2-1</code> Matter cycling</td><td class="items">518–527</td></tr>
+<tr><td>Dino Discovery</td><td>Fossils, dinosaur diets and sizes, time periods, sea reptiles</td><td>Year 3 Rocks (fossils); Year 6 Evolution and inheritance</td><td><code>3ESp.02</code></td><td><code>3-LS4-1</code> Fossil evidence</td><td class="items">452–463</td></tr>
+<tr><td>What's That Sound?</td><td>Recognising sounds and what makes them</td><td>Year 4 Sound (some)</td><td><code>5Ps.01</code> (some)</td><td>Not a direct match</td><td class="items">499–511</td></tr>
+<tr><td>Word Builder</td><td>Spelling science words from clues</td><td colspan="3">Supports science vocabulary and spelling across all units</td><td class="items">464–498</td></tr>
+</table></div>
+
+<h3>Quiz Time (10 topics, 150 questions, three levels)</h3>
+<div class="wrap"><table>
+<tr><th>Topic</th><th>UK National Curriculum</th><th>Cambridge Primary</th><th>US NGSS</th><th>Items</th></tr>
+<tr><td>Space</td><td>Year 5 Earth and space</td><td><code>3ESs.01</code> <code>4ESs.02</code> <code>4ESs.03</code> <code>5ESs.01</code> <code>4Ps.03</code></td><td><code>5-ESS1-1</code> <code>MS-ESS1-3</code></td><td class="items">123–137</td></tr>
+<tr><td>Animals</td><td>Year 1 Animals; Year 5 Life cycles; Year 6 Classification</td><td><code>3Bs.02</code> <code>3Bp.04</code> <code>4Bs.05</code></td><td><code>3-LS1-1</code> <code>4-LS1-1</code></td><td class="items">138–152</td></tr>
+<tr><td>Amazing Body</td><td>Year 3 Skeleton; Year 4 Digestion and teeth; Year 6 Circulation</td><td><code>3Bs.03</code> <code>4Bs.01</code> <code>4Bs.03</code> <code>5Bs.04</code> <code>6Bs.01</code> <code>6Bs.02</code></td><td><code>4-LS1-1</code> <code>4-LS1-2</code></td><td class="items">153–167</td></tr>
+<tr><td>Earth &amp; Weather</td><td>Year 1 Seasonal changes; Year 4 Water cycle</td><td><code>4ESp.01</code> <code>4ESp.02</code> <code>4ESp.03</code> <code>5ESs.02</code> <code>5ESc.01</code></td><td><code>3-ESS2-1</code> <code>4-ESS2-2</code></td><td class="items">168–182</td></tr>
+<tr><td>Dinosaurs &amp; Fossils</td><td>Year 3 Rocks; Year 6 Evolution and inheritance</td><td><code>3ESp.02</code> <code>6ESp.02</code></td><td><code>3-LS4-1</code> <code>4-ESS1-1</code></td><td class="items">183–197</td></tr>
+<tr><td>Oceans</td><td>Year 2 Habitats; Year 4 Food chains</td><td><code>4Be.01</code> <code>5Be.01</code> <code>5ESp.02</code> <code>6Be.01</code></td><td><code>3-LS4-3</code> <code>4-LS1-1</code></td><td class="items">198–212</td></tr>
+<tr><td>Plants &amp; Bugs</td><td>Year 3 Plants; Year 5 Life cycles; Year 6 Classification</td><td><code>3Bs.01</code> <code>4Bp.03</code> <code>4Bs.04</code> <code>5Bp.03</code></td><td><code>5-LS1-1</code> <code>5-PS3-1</code> <code>3-LS1-1</code></td><td class="items">213–227</td></tr>
+<tr><td>Electricity &amp; Energy</td><td>Year 4 Electricity; Year 6 Electricity (voltage)</td><td><code>4Pe.01</code> <code>4Pe.02</code> <code>4Pe.04</code> <code>4Pf.01</code> <code>4Pf.04</code></td><td><code>4-PS3-2</code> <code>4-PS3-4</code> <code>4-ESS3-1</code></td><td class="items">228–242</td></tr>
+<tr><td>Matter &amp; Materials</td><td>Year 3 Magnets; Year 4 States of matter; Year 5 Properties (dissolving)</td><td><code>3Cm.01</code> <code>4Cc.01</code> <code>5Cc.01</code> <code>5Cc.03</code> <code>5Cm.02</code> <code>5Cp.02</code> <code>6Pf.05</code></td><td><code>5-PS1-1</code> <code>5-PS1-3</code> <code>2-PS1-4</code></td><td class="items">243–257</td></tr>
+<tr><td>Robots &amp; Inventions</td><td>Computing (algorithms, debugging, the internet); history of inventions</td><td><code>4SIC.01</code> Science changes over time</td><td><code>3-5-ETS1-1</code> Engineering design</td><td class="items">258–272</td></tr>
+</table></div>
+
+<h3>Ask Buddy (122 spoken answers, plus 11 on Ghana and Africa)</h3>
+<p>Buddy's short answers back up the units above. A child can ask, for example,
+"How do magnets work?" (Year 3), "Why is the sea salty?" (Cambridge <code>5ESp.02</code>),
+"How does electricity work?" (Year 4) or "What are the phases of the Moon?"
+(Cambridge <code>6ESs.02</code>). The Ghana and Africa answers (items 547–557)
+support geography and world-cultures work, such as the Nile, the Sahara,
+Kilimanjaro, Mansa Musa and Great Zimbabwe. They match no single science objective.</p>
+<p class="note">Items 1–122 and 547–557.</p>
+
+<h3>Maths and computing (games)</h3>
+<p class="note">The UK maths and computing lines below are written from knowledge of the
+programmes of study and still need checking against the official documents.
+Cambridge maths and computing are not mapped yet.</p>
+<div class="wrap"><table>
+<tr><th>Game</th><th>What it practises</th><th>UK National Curriculum</th><th>US Common Core (maths)</th><th>Items</th></tr>
+<tr><td>Pattern Power</td><td>Repeating patterns, counting in steps, doubling, square and prime numbers</td><td>Years 1 to 3: counting in steps; Year 5: prime and square numbers</td><td><code>4.OA.C.5</code> Number and shape patterns; <code>4.OA.B.4</code> Primes</td><td class="items">528–542</td></tr>
+<tr><td>Number Pop</td><td>Quick addition to a target number</td><td>Years 1 and 2: number bonds and mental addition</td><td><code>2.OA.B.2</code> Fluent addition within 20</td><td class="items">Game, no review items</td></tr>
+<tr><td>Code the Robot</td><td>Planning steps, running them and fixing mistakes</td><td>Computing Key Stage 1: algorithms, creating and debugging simple programs; Key Stage 2: sequence and repetition</td><td>Not maths</td><td class="items">Game, no review items</td></tr>
+<tr><td>Treasure Maze</td><td>Direction, turns and route planning</td><td>Year 2 Maths: position, direction and movement</td><td>Not a direct match</td><td class="items">Game, no review items</td></tr>
+<tr><td>Picture Sudoku, Four in a Row, Memory Match, Spot the Change</td><td>Logic, strategy, memory and attention</td><td colspan="2">Thinking skills and enrichment: no direct curriculum match</td><td class="items">Games</td></tr>
+</table></div>
+
+<h2>Part 2: by lesson (UK primary science)</h2>
+<p>All 28 statutory units of the National Curriculum in England, Years 1 to 6, and what
+in Curious Buddy supports each. Cambridge and NGSS teachers can use Part 1 the same
+way.</p>
+<div class="wrap"><table>
+<tr><th>Year</th><th>Unit</th><th>Cover</th><th>What to use in Curious Buddy</th></tr>
+<tr><td>1</td><td>Plants</td><td class="m">Some</td><td>Quiz: Plants &amp; Bugs (starter level); Ask Buddy about leaves and trees</td></tr>
+<tr><td>1</td><td>Animals, including humans</td><td class="s">Strong</td><td>Sort It! (animal groups, what animals eat); Quiz: Animals; Quiz: Amazing Body (senses)</td></tr>
+<tr><td>1</td><td>Everyday materials</td><td class="n">Not yet</td><td>See Part 3</td></tr>
+<tr><td>1</td><td>Seasonal changes</td><td class="m">Some</td><td>Ask Buddy "Why do we have seasons?"; Quiz: Earth &amp; Weather</td></tr>
+<tr><td>2</td><td>Living things and their habitats</td><td class="s">Strong</td><td>Sort It! (alive or not, where it lives); Planet Parade (food chain); Quiz: Oceans</td></tr>
+<tr><td>2</td><td>Plants</td><td class="s">Strong</td><td>Mission: The Wilting Garden; Story Maker: The Droopy Plants; Story: The Little Seed's Long Journey</td></tr>
+<tr><td>2</td><td>Animals, including humans</td><td class="m">Some</td><td>Planet Parade (life cycles); Story: The Great Butterfly Journey</td></tr>
+<tr><td>2</td><td>Uses of everyday materials</td><td class="n">Not yet</td><td>See Part 3</td></tr>
+<tr><td>3</td><td>Plants</td><td class="s">Strong</td><td>Mission: The Quiet Orchard; Stories: The Bee Who Danced a Map, The Little Seed's Long Journey; Quiz: Plants &amp; Bugs</td></tr>
+<tr><td>3</td><td>Animals, including humans</td><td class="m">Some</td><td>Quiz: Amazing Body (skeleton, muscles); Ask Buddy about bones</td></tr>
+<tr><td>3</td><td>Rocks</td><td class="m">Some</td><td>Fossils: Story: The Mystery in the Cliff; Dino Discovery; Quiz: Dinosaurs &amp; Fossils. Comparing rocks and soils: not yet</td></tr>
+<tr><td>3</td><td>Light</td><td class="s">Strong</td><td>Mission: The Shrinking Shadow; Story Maker: The Dark Cave Map (including sunlight safety)</td></tr>
+<tr><td>3</td><td>Forces and magnets</td><td class="m">Some</td><td>Magnets: Story Maker: The Sunken Toolbox; Quiz: Matter &amp; Materials. Friction: not yet</td></tr>
+<tr><td>4</td><td>Living things and their habitats</td><td class="m">Some</td><td>Sort It! (grouping); Mission: The Strange Tracks on the Beach (protecting nests). Classification keys: not yet</td></tr>
+<tr><td>4</td><td>Animals, including humans</td><td class="s">Strong</td><td>Quiz: Amazing Body (teeth, stomach); Planet Parade (food chain); Quiz: Oceans</td></tr>
+<tr><td>4</td><td>States of matter</td><td class="s">Strong</td><td>Mission: The Puddle That Vanished; Story: The Six-Sided Snowflake; Story Maker: The Disappearing Pond; Sort It!; Quiz: Matter &amp; Materials</td></tr>
+<tr><td>4</td><td>Sound</td><td class="s">Strong</td><td>Story: The Whale Who Lost Her Song; Story Maker: The Lost Little One; What's That Sound?; Ask Buddy about sound and echoes</td></tr>
+<tr><td>4</td><td>Electricity</td><td class="s">Strong</td><td>Circuit Fixer; Mission: The Lighthouse That Went Dark; Story Maker: The Lantern That Went Out; Quiz: Electricity &amp; Energy</td></tr>
+<tr><td>5</td><td>Living things and their habitats</td><td class="s">Strong</td><td>Planet Parade (butterfly, frog, plant); Stories: The Great Butterfly Journey, The Bee Who Danced a Map; Mission: The Strange Tracks</td></tr>
+<tr><td>5</td><td>Animals, including humans</td><td class="n">Not yet</td><td>See Part 3</td></tr>
+<tr><td>5</td><td>Properties and changes of materials</td><td class="m">Some</td><td>Quiz: Matter &amp; Materials (dissolving, conductors, magnets); Mission: The Flat Loaf (a change that makes a new substance)</td></tr>
+<tr><td>5</td><td>Earth and space</td><td class="s">Strong</td><td>Mission: The Mystery Postcards; Mission: The Shrinking Shadow; Planet Parade; Quiz: Space</td></tr>
+<tr><td>5</td><td>Forces</td><td class="s">Strong</td><td>Story: The Tiny Inventor's Big Idea (pulleys); Story Maker: The Rock in the Road (levers); Story: The Lost Signal (gravity); Quiz: Robots &amp; Inventions (gears)</td></tr>
+<tr><td>6</td><td>Living things and their habitats</td><td class="m">Some</td><td>Sort It!; Mission: The Flat Loaf (yeast); Quiz: Plants &amp; Bugs (fungi)</td></tr>
+<tr><td>6</td><td>Animals, including humans</td><td class="m">Some</td><td>Quiz: Amazing Body (heart, blood, lungs)</td></tr>
+<tr><td>6</td><td>Evolution and inheritance</td><td class="m">Some</td><td>Fossils: Story: The Mystery in the Cliff; Quiz: Dinosaurs &amp; Fossils (birds descended from dinosaurs). Inheritance: not yet</td></tr>
+<tr><td>6</td><td>Light</td><td class="s">Strong</td><td>Story Maker: The Dark Cave Map; Story: The Forest That Forgot Its Colours; Quiz: Space ("Why does the Moon shine?")</td></tr>
+<tr><td>6</td><td>Electricity</td><td class="m">Some</td><td>Quiz: Electricity &amp; Energy (voltage). Circuit symbols: not yet</td></tr>
+</table></div>
+<p class="note">Totals: 13 Strong, 12 Some, 3 Not yet.</p>
+
+<h2>Part 3: gaps (what to build next)</h2>
+<div class="wrap"><table>
+<tr><th>Gap</th><th>UK</th><th>Cambridge</th><th>US NGSS</th></tr>
+<tr><td>Everyday materials and their uses (wood, plastic, metal, glass)</td><td>Years 1 and 2</td><td><code>3Cp.01</code></td><td><code>2-PS1-2</code></td></tr>
+<tr><td>Transparent, translucent and opaque materials</td><td>Year 3 Light</td><td><code>3Ps.01</code></td><td>—</td></tr>
+<tr><td>Friction, air resistance and force diagrams</td><td>Year 3 and Year 5 Forces</td><td><code>3Pf.03</code> <code>3Pf.04</code> <code>5Pf.01–03</code> <code>6Pf.01–04</code></td><td><code>3-PS2-1</code> <code>3-PS2-2</code></td></tr>
+<tr><td>Rock types, soils and the rock cycle</td><td>Year 3 Rocks</td><td><code>6ESp.01</code> <code>6ESp.03</code> <code>6ESc.01</code></td><td><code>4-ESS2-1</code> Weathering and erosion</td></tr>
+<tr><td>Separating mixtures, and reversible and irreversible changes</td><td>Year 5 Properties</td><td><code>3Cp.03</code> <code>3Cp.04</code> <code>5Cc.02</code> <code>6Cc.01</code></td><td><code>5-PS1-2</code> Conservation of matter</td></tr>
+<tr><td>Classification keys</td><td>Year 4 Living things</td><td><code>4TWSc.02</code></td><td>—</td></tr>
+<tr><td>Adaptation and inheritance</td><td>Year 6 Evolution</td><td><code>5Be.01</code> <code>5Be.03</code></td><td><code>3-LS3-1</code> <code>3-LS4-2</code></td></tr>
+<tr><td>Circuit symbols and series and parallel circuits</td><td>Year 6 Electricity</td><td><code>6Pe.01</code> <code>6Pe.02</code></td><td>—</td></tr>
+<tr><td>Weather, climates and natural hazards</td><td>Geography</td><td>—</td><td><code>3-ESS2-2</code> <code>3-ESS3-1</code> <code>4-ESS3-2</code></td></tr>
+<tr><td>Pollution and protecting the environment</td><td>Year 4 Living things</td><td><code>5ESp.03</code></td><td><code>5-ESS3-1</code></td></tr>
+<tr><td>Energy in collisions</td><td>—</td><td>—</td><td><code>4-PS3-1</code> <code>4-PS3-3</code></td></tr>
+</table></div>
+
+<div class="box">
+  <b>Left to teachers on purpose.</b> Some objectives are about medicines, illness,
+  puberty and human growth: Year 5 human development, and Cambridge <code>4Bp.01</code>,
+  <code>4Bp.02</code>, <code>6Bs.03</code> and <code>6Bp.01</code> to <code>6Bp.04</code>.
+  Curious Buddy does not teach these. For children's safety, Buddy sends health and
+  body questions to a trusted grown-up instead.
+</div>
+
+<h2>Sources</h2>
+<ul>
+  <li>Department for Education, <a href="https://www.gov.uk/government/publications/national-curriculum-in-england-science-programmes-of-study">National curriculum in England: science programmes of study</a> (updated 2015). Open Government Licence v3.0.</li>
+  <li>Cambridge Assessment International Education, <i>Cambridge Primary Science (0097) Curriculum Framework</i>, for first teaching from September 2021. Codes are quoted from the framework; see the <a href="https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-primary/">Cambridge Primary</a> pages for the official copy.</li>
+  <li>NGSS Lead States, <a href="https://www.nextgenscience.org/">Next Generation Science Standards</a> (2013). Codes and titles were cross-checked with a published state list; exact wording is on nextgenscience.org.</li>
+  <li>Common Core State Standards for Mathematics, for the maths codes.</li>
+</ul>
+
+<h2>Before sharing this map</h2>
+<ul>
+  <li>A teacher should check each match, especially the "Some" ones and the maths and
+      computing table.</li>
+  <li>Check the Cambridge codes against an official copy of the framework.</li>
+  <li>Ghana's NaCCA curriculum and the IB can be added as extra columns later.</li>
+</ul>
+<p class="note">Made for Curious Buddy, October 2026. Draft for review.</p>
+
+</main>
+</body>
+</html>
