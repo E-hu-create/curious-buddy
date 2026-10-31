@@ -138,6 +138,32 @@ void main() {
   });
 
   group('listening', () {
+    // Permission was granted in an earlier session, so this session never
+    // asks again. The recogniser must still start (bug found on a Samsung
+    // A51: "Talking isn't available" after restarting the app).
+    test(
+      'listens after a restart when permission was granted before',
+      () async {
+        engine.permissionGranted = true;
+        build();
+
+        final session = service.listen();
+        await pumpEventQueue();
+        engine.result('why is the sky blue', isFinal: true);
+
+        expect(await session, isA<ListenHeard>());
+        expect(engine.initializeCalls, 1);
+      },
+    );
+
+    test('a restart never prompts before the child taps Talk', () async {
+      engine.permissionGranted = true;
+      build();
+
+      expect(await service.checkPermission(), MicrophonePermission.granted);
+      expect(engine.initializeCalls, 0);
+    });
+
     test('refuses to listen without permission', () async {
       build();
 

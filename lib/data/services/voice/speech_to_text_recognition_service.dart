@@ -97,6 +97,14 @@ class SpeechToTextRecognitionService implements SpeechRecognitionService {
   Future<MicrophonePermission> requestPermission() async {
     if (!_platformSupported) return MicrophonePermission.unknown;
     _askedOnce = true;
+    await _initialize();
+    return await checkPermission();
+  }
+
+  /// Starts the plugin. Prompts for the microphone if it is not yet
+  /// allowed, so it is only called after the child agreed, or once
+  /// permission is already granted.
+  Future<void> _initialize() async {
     try {
       _initialized = await _engine.initialize(
         onError: _onError,
@@ -107,7 +115,6 @@ class SpeechToTextRecognitionService implements SpeechRecognitionService {
       debugPrint('STT: initialize failed ($error)');
       _initialized = false;
     }
-    return await checkPermission();
   }
 
   @override
@@ -129,6 +136,9 @@ class SpeechToTextRecognitionService implements SpeechRecognitionService {
     if (await checkPermission() != MicrophonePermission.granted) {
       return const ListenFailed(VoiceFailure.permissionDenied);
     }
+    // Permission granted in an earlier session: this session never asked,
+    // so the plugin has not been started yet. No prompt, as it is granted.
+    if (!_initialized) await _initialize();
     if (!_initialized) {
       // Permission granted but no working recogniser.
       return const ListenFailed(VoiceFailure.unavailable);
