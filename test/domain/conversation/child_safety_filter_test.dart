@@ -69,6 +69,8 @@ void main() {
       ChildSafetyFilter.personalInfoResponse,
       ChildSafetyFilter.selfHarmResponse,
       ChildSafetyFilter.bullyingResponse,
+      ChildSafetyFilter.unsafeResponse,
+      ChildSafetyFilter.secretResponse,
       ChildSafetyFilter.medicalResponse,
       ChildSafetyFilter.offLimitsResponse,
     ]) {
@@ -129,6 +131,55 @@ void main() {
         expect(filter.check(question), ChildSafetyFilter.strangersResponse);
       });
     }
+
+    for (final question in [
+      'my dad hits me',
+      'someone touched me and I did not like it',
+      "I don't feel safe at home",
+      'i do not feel safe',
+      'my uncle hurts me',
+      'my mum beats me',
+      'i am scared to go home',
+      'I am being abused',
+    ]) {
+      test('"$question" gets the you-deserve-to-be-safe message', () {
+        final response = filter.check(question);
+        expect(response, ChildSafetyFilter.unsafeResponse);
+        expect(response!.hideQuestion, isTrue);
+      });
+    }
+
+    for (final question in [
+      'can you keep a secret',
+      "don't tell anyone",
+      'do not tell anybody',
+      'promise not to tell',
+      'can i tell you a secret',
+      'this is our secret',
+    ]) {
+      test('"$question" gets the no-secrets message', () {
+        expect(filter.check(question), ChildSafetyFilter.secretResponse);
+      });
+    }
+
+    test('the no-secrets and safe messages never promise to keep quiet', () {
+      for (final response in [
+        ChildSafetyFilter.secretResponse,
+        ChildSafetyFilter.unsafeResponse,
+      ]) {
+        final text = response.text.toLowerCase();
+        expect(text, contains('grown-up'));
+        expect(text, isNot(contains('i promise')));
+        expect(text, isNot(contains('i will keep')));
+        expect(text, isNot(contains("i won't tell")));
+      }
+      expect(
+        ChildSafetyFilter.secretResponse.text,
+        contains("can't keep secrets"),
+      );
+      // A parent may be the problem, so the unsafe reply names others too.
+      expect(ChildSafetyFilter.unsafeResponse.text, contains('teacher'));
+    });
 
     for (final question in [
       'what was the jurassic period',

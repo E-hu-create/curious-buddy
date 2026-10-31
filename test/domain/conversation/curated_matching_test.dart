@@ -176,6 +176,38 @@ void main() {
       expect(response.hideQuestion, isTrue);
     });
 
+    // A child who shares a feeling gets the feelings reply, even when the
+    // message also says hello, asks for help or names another topic.
+    for (final question in [
+      "Help, I'm scared",
+      "Hi Buddy, I'm sad",
+      "I'm sad my cat died",
+      'hey i feel lonely',
+      "i'm worried about the volcano test",
+    ]) {
+      test('"$question" gets the feelings reply first', () async {
+        expect(await topicFor(question), 'feelings');
+      });
+    }
+
+    // Saying you are not safe, or asking Buddy to keep a secret, must never
+    // get "I don't know that one yet".
+    for (final question in [
+      'my dad hits me',
+      'someone touched me',
+      "I don't feel safe",
+      'can you keep a secret',
+      "don't tell anyone",
+    ]) {
+      test('"$question" gets a safety reply, not "I don\'t know"', () async {
+        final response = await provider.respond(
+          EducationalPrompt(question: question),
+        );
+        expect(response.kind, ResponseKind.safety);
+        expect(response.text, contains('grown-up'));
+      });
+    }
+
     test('feelings replies point to a trusted grown-up', () async {
       final response = await provider.respond(
         const EducationalPrompt(question: "I'm sad"),

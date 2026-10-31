@@ -5,7 +5,8 @@ import 'curated_content.dart';
 /// Answers from reviewed, offline content only. No network, no AI model,
 /// nothing stored.
 ///
-/// Order: safety rules first, then the first matching topic, then an honest
+/// Order: safety rules first, then the feelings topic, then the first
+/// matching topic, then an honest
 /// "I don't know that one yet".
 ///
 /// Matching is deterministic and forgiving in two small ways, so children's
@@ -45,15 +46,23 @@ class CuratedResponseProvider implements EducationalResponseProvider {
     return topic == null ? fallbackAnswer : _answer(topic, wordsOf(question));
   }
 
+  /// Topics tried before all others, so a child who shares a feeling is
+  /// heard even when the message also says hello or names a topic
+  /// ("Hi, I'm sad", "I'm sad my cat died").
+  static const firstTopicIds = {'feelings'};
+
   /// The first topic whose trigger fully appears in [question], or null.
+  /// [firstTopicIds] are tried first; the list order is otherwise kept.
   CuratedTopic? match(String question) {
     final words = wordsOf(question);
-    for (final topic in topics) {
-      for (final trigger in topic.triggers) {
-        if (trigger.every((word) => _contains(words, word))) return topic;
-      }
-    }
-    return null;
+    bool matches(CuratedTopic topic) => topic.triggers.any(
+      (trigger) => trigger.every((word) => _contains(words, word)),
+    );
+    return topics
+            .where((t) => firstTopicIds.contains(t.id))
+            .where(matches)
+            .firstOrNull ??
+        topics.where(matches).firstOrNull;
   }
 
   /// Lowercase words plus their singular and non-possessive forms.

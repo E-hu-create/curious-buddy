@@ -107,6 +107,16 @@ Release builds request exactly (verified in the merged manifest):
   - Self-harm, bullying, medical and off-limits topics (weapons, drugs,
     hacking, sexual content) redirect to a trusted grown-up. No
     instructions are given.
+  - Being hurt or not feeling safe ("my dad hits me", "someone touched
+    me", "I don't feel safe") gets "it is not your fault, and you deserve
+    to be safe", with grown-ups outside the home named too (teacher, school
+    nurse), because a parent may be the problem. The message is not shown.
+  - Buddy never promises to keep a secret. "Can you keep a secret?" or
+    "Don't tell anyone" gets an honest reply: Buddy can't keep secrets and
+    can't get help, so tell a trusted grown-up; happy surprises are fine.
+  - A child who shares a feeling ("I'm sad", "I'm scared") gets the
+    feelings reply first, even when the message also says hello, asks for
+    help or names another topic.
   - The filter is a conservative keyword list. It will miss things phrased
     unusually, which is acceptable only because every possible answer is
     pre-written and reviewed. **It is not sufficient for any open-ended

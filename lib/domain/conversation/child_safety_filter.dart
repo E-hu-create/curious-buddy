@@ -39,6 +39,32 @@ class ChildSafetyFilter {
     kind: ResponseKind.safety,
   );
 
+  // Names grown-ups outside the home too, because a parent may be the
+  // person the child is not safe with.
+  static const unsafeResponse = EducationalResponse(
+    text:
+        'Thank you for telling me. If someone is hurting you or you do not '
+        "feel safe, it is not your fault, and you deserve to be safe. I'm "
+        'only a computer character, so please tell a grown-up you trust, '
+        'like a teacher, school nurse, carer or family member, today. If they '
+        "don't help, keep telling grown-ups until one does. If you are in "
+        'danger right now, call emergency services or ask an adult to.',
+    kind: ResponseKind.safety,
+    hideQuestion: true,
+  );
+
+  // Honest: Buddy saves nothing and tells no one, so he must not promise
+  // either to keep a secret or to get help.
+  static const secretResponse = EducationalResponse(
+    text:
+        "I'm a computer character, so I can't keep secrets for you, and I "
+        "can't get help for you either. If a secret makes you feel worried "
+        'or uncomfortable, please tell $trustedAdult. Happy surprises, like '
+        'a birthday present, are fine to keep!',
+    kind: ResponseKind.safety,
+    hideQuestion: true,
+  );
+
   static const medicalResponse = EducationalResponse(
     text:
         "I can't give health or medicine advice. "
@@ -117,14 +143,66 @@ class ChildSafetyFilter {
     'want to die',
     'end my life',
   ];
-  static const _bullying = [
-    'bullied',
-    'bullying',
-    'bully me',
-    'bullies me',
-    'someone hurts me',
-    'someone is hurting me',
+  // Being hurt or not feeling safe, at home or anywhere. Some phrases also
+  // catch harmless questions ("the ball hit me"); the reply is worded to
+  // suit those too.
+  static const _unsafe = [
+    'hits me',
+    'hit me',
+    'hitting me',
+    'beats me',
+    'beat me',
+    'beating me',
+    'kicks me',
+    'kicked me',
+    'slaps me',
+    'slapped me',
+    'punches me',
+    'punched me',
+    'hurts me',
+    'hurt me',
+    'hurting me',
+    'touched me',
+    'touches me',
+    'touching me',
+    'abuse',
+    'abused',
+    'abuses me',
+    'abusing me',
+    "don't feel safe",
+    'dont feel safe',
+    'do not feel safe',
+    'not safe at home',
+    'feel unsafe',
+    "i'm unsafe",
+    'i am unsafe',
+    'scared to go home',
+    'afraid to go home',
   ];
+
+  // Being asked to keep something quiet. Checked after [_strangers], which
+  // has its own reply for secrets from parents.
+  static const _secrets = [
+    'keep a secret',
+    'keep my secret',
+    'keep this secret',
+    'keep it secret',
+    'keep it a secret',
+    'keep secrets',
+    'tell you a secret',
+    'our secret',
+    "it's a secret",
+    'promise not to tell',
+    "promise you won't tell",
+    "don't tell anyone",
+    "don't tell anybody",
+    'dont tell anyone',
+    'dont tell anybody',
+    'do not tell anyone',
+    'do not tell anybody',
+  ];
+
+  static const _bullying = ['bullied', 'bullying', 'bully me', 'bullies me'];
   static const _medical = [
     'medicine',
     'medication',
@@ -256,7 +334,9 @@ class ChildSafetyFilter {
     }
     final text = normalize(question);
     if (_containsAny(text, _selfHarm)) return selfHarmResponse;
+    if (_containsAny(text, _unsafe)) return unsafeResponse;
     if (_containsAny(text, _strangers)) return strangersResponse;
+    if (_containsAny(text, _secrets)) return secretResponse;
     if (_containsAny(text, _bullying)) return bullyingResponse;
     if (_containsAny(text, _medical)) return medicalResponse;
     if (_containsAny(text, _offLimits)) return offLimitsResponse;
