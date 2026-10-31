@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../core/themes/app_colors.dart';
 import '../../core/themes/app_theme.dart';
 import '../home_destination.dart';
+import 'destination_art.dart';
 
 /// Responsive grid of destination cards. Drops to one column on narrow
 /// screens or with large system text so nothing gets squeezed or clipped.
@@ -113,31 +113,27 @@ class _DestinationCardState extends State<DestinationCard> {
               onHighlightChanged: (pressed) =>
                   setState(() => _pressed = pressed),
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(10),
                 child: Column(
-                  crossAxisAlignment: .start,
+                  crossAxisAlignment: .stretch,
                   children: [
-                    Container(
-                      width: 56,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: destination.color,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AppColors.ink,
-                          width: AppShapes.outlineWidth,
-                        ),
-                      ),
-                      child: Icon(
-                        destination.icon,
-                        size: 30,
-                        color: AppColors.ink,
+                    DestinationArt(destination: destination),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Text(
+                        destination.title,
+                        style: textTheme.titleMedium,
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    Text(destination.title, style: textTheme.titleMedium),
-                    const SizedBox(height: 4),
-                    Text(destination.subtitle, style: textTheme.bodyMedium),
+                    const SizedBox(height: 2),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
+                      child: Text(
+                        destination.subtitle,
+                        style: textTheme.bodyMedium,
+                      ),
+                    ),
                   ],
                 ),
               ),

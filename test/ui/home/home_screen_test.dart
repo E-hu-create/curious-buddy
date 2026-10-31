@@ -8,6 +8,7 @@ import 'package:curious_buddy/ui/discoveries/discoveries_screen.dart';
 import 'package:curious_buddy/ui/games/game_zone_screen.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
 import 'package:curious_buddy/ui/home/home_view_model.dart';
+import 'package:curious_buddy/ui/home/widgets/destination_art.dart';
 import 'package:curious_buddy/ui/missions/missions_screen.dart';
 import 'package:curious_buddy/ui/quiz/quiz_hub_screen.dart';
 import 'package:curious_buddy/ui/stories/stories_screen.dart';
@@ -39,6 +40,40 @@ void main() {
       expect(find.text(destination.subtitle), findsOneWidget);
     }
     expect(find.text('Grown-ups'), findsOneWidget);
+  });
+
+  testWidgets('every destination card has its own picture', (tester) async {
+    await openHome(tester);
+
+    for (final destination in HomeDestination.values) {
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is DestinationArt && w.destination == destination,
+          skipOffstage: false,
+        ),
+        findsOneWidget,
+        reason: destination.name,
+      );
+    }
+  });
+
+  testWidgets('the pictures fit a small phone with 2x text', (tester) async {
+    usePhoneScreen(tester, logicalSize: const Size(320, 640));
+    useTextScale(tester, 2);
+    await tester.pumpWidget(buildTestApp(tts: tts));
+    await tester.pumpAndSettle();
+
+    // Overflow errors fail the test automatically.
+    await tester.scrollUntilVisible(
+      find.text(HomeDestination.wardrobe.title),
+      300,
+      scrollable: find
+          .byWidgetPredicate(
+            (w) => w is Scrollable && w.axisDirection == AxisDirection.down,
+          )
+          .first,
+    );
+    expect(find.text(HomeDestination.wardrobe.title), findsOneWidget);
   });
 
   testWidgets('explorer log shows saved progress', (tester) async {
