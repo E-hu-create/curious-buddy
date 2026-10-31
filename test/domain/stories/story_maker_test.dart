@@ -84,6 +84,25 @@ void main() {
     }
   });
 
+  test('water and electricity stories keep a grown-up in charge', () {
+    MakerMystery mystery(String id) =>
+        StoryMaker.mysteries.firstWhere((m) => m.id == id);
+
+    // The problem opens every path, so its safety line is always heard.
+    final river = mystery('river_crossing');
+    expect(river.problem, contains('without a grown-up'));
+    expect(river.science, contains('life jacket'));
+    expect(river.endings[0].text, contains('shallow'));
+    expect(river.endings[0].text, contains('grown-up'));
+    expect(river.endings[1].text, contains('life jackets'));
+
+    final lantern = mystery('dark_lantern');
+    expect(lantern.problem, contains('battery lantern'));
+    expect(lantern.problem, contains('only for grown-ups'));
+    expect(lantern.science, contains('battery out first'));
+    expect(lantern.endings[2].text, contains('little battery circuit'));
+  });
+
   test('a surprise picks from every list', () {
     final random = Random(1);
     final seen = <String>{};

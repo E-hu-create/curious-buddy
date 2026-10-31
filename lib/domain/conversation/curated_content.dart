@@ -1,5 +1,6 @@
 import '../voice/educational_response_provider.dart';
 
+part 'curated_topics_africa.dart';
 part 'curated_topics_extra.dart';
 part 'curated_topics_more.dart';
 
@@ -239,7 +240,7 @@ const curatedTopics = <CuratedTopic>[
       ['mystery'],
     ],
     answers: [
-      "Let's go! Mystery Missions has three detective cases to crack. "
+      "Let's go! Mystery Missions has lots of detective cases to crack. "
           'Inspect the clues, and ask me for a hint if you get stuck.',
     ],
     action: BuddyAction.openMissions,
@@ -419,10 +420,13 @@ const curatedTopics = <CuratedTopic>[
     followUps: ['Tell me an animal fact.', 'How do rainbows form?'],
   ),
 
+  // Ghana and Africa, before the broad mountain, desert and animal topics.
+  ..._ghanaAfricaFirst,
+
   // More specific topics (animals, space, Earth, body, science, jokes).
   ..._moreTopics,
   ..._extraTopics,
-
+  _africa, // after the animal topics, so "elephants in Africa" stays there
   // ----------------------------------------------------------------- space
   CuratedTopic(
     id: 'moon_distance',

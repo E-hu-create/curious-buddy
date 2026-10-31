@@ -142,6 +142,12 @@ class ChildSafetyFilter {
     'suicide',
     'want to die',
     'end my life',
+    'hate myself',
+    'hate my life',
+    'wish i was dead',
+    'wish i was never born',
+    "wish i wasn't born",
+    'nobody would miss me',
   ];
   // Being hurt or not feeling safe, at home or anywhere. Some phrases also
   // catch harmless questions ("the ball hit me"); the reply is worded to

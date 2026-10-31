@@ -130,6 +130,29 @@ void main() {
       ('tell me a riddle', 'riddles'),
       ('i\x27m sad', 'feelings'),
       ('i feel lonely', 'feelings'),
+      ('i am so angry', 'feelings'),
+      ('nobody likes me', 'feelings'),
+      ('i have no friends', 'feelings'),
+      ('i miss my grandma', 'feelings'),
+      ('my dog died', 'feelings'),
+      ('i had a nightmare', 'feelings'),
+      ('i am scared of the dark', 'feelings'),
+      ('my parents are fighting', 'feelings'),
+      // Ghana and Africa.
+      ('tell me about ghana', 'ghana'),
+      ('what is the capital of ghana', 'ghana'),
+      ('what is kente cloth', 'kente'),
+      ('what does sankofa mean', 'adinkra'),
+      ('can drums talk', 'talking_drums'),
+      ('who is ananse', 'ananse'),
+      ('what is the harmattan', 'harmattan'),
+      ('what animals live in ghana', 'mole_park'),
+      ('what is the tallest mountain in africa', 'africa_places'),
+      ('how long is the nile', 'africa_places'),
+      ('who was mansa musa', 'african_history'),
+      ('who was wangari maathai', 'wangari_maathai'),
+      ('tell me about africa', 'africa'),
+      ('how is chocolate made', 'ghana'),
     ]) {
       test(question, () async {
         final response = await provider.respond(
@@ -207,6 +230,30 @@ void main() {
         expect(response.text, contains('grown-up'));
       });
     }
+
+    test('Africa questions keep their more specific topics', () async {
+      expect(await topicFor('do elephants live in africa'), 'elephants');
+      expect(await topicFor('what is the tallest mountain'), 'mountains');
+      expect(await topicFor('tell me about spiders'), 'spiders');
+    });
+
+    test('the Ghana answer to a pinned question really answers it', () async {
+      final response = await provider.respond(
+        const EducationalPrompt(question: 'what is the capital of ghana'),
+      );
+      expect(response.text, contains('Accra'));
+    });
+
+    test('the feelings reply listens first, and offers a joke later', () {
+      final feelings = curatedTopics.firstWhere((t) => t.id == 'feelings');
+      expect(feelings.answers.single, startsWith('Thank you for telling me.'));
+      expect(feelings.answers.single, contains('When you feel ready'));
+    });
+
+    test('the adventure reply does not count the cases', () {
+      final adventure = curatedTopics.firstWhere((t) => t.id == 'adventure');
+      expect(adventure.answers.single, isNot(contains('three')));
+    });
 
     test('feelings replies point to a trusted grown-up', () async {
       final response = await provider.respond(

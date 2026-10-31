@@ -51,6 +51,7 @@ void main() {
     _stories(page);
     _maker(page);
     _games(page);
+    _ghanaAfrica(page);
 
     page.raw(
       '<h2>Summary</h2><p>${page.count} items to review. Thank you!</p>',
@@ -67,14 +68,28 @@ void _buddy(_Page page) {
       'What Buddy says when a child asks a question. Buddy only ever answers '
       'from this list.',
     );
-  for (final topic in curatedTopics) {
-    page.item('Topic: ${topic.id}', [
-      for (final answer in topic.answers) answer,
-      if (topic.followUps.isNotEmpty)
-        'Suggested next questions: ${topic.followUps.join(' / ')}',
-    ]);
+  // Ghana and Africa topics are listed last, so earlier numbers stay put.
+  for (final topic in curatedTopics.where(
+    (t) => !ghanaAfricaTopics.contains(t),
+  )) {
+    _topic(page, topic);
   }
   page.item('When Buddy does not know', [fallbackAnswer.text]);
+}
+
+void _topic(_Page page, CuratedTopic topic) => page.item('Topic: ${topic.id}', [
+  for (final answer in topic.answers) answer,
+  if (topic.followUps.isNotEmpty)
+    'Suggested next questions: ${topic.followUps.join(' / ')}',
+]);
+
+void _ghanaAfrica(_Page page) {
+  page
+    ..h2('Ghana and Africa')
+    ..p('Buddy answers added after the content audit.');
+  for (final topic in ghanaAfricaTopics) {
+    _topic(page, topic);
+  }
 }
 
 void _quiz(_Page page) {

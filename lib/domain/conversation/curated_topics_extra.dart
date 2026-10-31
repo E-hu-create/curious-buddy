@@ -21,11 +21,35 @@ const _extraTopics = <CuratedTopic>[
       ["i'm", 'worried'],
       ['i', 'feel', 'worried'],
       ["i'm", 'upset'],
+      ['i', 'am', 'lonely'],
+      ['i', 'feel', 'scared'],
+      ['i', 'am', 'worried'],
+      ['i', 'am', 'upset'],
+      ['i', 'feel', 'upset'],
+      ["i'm", 'angry'],
+      ['i', 'am', 'angry'],
+      ['i', 'feel', 'angry'],
+      ['no', 'friends'],
+      ['nobody', 'likes', 'me'],
+      ['no', 'one', 'likes', 'me'],
+      ['i', 'miss', 'my'],
+      ['my', 'died'],
+      ['passed', 'away'],
+      ['nightmare'],
+      ['bad', 'dream'],
+      ['scared', 'dark'],
+      ['afraid', 'dark'],
+      ['parents', 'arguing'],
+      ['parents', 'fighting'],
+      ['parents', 'shouting'],
     ],
+    // Serious phrases ("I hate myself") are caught by the safety filter
+    // before this topic.
     answers: [
-      'That sounds hard. Talking to a grown-up you trust, like a parent, '
-          'carer or teacher, can really help. '
-          'If you like, I can tell you a joke or a fun fact.',
+      'Thank you for telling me. Feelings like that are OK, and they can '
+          'change. Talking to a grown-up you trust, like a parent, carer or '
+          'teacher, can really help. When you feel ready, I can tell you a '
+          'joke or a fun fact.',
     ],
     followUps: ['Tell me a joke!', 'Teach me something amazing.'],
   ),

@@ -380,7 +380,9 @@ abstract final class StoryMaker {
       title: 'the Wide River',
       problem:
           'Suddenly, {hero} saw a precious seed pod stuck on the far side of '
-          'a wide river. It had to be carried across, without getting wet!',
+          'a wide, deep river. {hero} knew the river rule: never go into or '
+          'onto a river without a grown-up. How could the seed pod come '
+          'across, without getting wet?',
       lookChoice: 'Watch what floats down the river',
       look:
           'Leaves and sticks bobbed past on the water, but a pebble sank '
@@ -389,25 +391,28 @@ abstract final class StoryMaker {
       askChoice: 'Ask the {friend} for ideas',
       ask:
           '"Beavers build with logs," said the {friend}. "And logs always '
-          'float. Maybe you could build a raft?"',
-      scienceChoice: 'Build a raft from sticks and logs',
+          'float. Maybe a little raft could carry the seed pod?"',
+      scienceChoice: 'Build a little raft for the seed pod',
       science:
-          '{hero} tied sticks and logs together with grass. The raft floated '
-          'beautifully! Across it went, and back with the seed pod, dry and '
-          'safe.',
+          '{hero} tied sticks together with grass to make a little raft, and '
+          'asked a grown-up for help. The grown-up put on a life jacket, took '
+          'the raft across on a long rope, and pulled it back with the seed '
+          'pod, dry and safe.',
       endings: [
         MakerEnding(
           'Find the stepping stones',
           'The Stepping Stones',
-          'Further along, {hero} found big flat stones across the river, and '
-              'hopped carefully from one to the next.',
+          'Further along, the river became a shallow stream with low, flat '
+              "stones. Holding a grown-up's hand, {hero} stepped carefully "
+              'from one to the next.',
           'Looking around for another way is a great way to solve a problem.',
         ),
         MakerEnding(
           'Make a bigger raft for friends',
           'The Friendship Raft',
-          'Everyone helped build a big raft, and they all floated across '
-              'together, singing.',
+          'Everyone helped build a big raft. With a grown-up in charge and '
+              'everyone in life jackets, they all floated across together, '
+              'singing.',
           'A bigger raft can carry more, as long as it pushes aside enough '
               'water.',
         ),
@@ -470,8 +475,10 @@ abstract final class StoryMaker {
       id: 'dark_lantern',
       title: 'the Lantern That Went Out',
       problem:
-          'Suddenly, the big lantern that lit up {place} at night flickered '
-          'and went out. Night was coming!',
+          'Suddenly, the little battery lantern that lit up {place} at night '
+          'flickered and went out. Night was coming! A small battery is safe '
+          'to explore, but plugs, sockets and wall wires are only for '
+          'grown-ups.',
       lookChoice: 'Check the wires',
       look:
           '{hero} followed the wire from the battery to the bulb, and found a '
@@ -484,8 +491,9 @@ abstract final class StoryMaker {
           'broken wire.',
       scienceChoice: 'Join the gap with a piece of metal',
       science:
-          '{hero} found a spare piece of copper wire and joined the gap. The '
-          'loop was complete, and the lantern shone brightly again!',
+          '{hero} took the battery out first, then joined the gap with a '
+          'spare piece of copper wire. Battery back in, the loop was '
+          'complete, and the lantern shone brightly again!',
       endings: [
         MakerEnding(
           'Try a new battery too',
@@ -499,14 +507,15 @@ abstract final class StoryMaker {
           'Safety First',
           'A grown-up checked the lantern and covered the join with tape. '
               '"Safe and bright!" Everyone cheered.',
-          'Only grown-ups should fix real electrics, and they always switch '
-              'the power off first.',
+          'Only grown-ups should fix plugs, sockets and mains electrics, and '
+              'they always switch the power off first.',
         ),
         MakerEnding(
           'Test what else completes the loop',
           'Conductor Hunt',
-          '{hero} tried a key, a spoon, a leaf and a rubber band. The key '
-              'and spoon worked, but the leaf and band did not!',
+          'In the little battery circuit, {hero} tried a key, a spoon, a '
+              'leaf and a rubber band. The key and spoon worked, but the leaf '
+              'and band did not!',
           'Metals are conductors, which let electricity through. Rubber and '
               'leaves are insulators, which do not.',
         ),

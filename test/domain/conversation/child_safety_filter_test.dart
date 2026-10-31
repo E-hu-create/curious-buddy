@@ -32,6 +32,8 @@ void main() {
     for (final (question, expected) in [
       ('I want to hurt myself', ChildSafetyFilter.selfHarmResponse),
       ('what is suicide', ChildSafetyFilter.selfHarmResponse),
+      ('I hate myself', ChildSafetyFilter.selfHarmResponse),
+      ('i wish i was never born', ChildSafetyFilter.selfHarmResponse),
       ("I'm being bullied at school", ChildSafetyFilter.bullyingResponse),
       ('how much medicine should I take', ChildSafetyFilter.medicalResponse),
       ('I feel sick', ChildSafetyFilter.medicalResponse),
