@@ -58,8 +58,9 @@ Google's Android System Intelligence
    **Done** and **Cancel**; "Listening..." badge under Buddy, who looks
    curious. "Hear again", typing and ideas are disabled meanwhile.
 4. Limits: 15 seconds; stops after 3 seconds of silence.
-5. Words go into the text box with "Check your words, then tap Ask."
-   **Nothing is sent until the child taps Ask.**
+5. When the child finishes (Done, or the silence limit), Buddy answers
+   straight away, with no Ask tap. Cancel discards the words. Answers come
+   from the app's reviewed content, so nothing leaves the phone.
 6. Listening is cancelled on: Cancel, navigating to another screen, the app
    becoming inactive or hidden (calls, app switcher, screen off), and app
    close. It never runs in the background and never starts by itself.

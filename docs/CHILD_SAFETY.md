@@ -136,7 +136,9 @@ Release builds request exactly (verified in the merged manifest):
 - Buddy can suggest an activity, but only from a fixed list of in-app
   screens, and only opens it when the child taps.
 - Recognised speech goes through the same safety filter as typed
-  questions, and only after the child checks it and taps Ask.
+  questions. Buddy answers as soon as the child finishes speaking (product
+  owner's choice, 2026-10-31), so Cancel is the way to stop a question.
+  Personal details and private disclosures are still hidden.
 
 ## Voice input
 

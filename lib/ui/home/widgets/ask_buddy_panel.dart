@@ -6,8 +6,8 @@ import '../../core/themes/app_theme.dart';
 /// How a child asks Buddy something: tap-to-talk, a text box, and suggested
 /// questions.
 ///
-/// Talking never sends anything by itself: recognised words arrive as a
-/// [draft] in the text box, and the child taps Ask when they are happy.
+/// When the child finishes talking, Buddy answers without an Ask tap; the
+/// text box is for typing.
 class AskBuddyPanel extends StatefulWidget {
   const AskBuddyPanel({
     super.key,
@@ -20,8 +20,6 @@ class AskBuddyPanel extends StatefulWidget {
     this.isListening = false,
     this.liveWords = '',
     this.notice,
-    this.draft,
-    this.draftId = 0,
   });
 
   /// False while Buddy is preparing an answer.
@@ -34,8 +32,6 @@ class AskBuddyPanel extends StatefulWidget {
   final bool isListening;
   final String liveWords;
   final String? notice;
-  final String? draft;
-  final int draftId;
 
   static const talkLabel = 'Talk to Buddy';
   static const listeningLabel = 'Listening...';
@@ -58,19 +54,6 @@ class _AskBuddyPanelState extends State<AskBuddyPanel> {
   void initState() {
     super.initState();
     _controller.addListener(() => setState(() {}));
-  }
-
-  @override
-  void didUpdateWidget(AskBuddyPanel oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    final draft = widget.draft;
-    if (widget.draftId != oldWidget.draftId && draft != null) {
-      // Put the heard words in the box for checking; never auto-send.
-      _controller.value = TextEditingValue(
-        text: draft,
-        selection: TextSelection.collapsed(offset: draft.length),
-      );
-    }
   }
 
   @override

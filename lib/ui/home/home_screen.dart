@@ -66,7 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
     voice: widget.voice,
     greeting: HomeViewModel.greeting,
   );
-  late final TalkViewModel _talk = TalkViewModel(listener: widget.listener);
+  late final TalkViewModel _talk = TalkViewModel(
+    listener: widget.listener,
+    onHeard: (words) => unawaited(_chat.ask(words)),
+  );
   late final Listenable _changes = Listenable.merge([_home, _chat, _talk]);
 
   @override
@@ -200,8 +203,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         isListening: _talk.isListening,
                         liveWords: _talk.liveWords,
                         notice: _talk.notice,
-                        draft: _talk.draft,
-                        draftId: _talk.draftId,
                       ),
                       if (progress != null) ...[
                         const SizedBox(height: 24),

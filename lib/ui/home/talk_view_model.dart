@@ -16,11 +16,15 @@ enum TalkStep {
   unavailable,
 }
 
-/// Tap-to-talk flow for Home. Recognised words are never sent
-/// automatically: they become a [draft] in the text box for the child to
-/// check, edit and send.
+/// Tap-to-talk flow for Home. When the child finishes speaking, the words go
+/// straight to Buddy through [onHeard], with the same safety filter as typed
+/// questions. Cancel discards them.
 class TalkViewModel extends ChangeNotifier {
-  TalkViewModel({required BuddyListener listener}) : _listener = listener {
+  TalkViewModel({
+    required BuddyListener listener,
+    required void Function(String words) onHeard,
+  }) : _listener = listener,
+       _onHeard = onHeard {
     _listener.addListener(_notify);
   }
 
@@ -41,9 +45,9 @@ class TalkViewModel extends ChangeNotifier {
       'Try again later, or type it!';
   static const errorNotice =
       "Oops, Buddy couldn't hear that. Try again, or type it!";
-  static const checkWordsNotice = 'Check your words, then tap Ask.';
 
   final BuddyListener _listener;
+  final void Function(String words) _onHeard;
   bool _disposed = false;
   bool _busy = false;
 
@@ -55,13 +59,6 @@ class TalkViewModel extends ChangeNotifier {
   /// A short message for the child about the last talk attempt.
   String? get notice => _notice;
   String? _notice;
-
-  /// Recognised words to place in the text box. [draftId] changes each time
-  /// a new draft arrives.
-  String? get draft => _draft;
-  String? _draft;
-  int get draftId => _draftId;
-  int _draftId = 0;
 
   Future<TalkStep> prepare() async {
     _setNotice(null);
@@ -93,9 +90,7 @@ class TalkViewModel extends ChangeNotifier {
     _busy = false;
     switch (result) {
       case ListenHeard(:final transcript):
-        _draft = transcript;
-        _draftId++;
-        _setNotice(checkWordsNotice);
+        _onHeard(transcript);
       case ListenNothingHeard():
         _setNotice(nothingHeardNotice);
       case ListenCancelled():

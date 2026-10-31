@@ -189,10 +189,9 @@ user-visible change:
         "You can type instead" notice; typing still works; tapping Talk again
         shows the explanation again (no surprise prompt).
   - [ ] Allow → "Listening..." card and badge; Buddy stops talking. Say "why
-        is the sky blue": words appear live, then land in the text box with
-        "Check your words, then tap Ask." Nothing is answered until you tap
-        Ask.
-  - [ ] Done mid-sentence keeps the words; Cancel clears them.
+        is the sky blue": words appear live, then Buddy answers by himself,
+        with no Ask tap.
+  - [ ] Done mid-sentence answers what was heard; Cancel clears it.
   - [ ] While listening: Hear again, typing and ideas are disabled.
   - [ ] Mid-listen, press Home or open the app switcher: listening stops
         (microphone indicator in the status bar turns off).

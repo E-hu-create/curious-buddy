@@ -1,6 +1,7 @@
 import 'package:curious_buddy/data/services/key_value_store.dart';
 import 'package:curious_buddy/data/services/voice/speech_recognition_service.dart';
 import 'package:curious_buddy/data/services/voice/voice_failure.dart';
+import 'package:curious_buddy/domain/conversation/child_safety_filter.dart';
 import 'package:curious_buddy/domain/voice/buddy_listener.dart';
 import 'package:curious_buddy/ui/home/home_destination.dart';
 import 'package:curious_buddy/ui/home/home_screen.dart';
@@ -149,7 +150,7 @@ void main() {
       expect(speech.isListening, isTrue);
     });
 
-    testWidgets('words appear live, then go in the box for checking', (
+    testWidgets('words appear live, then Buddy answers by itself', (
       tester,
     ) async {
       await openHome(tester);
@@ -164,22 +165,30 @@ void main() {
         ..finish();
       await tester.pumpAndSettle();
 
-      expect(fieldText(tester), 'why is the sky blue');
-      expect(find.text(TalkViewModel.checkWordsNotice), findsOneWidget);
-      // Not sent automatically.
-      expect(find.textContaining('blue light'), findsNothing);
-
-      // The child can edit, then send.
-      await tester.enterText(find.byType(TextField), 'Why is the sky blue?');
-      await tester.pump();
-      await tester.tap(
-        find.widgetWithText(FilledButton, AskBuddyPanel.askLabel),
-      );
-      await tester.pumpAndSettle();
+      // No Ask tap needed, and the box stays empty for the next question.
       expect(find.textContaining('blue light'), findsOneWidget);
+      expect(fieldText(tester), isEmpty);
+      expect(tts.spoken.last, contains('blue light'));
     });
 
-    testWidgets('Done stops listening and keeps the words', (tester) async {
+    testWidgets('spoken questions get the same safety replies', (tester) async {
+      await openHome(tester);
+      await tapTalk(tester);
+
+      speech
+        ..hear('my dad hits me')
+        ..finish();
+      await tester.pumpAndSettle();
+
+      expect(
+        find.textContaining(ChildSafetyFilter.unsafeResponse.text),
+        findsOneWidget,
+      );
+      // Private words are not repeated on screen.
+      expect(find.textContaining('my dad hits me'), findsNothing);
+    });
+
+    testWidgets('Done stops listening and Buddy answers', (tester) async {
       await openHome(tester);
       await tapTalk(tester);
       speech.hear('tell me an animal fact');
@@ -190,7 +199,7 @@ void main() {
 
       expect(speech.isListening, isFalse);
       expect(speech.stopCalls, 1);
-      expect(fieldText(tester), 'tell me an animal fact');
+      expect(tts.spoken, hasLength(2), reason: 'the welcome, then the answer');
     });
 
     testWidgets('Cancel stops listening and discards the words', (
@@ -347,7 +356,7 @@ void main() {
       await tapTalk(tester);
 
       expect(speech.lastAllowOnline, isTrue);
-      expect(fieldText(tester), 'Why is the sky blue?');
+      expect(find.textContaining('blue light'), findsOneWidget);
     });
   });
 }
