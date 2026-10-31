@@ -458,7 +458,15 @@ void main() {
         find.text(StoriesScreen.startLabel),
         findsNWidgets(allStories.length),
       );
-      expect(find.text(StoriesScreen.endingsLabel(0, 42)), findsOneWidget);
+      expect(
+        find.text(
+          StoriesScreen.endingsLabel(
+            0,
+            allStories.expand((s) => s.endings).length,
+          ),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('reopening the app does not bring deleted progress back', (

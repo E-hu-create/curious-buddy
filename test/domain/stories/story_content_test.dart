@@ -2,6 +2,7 @@ import 'package:curious_buddy/domain/stories/more_stories.dart';
 import 'package:curious_buddy/domain/stories/story.dart';
 import 'package:curious_buddy/domain/stories/story_content.dart';
 import 'package:curious_buddy/domain/stories/story_rules.dart';
+import 'package:curious_buddy/domain/stories/world_stories.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -15,10 +16,32 @@ void main() {
     ]);
   });
 
-  test('there are thirteen stories with unique ids and titles', () {
+  test('there are nineteen stories with unique ids and titles', () {
     expect(moreStories, hasLength(10));
-    expect(allStories.map((s) => s.id).toSet(), hasLength(13));
-    expect(allStories.map((s) => s.title).toSet(), hasLength(13));
+    expect(worldStories, hasLength(6));
+    expect(allStories.map((s) => s.id).toSet(), hasLength(19));
+    expect(allStories.map((s) => s.title).toSet(), hasLength(19));
+  });
+
+  test('every world story has three endings to discover', () {
+    for (final story in worldStories) {
+      expect(story.endings, hasLength(3), reason: story.id);
+    }
+  });
+
+  test('world stories keep children safe in what they copy', () {
+    String text(String id) => worldStories
+        .firstWhere((s) => s.id == id)
+        .scenes
+        .map((s) => s.text)
+        .join(' ');
+
+    // Slides: feet first, one at a time. Gardening: with a grown-up.
+    expect(text('slow_slide'), contains('feet first'));
+    expect(text('slow_slide'), contains('one at a time'));
+    expect(text('mole_garden'), contains("grown-up gardener's help"));
+    // At sea, Kai stays by her grandmother.
+    expect(text('star_canoe'), contains('staying close by her side'));
   });
 
   test('no story is left out as invalid', () {

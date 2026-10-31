@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../domain/stories/story.dart';
 import '../../core/themes/app_colors.dart';
 import '../../games/widgets/ink_pen.dart';
+import 'story_picture_world.dart';
 
 /// What a picture from the later stories shows, for screen readers.
 String moreStoryPictureLabel(ScenePicture picture) => switch (picture) {
@@ -41,7 +42,7 @@ String moreStoryPictureLabel(ScenePicture picture) => switch (picture) {
   ScenePicture.monarchField => 'An orange butterfly on a flower in a field',
   ScenePicture.monarchMountains => 'Orange butterflies flying over mountains',
   ScenePicture.monarchForest => 'Fir trees covered in orange butterflies',
-  _ => '',
+  _ => worldStoryPictureLabel(picture),
 };
 
 /// Paints a picture from the later stories. Each story has one scene with
@@ -110,7 +111,7 @@ void paintMoreStoryPicture(Canvas canvas, Size size, ScenePicture picture) {
     case ScenePicture.monarchForest:
       painter.monarch(2);
     default:
-      break;
+      paintWorldStoryPicture(canvas, size, picture);
   }
 }
 

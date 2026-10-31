@@ -19,7 +19,7 @@ void main() {
     final stories = await BundledStoryRepository().loadStories();
 
     expect([for (final s in stories) s.id], [for (final s in allStories) s.id]);
-    expect(stories, hasLength(13));
+    expect(stories, hasLength(19));
   });
 
   test('leaves out invalid stories instead of showing them broken', () async {

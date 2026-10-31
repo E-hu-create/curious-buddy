@@ -17,7 +17,9 @@ import 'package:curious_buddy/domain/missions/mission.dart';
 import 'package:curious_buddy/domain/missions/more_missions.dart';
 import 'package:curious_buddy/domain/quiz/more_quiz_topics.dart';
 import 'package:curious_buddy/domain/stories/more_stories.dart';
+import 'package:curious_buddy/domain/stories/story.dart';
 import 'package:curious_buddy/domain/stories/story_maker.dart';
+import 'package:curious_buddy/domain/stories/world_stories.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const _out = 'docs/review/content_review.html';
@@ -52,6 +54,7 @@ void main() {
     _maker(page);
     _games(page);
     _ghanaAfrica(page);
+    _worldStories(page);
 
     page.raw(
       '<h2>Summary</h2><p>${page.count} items to review. Thank you!</p>',
@@ -140,21 +143,35 @@ void _missions(_Page page) {
 
 void _stories(_Page page) {
   page.h2('Living Stories');
-  for (final story in allStories) {
-    page
-      ..h3(story.title)
-      ..item('Opening', [story.intro]);
-    for (final scene in story.scenes) {
-      final ending = scene.ending;
-      page.item('Scene: ${scene.title}', [
-        scene.text,
-        for (final choice in scene.choices)
-          'Choice: ${choice.text}'
-              '${choice.consequence == null ? '' : ' (then: ${choice.consequence})'}',
-        if (ending != null)
-          'Ending, "${ending.title}". You discovered: ${ending.discovery}',
-      ]);
-    }
+  // World stories are listed last, so earlier numbers stay put.
+  for (final story in allStories.where((s) => !worldStories.contains(s))) {
+    _story(page, story);
+  }
+}
+
+void _worldStories(_Page page) {
+  page
+    ..h2('Living Stories: around the world')
+    ..p('Six stories added after the curriculum map.');
+  for (final story in worldStories) {
+    _story(page, story);
+  }
+}
+
+void _story(_Page page, Story story) {
+  page
+    ..h3(story.title)
+    ..item('Opening', [story.intro]);
+  for (final scene in story.scenes) {
+    final ending = scene.ending;
+    page.item('Scene: ${scene.title}', [
+      scene.text,
+      for (final choice in scene.choices)
+        'Choice: ${choice.text}'
+            '${choice.consequence == null ? '' : ' (then: ${choice.consequence})'}',
+      if (ending != null)
+        'Ending, "${ending.title}". You discovered: ${ending.discovery}',
+    ]);
   }
 }
 

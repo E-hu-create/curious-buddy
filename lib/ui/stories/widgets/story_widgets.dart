@@ -69,6 +69,33 @@ import '../../core/widgets/motion.dart';
     accent: AppColors.coral,
     tint: AppColors.coralTint,
   ),
+  ScenePicture.ananseVillage ||
+  ScenePicture.ananseTree ||
+  ScenePicture.anansePot ||
+  ScenePicture.moleGarden ||
+  ScenePicture.moleTunnel ||
+  ScenePicture.moleRocks => (accent: AppColors.sun, tint: AppColors.sunTint),
+  ScenePicture.slidePlayground ||
+  ScenePicture.slideRamps ||
+  ScenePicture.slideParachute => (
+    accent: AppColors.coral,
+    tint: AppColors.coralTint,
+  ),
+  ScenePicture.umbrellaRain ||
+  ScenePicture.umbrellaTest ||
+  ScenePicture.umbrellaWindow ||
+  ScenePicture.canoeSea ||
+  ScenePicture.canoeStars ||
+  ScenePicture.canoeIsland => (
+    accent: AppColors.brandBlue,
+    tint: AppColors.brandBlueTint,
+  ),
+  ScenePicture.pangolinNight ||
+  ScenePicture.pangolinTree ||
+  ScenePicture.pangolinBall => (
+    accent: AppColors.leaf,
+    tint: AppColors.leafTint,
+  ),
 };
 
 /// One choice, shown as a numbered storybook card.

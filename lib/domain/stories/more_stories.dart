@@ -1,8 +1,9 @@
 import 'story.dart';
 import 'story_content.dart';
+import 'world_stories.dart';
 
 /// Every story in the app, starter ones first.
-const allStories = <Story>[...starterStories, ...moreStories];
+const allStories = <Story>[...starterStories, ...moreStories, ...worldStories];
 
 /// Ten more stories. As with the starter stories: original characters and
 /// places, nothing scary, real science woven in, and every ending a good one.

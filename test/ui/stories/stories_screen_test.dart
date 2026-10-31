@@ -86,7 +86,15 @@ void main() {
       find.text(StoriesScreen.startLabel),
       findsNWidgets(allStories.length),
     );
-    expect(find.text(StoriesScreen.endingsLabel(0, 42)), findsOneWidget);
+    expect(
+      find.text(
+        StoriesScreen.endingsLabel(
+          0,
+          allStories.expand((s) => s.endings).length,
+        ),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('shows a loading state, then the stories', (tester) async {
