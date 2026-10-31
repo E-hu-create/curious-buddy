@@ -113,8 +113,8 @@ const _whale = Story(
       picture: ScenePicture.whaleReef,
       text:
           'Very faintly, a long, low song drifted through the water. '
-          '"That is Grandmother!" Coral cried. "Each group of whales has its '
-          'own song," said Pip. "That is how you know it is yours." Coral '
+          '"That is Grandmother!" Coral cried. "Whale families can have '
+          'their own calls," said Pip. "That is how you know it is yours." Coral '
           'could swim straight towards it, or sing the family song back.',
       choices: [
         StoryChoice(
@@ -819,8 +819,8 @@ const _stars = Story(
       picture: ScenePicture.starMap,
       text:
           '"That patch is a whole galaxy of stars," Stella whispered. "Its '
-          'light left over two million years ago, before there were any '
-          'people to see it. And tonight, it landed in your eye." You stood '
+          'light left over two million years ago, long before people like '
+          'us were around to see it. And tonight, it landed in your eye." You stood '
           'very still, looking up at the oldest light you had ever seen.',
       ending: StoryEnding(
         id: 'oldest_light',

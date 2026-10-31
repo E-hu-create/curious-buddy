@@ -35,7 +35,7 @@ const _moreTopics = <CuratedTopic>[
           'Sometimes they purr to calm themselves down, too!',
       'A cat uses its whiskers like measuring sticks. '
           'They help it feel whether it can fit through a gap!',
-      'Cats spend about two-thirds of their lives asleep. That is a lot of naps!',
+      'Cats spend more than half their lives asleep. That is a lot of naps!',
     ],
     followUps: ['Tell me about dogs.', 'Tell me another animal fact.'],
   ),
@@ -616,8 +616,9 @@ const _moreTopics = <CuratedTopic>[
     ],
     pinned: {'ice': 1},
     answers: [
-      'Things float when they push aside water that weighs more than they do. '
-          'That is how a huge steel ship can float!',
+      'A thing floats if it can push aside its own weight in water before '
+          'it sinks under. A steel ship is shaped to push aside lots of water, '
+          'so it floats!',
       'Ice floats because water spreads out when it freezes. '
           'That makes ice lighter than the same amount of liquid water!',
     ],

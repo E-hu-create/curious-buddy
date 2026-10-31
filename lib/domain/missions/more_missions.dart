@@ -1218,7 +1218,9 @@ const _shadow = Mission(
       ],
       explanation:
           'At dawn the Sun is low in the east, so the shadow is long and '
-          'points west. By evening it points east. It is shortest around midday.',
+          'points west. By evening it points east. It is shortest around '
+          'midday. Near the Equator, as in Ghana, the midday Sun is almost '
+          'overhead, so midday shadows are tiny.',
     ),
     ChoiceStage(
       id: 'odd_caption',

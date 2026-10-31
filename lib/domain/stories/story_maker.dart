@@ -358,7 +358,8 @@ abstract final class StoryMaker {
           'The Pebble Trail',
           'On the way back, {hero} left a trail of pebbles, so the little one '
               'could always find the way home.',
-          'Leaving clear markers is a good way to find your way back.',
+          'Leaving clear markers is a good way to find your way back. If you '
+              'are ever lost, stay where you are and call for a grown-up.',
         ),
         MakerEnding(
           'Hold a big search party',
@@ -469,7 +470,7 @@ abstract final class StoryMaker {
           '{hero} drew a circle: sun warms water, vapour rises, clouds form, '
               'rain falls, ponds fill. "It goes round and round!"',
           'This is the water cycle. The same water has been going round and '
-              'round for millions of years.',
+              'round for billions of years.',
         ),
       ],
     ),
@@ -527,7 +528,7 @@ abstract final class StoryMaker {
       id: 'heavy_rock',
       title: 'the Rock in the Road',
       problem:
-          'Suddenly, {hero} found a huge rock blocking the only path through '
+          'Suddenly, {hero} found a big rock blocking the only path through '
           '{place}. It was far too heavy to push!',
       lookChoice: 'Look around for something useful',
       look:
@@ -540,8 +541,8 @@ abstract final class StoryMaker {
           'at the other end!" laughed the {friend}. That gave {hero} an idea.',
       scienceChoice: 'Make a lever with the branch',
       science:
-          '{hero} slid the branch under the rock and rested it on the small '
-          'stone. One push on the long end, and the rock rolled away! The '
+          'With a grown-up helping, {hero} slid the branch under the rock and '
+          'rested it on the small stone. One push on the long end, and the rock rolled away! The '
           'path was clear.',
       endings: [
         MakerEnding(

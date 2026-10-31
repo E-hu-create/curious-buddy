@@ -117,7 +117,13 @@ const Map<int, List<SortSet>> sortLevels = {
         SortItem('Honey', 1, note: 'Honey is thick, but it still flows.'),
         SortItem('Juice', 1),
         SortItem('Oxygen', 2),
-        SortItem('Steam', 2, note: 'Steam is water in its gas state.'),
+        SortItem(
+          'Steam',
+          2,
+          note:
+              'Steam is water in its gas state. The white cloud we see is '
+              'tiny water drops; the gas itself is invisible.',
+        ),
         SortItem('Helium', 2),
       ],
     ),

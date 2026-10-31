@@ -100,7 +100,10 @@ class WardrobeViewModel extends ChangeNotifier {
       unawaited(_voice.effect(SoundEffect.pop));
     } else {
       unawaited(_wardrobe.wear(item));
-      _say('I love my ${item.title.toLowerCase()}!', lead: SoundEffect.correct);
+      _say(
+        'My ${item.title.toLowerCase()} looks great!',
+        lead: SoundEffect.correct,
+      );
     }
   }
 

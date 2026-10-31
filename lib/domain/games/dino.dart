@@ -242,7 +242,7 @@ enum DinoPlace {
   ),
   ancientSea(
     name: 'Ancient Sea',
-    era: 'Late Cretaceous, about 80 million years ago',
+    era: 'Late Cretaceous, about 85 to 80 million years ago',
     intro: 'A warm sea covers the land. Watch the water and the sky!',
     creatures: [
       DinoCreature.pteranodon,

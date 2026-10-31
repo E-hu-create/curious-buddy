@@ -107,7 +107,7 @@ void main() {
 
     expect(find.text(WardrobeScreen.wearing), findsOneWidget);
     expect(lookOnFirstBuddy(tester).hat, WardrobeItem.partyHat);
-    expect(tts.spoken.last, 'I love my party hat!');
+    expect(tts.spoken.last, 'My party hat looks great!');
     expect((await LocalProgressRepository(store).load()).buddyLook, {
       'hat': 'partyHat',
     });

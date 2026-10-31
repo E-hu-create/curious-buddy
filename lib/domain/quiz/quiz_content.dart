@@ -58,8 +58,8 @@ final _space = QuizTopic(
             'It makes its own light',
           ],
           0,
-          'The Moon does not make light. Sunlight bounces off it, like light '
-              'off a mirror.',
+          'The Moon does not make light. Sunlight shines on it, and some of '
+              'that light bounces off its grey rock to our eyes.',
         ),
       ],
     ),
@@ -551,8 +551,8 @@ final _earth = QuizTopic(
             'A frozen lake',
           ],
           2,
-          'Deep underground, rock is so hot that it melts. A volcano is where '
-              'it bursts out.',
+          'Deep underground, it is so hot that some rock melts into magma. A '
+              'volcano is where it bursts out.',
         ),
         _q(
           'salty_sea',

@@ -167,7 +167,7 @@ final _dinosaurs = QuizTopic(
         'coprolite',
         'What is a coprolite?',
         [
-          'A fossil dinosaur dropping',
+          'A fossil animal dropping',
           'A fossil dinosaur egg',
           'A fossil footprint',
           'A kind of crystal',

@@ -300,8 +300,9 @@ const _luma = Story(
       text:
           'You write down each group: two beeps, then three, then five, '
           'then seven. "These are prime numbers," Buddy says. "Numbers that '
-          'can only be divided by one and themselves." Nature does not make '
-          'prime number patterns by itself, so someone, or something, must '
+          'can only be divided by one and themselves." Nature rarely makes '
+          'prime number patterns like this by itself, so someone, or '
+          'something, must '
           'be sending them on purpose. The radio\'s antenna can point '
           'towards where the signal is coming from.',
       choices: [
@@ -388,7 +389,7 @@ const _luma = Story(
       text:
           'You wait with Dot through the night, telling stories. When the '
           'first sun rises, its light hits the clean solar panel. Then the '
-          'second sun rises, and Dot\'s battery fills twice as fast. Its '
+          'second sun rises, and Dot\'s battery fills even faster. Its '
           'lights blink green, and it rolls out of the sand all by itself. '
           'Dot plays a happy little tune of beeps.',
       ending: StoryEnding(
@@ -603,7 +604,8 @@ const _inventor = Story(
       title: 'Two Wheels Lighter',
       picture: ScenePicture.inventorGarden,
       text:
-          'With the string looped around two wheels, Pim pulls again. This '
+          'With the string looped around a second wheel that rides on the '
+          'bucket, Pim pulls again. This '
           'time the bucket rises easily! Pim has to pull twice as much '
           'string, but it only takes half the effort. Bucket after bucket '
           'comes up, and soon every sunflower has had a long drink. "More '

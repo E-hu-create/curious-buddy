@@ -257,6 +257,8 @@ void main() {
       expect(every, isNot(contains('almost three times')));
       expect(every, isNot(contains('because it is so small')));
       expect(every, contains('path around the Sun'));
+      // Buddy has no real feelings, so he never says he loves something.
+      expect(every, isNot(contains('I love')));
     });
 
     test('the adventure reply does not count the cases', () {

@@ -86,7 +86,7 @@ const Map<int, List<ParadeSet>> paradeLevels = {
     ParadeSet(
       'Build a food chain, starting with the plant.',
       ['Grass', 'Grasshopper', 'Frog', 'Snake', 'Hawk'],
-      'Almost all food chains begin with plants, which use sunlight.',
+      'Almost all food chains begin with plants or algae, which use sunlight.',
     ),
   ],
 };

@@ -289,7 +289,8 @@ const _extraTopics = <CuratedTopic>[
       ['wifi'],
     ],
     answers: [
-      'The internet is millions of computers connected together. '
+      'The internet is billions of computers, phones and other devices '
+          'connected together. '
           'They send messages to each other in tiny pieces, super fast!',
     ],
     followUps: ['How do mobile phones work?', 'How do computers work?'],

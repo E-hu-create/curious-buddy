@@ -165,7 +165,7 @@ const curatedTopics = <CuratedTopic>[
     answers: [
       "I'm Buddy, a computer character in this app. "
           "I'm not a person, and I don't have real feelings. "
-          'I love sharing facts, but I can make mistakes. '
+          'Sharing facts is what I do best, but I can make mistakes. '
           "So it's smart to check big things with a grown-up!",
     ],
     followUps: ['Teach me something amazing.', 'What can you do?'],
@@ -255,7 +255,7 @@ const curatedTopics = <CuratedTopic>[
       ['stories'],
     ],
     answers: [
-      'I love stories! In Living Stories, you choose what happens next, '
+      'Stories are great! In Living Stories, you choose what happens next, '
           'and every choice leads somewhere different. I will read it to you.',
     ],
     action: BuddyAction.openStories,
@@ -305,7 +305,7 @@ const curatedTopics = <CuratedTopic>[
       ['clothes'],
     ],
     answers: [
-      'Ooh, I love dressing up! Everything you do earns me something new to '
+      'Ooh, dressing up is fun! Everything you do earns me something new to '
           'wear. Pick my outfit in my wardrobe!',
     ],
     action: BuddyAction.openWardrobe,
@@ -491,8 +491,8 @@ const curatedTopics = <CuratedTopic>[
     answers: [
       'An octopus has three hearts and blue blood! '
           'Want to discover another ocean secret?',
-      'Blue whales are the biggest animals known to have ever lived. '
-          'Even bigger than the largest dinosaurs!',
+      'Whales are mammals, not fish. '
+          'They swim up to the surface to breathe air, through a blowhole!',
       'Sharks have been around for longer than trees. '
           'Sharks are over 400 million years old!',
     ],
@@ -509,10 +509,8 @@ const curatedTopics = <CuratedTopic>[
     subject: 'animal',
     answers: [
       'Sea otters hold hands while they sleep, so they do not drift apart!',
-      'Butterflies taste with their feet. '
-          'They stand on a flower to find out if it is tasty!',
-      'A giraffe has seven bones in its neck. '
-          'That is the same number as you!',
+      "A shrimp's heart is in its head!",
+      'Wombats make poo shaped like little cubes!',
       'Hummingbirds can fly backwards. '
           'No other bird can do that so well!',
       'Koalas can sleep for up to 20 hours a day!',
@@ -541,7 +539,7 @@ const curatedTopics = <CuratedTopic>[
           'A bolt can reach about 30,000 degrees Celsius.',
       'Bananas are berries, but strawberries are not! '
           'Scientists sort fruit by how they grow from the flower.',
-      'Honey can last for thousands of years without going bad!',
+      'There are more trees on Earth than stars in our galaxy!',
       'A group of flamingos is called a flamboyance!',
     ],
     action: BuddyAction.openMissions,
