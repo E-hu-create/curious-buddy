@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phone Checklist</title>
+<style>
+  :root { --ink:#1f2a44; --muted:#55607a; --line:#c9cfdb; --paper:#fff; --bg:#fff8ee; --accent:#2a68c9; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --ink:#e8ecf5; --muted:#a9b3c7; --line:#3a4560; --paper:#1b2234; --bg:#121826; --accent:#7fb0ff; }
+  }
+  :root[data-theme="dark"] { --ink:#e8ecf5; --muted:#a9b3c7; --line:#3a4560; --paper:#1b2234; --bg:#121826; --accent:#7fb0ff; }
+  * { box-sizing: border-box; }
+  body { font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); margin: 0; }
+  main { max-width: 820px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 28px; margin: 0 0 6px; }
+  h2 { margin: 32px 0 8px; color: var(--accent); }
+  .item { background: var(--paper); border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 14px; margin: 8px 0; break-inside: avoid; }
+  .item label { font-weight: 700; display: flex; gap: 10px; align-items: baseline; }
+  .item input { transform: scale(1.35); flex: none; }
+  .item p { margin: 4px 0 0 30px; color: var(--muted); }
+  .item p b { color: var(--ink); }
+  .note { color: var(--muted); }
+  ol, ul { padding-left: 22px; }
+  @media print { body { background:#fff; color:#000; } .item { border-color:#999; } }
+</style>
+</head>
+<body>
+<main>
+<h1>Curious Buddy: phone checklist</h1>
+<p class="note">Try each one on the phone. Tick it if it works. If something looks
+wrong, write the number and what happened, then tell Claude, for example
+"7: the robot didn't move". About 45 to 60 minutes in all. You don't have to do it
+in one go.</p>
+
+<h2>Before you start</h2>
+<ul>
+  <li>Open the newest Curious Buddy on the phone.</li>
+  <li>Turn the sound up, so you can hear Buddy and the sound effects.</li>
+  <li>For each one, check: it opens, it looks right, Buddy speaks, you can finish it,
+      and nothing freezes or looks cut off.</li>
+</ul>
+
+<h2>Home and Buddy</h2>
+<div class="item"><label><input type="checkbox">1. The logo</label>
+<p>Look at the app icon on the phone's home screen. <b>You should see:</b> a clear,
+bold Buddy icon that stands out.</p></div>
+<div class="item"><label><input type="checkbox">2. Talk to Buddy box</label>
+<p>On Home, type "Why is the sky blue?" and tap Ask. Then swipe the suggestions
+sideways and tap one. <b>You should see:</b> a small box, a short answer that Buddy
+reads aloud, and suggestions in one line.</p></div>
+<div class="item"><label><input type="checkbox">3. Talking (microphone)</label>
+<p>Tap the microphone, say "Tell me a joke", check the words, then tap Ask.
+<b>You should see:</b> Buddy asks first before using the microphone, then shows
+what you said. If the phone can't listen offline, Buddy says so kindly.</p></div>
+<div class="item"><label><input type="checkbox">4. Sound effects</label>
+<p>Play any game and get one right and one wrong. <b>You should hear:</b> short,
+gentle sounds that aren't too loud or harsh.</p></div>
+
+<h2>Game Zone</h2>
+<div class="item"><label><input type="checkbox">5. The Game Zone screen</label>
+<p>Open Game Zone. <b>You should see:</b> a big tile for every game, each with a
+picture and a yellow button, and How to Play instructions.</p></div>
+<div class="item"><label><input type="checkbox">6. Buddy's Challenge Arena</label>
+<p>Play Memory Match, Pattern Power and Spot the Change, one round each.</p></div>
+<div class="item"><label><input type="checkbox">7. Treasure Maze</label>
+<p>Guide Buddy to the chest and collect gems.</p></div>
+<div class="item"><label><input type="checkbox">8. Code the Robot</label>
+<p>Plan some steps, press Go, and watch the robot follow them.</p></div>
+<div class="item"><label><input type="checkbox">9. Word Builder</label>
+<p>Unscramble a word from its clue.</p></div>
+<div class="item"><label><input type="checkbox">10. What's That Sound?</label>
+<p>Listen and pick what made the sound. <b>Check:</b> each sound is clear and
+matches its answer.</p></div>
+<div class="item"><label><input type="checkbox">11. Four in a Row</label>
+<p>Play a whole game against Buddy.</p></div>
+<div class="item"><label><input type="checkbox">12. Number Pop</label>
+<p>Pop the bubbles that make the target number.</p></div>
+<div class="item"><label><input type="checkbox">13. Sort It!</label>
+<p>Put things into the right groups. Tap a wrong one too, to see what happens.</p></div>
+<div class="item"><label><input type="checkbox">14. Circuit Fixer</label>
+<p>Turn the wires until the bulb lights up.</p></div>
+<div class="item"><label><input type="checkbox">15. Picture Sudoku</label>
+<p>Fill the grid so no picture repeats.</p></div>
+<div class="item"><label><input type="checkbox">16. Planet Parade</label>
+<p>Tap the planets into the right order.</p></div>
+
+<h2>Learning</h2>
+<div class="item"><label><input type="checkbox">17. Quiz Time</label>
+<p>Open 2 or 3 of the 10 topics and answer a few questions. <b>You should see:</b>
+an icon for each topic, stars for right answers, and an explanation after each
+question.</p></div>
+<div class="item"><label><input type="checkbox">18. The new Mystery Missions</label>
+<p>Play at least 2 of the newer cases, for example The Puddle That Vanished and
+The Case of the Shrinking Shadow, all the way to "Case solved".</p></div>
+<div class="item"><label><input type="checkbox">19. The new Living Stories</label>
+<p>Play at least 2 of the newer stories, for example The Whale Who Lost Her Song,
+to an ending. <b>Check:</b> each picture matches the scene.</p></div>
+
+<h2>Buddy and grown-ups</h2>
+<div class="item"><label><input type="checkbox">20. Buddy's Wardrobe</label>
+<p>Open the Wardrobe and put something on Buddy. <b>You should hear:</b> "My …
+looks great!", and you see Buddy wearing it.</p></div>
+<div class="item"><label><input type="checkbox">21. Grown-ups</label>
+<p>Scroll to the bottom of Home and tap Grown-ups. Answer the times-table check.
+<b>You should see:</b> Progress at a glance, the settings, and the jump links
+working.</p></div>
+<div class="item"><label><input type="checkbox">22. Settings stay</label>
+<p>In Grown-ups, turn Buddy's voice off. Close the app completely, then open it
+again. <b>You should see:</b> the voice is still off. Turn it back on.</p></div>
+
+<h2>When you're done</h2>
+<p>Tell Claude which numbers worked, and what went wrong with any others. A message
+like this is perfect: <i>"All fine except 10 and 14. In 10 the frog sound is too
+quiet, and in 14 the bulb didn't light."</i></p>
+<p class="note">Already confirmed on the phone, so no need to test again: Dino
+Discovery, Story Maker, the content fixes and the earlier phases.</p>
+</main>
+</body>
+</html>
