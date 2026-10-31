@@ -15,7 +15,7 @@ const _moreTopics = <CuratedTopic>[
       ['blue', 'whale'],
     ],
     answers: [
-      'The blue whale is the biggest animal that has ever lived. '
+      'The blue whale is the biggest animal known to have ever lived. '
           'It is even bigger than the largest dinosaurs!',
     ],
     followUps: ["What's the fastest animal?", 'Tell me an ocean fact.'],
@@ -332,7 +332,7 @@ const _moreTopics = <CuratedTopic>[
       'Mars looks red because its dust has lots of iron in it. '
           'The iron has rusted, like an old bike left in the rain!',
       'Mars has the tallest volcano we know of, called Olympus Mons. '
-          'It is almost three times as tall as Mount Everest!',
+          'It is about two and a half times as tall as Mount Everest!',
     ],
     followUps: ['How many planets are there?', 'Tell me a space fact.'],
   ),

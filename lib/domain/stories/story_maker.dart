@@ -212,8 +212,9 @@ abstract final class StoryMaker {
         MakerEnding(
           'Try a long stick with a hook',
           'The Clever Hook',
-          'It took a lot of tries, but at last the hook caught the toolbox '
-              'handle, and up it came. "Patience works too!" said {hero}.',
+          '{hero} tied a bent twig to a long stick to make a hook. It took a '
+              'lot of tries, but at last the hook caught the toolbox handle, '
+              'and up it came. "Patience works too!" said {hero}.',
           'There is often more than one way to solve a problem. Trying '
               'again and again is part of being a scientist.',
         ),
@@ -253,14 +254,15 @@ abstract final class StoryMaker {
           'remembered a little mirror in the backpack.',
       scienceChoice: 'Bounce the sunlight in with the mirror',
       science:
-          '{hero} held the mirror in the sunbeam and tilted it carefully. A '
-          'bright spot of light jumped deep into the cave, and there was the '
-          'map: a big red X!',
+          '{hero} held the mirror in the sunbeam and tilted it carefully, '
+          "never towards anyone's eyes. A bright spot of light jumped deep "
+          'into the cave, and there was the map: a big red X!',
       endings: [
         MakerEnding(
           'Light a lantern instead',
           'The Lantern Path',
-          '{hero} lit a lantern and walked into the cave slowly and safely. '
+          '{hero} switched on a lantern and walked into the cave with a '
+              'grown-up, slowly and safely. '
               'The map glowed in its warm light. The treasure was a box of '
               'shining crystals!',
           'A lantern makes its own light. Without any light at all, our '

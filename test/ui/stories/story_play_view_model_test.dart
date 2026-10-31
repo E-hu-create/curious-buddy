@@ -69,7 +69,7 @@ void main() {
 
     expect(vm.scene.id, 'dusty_crystal');
     expect(vm.path, ['grey_morning', 'dusty_crystal']);
-    expect(vm.consequence, contains('climbed all the way up'));
+    expect(vm.consequence, contains('walked all the way up'));
     expect(tts.spoken.last, startsWith(vm.consequence!));
     expect(tts.spoken.last, contains(vm.scene.text));
     vm.dispose();
@@ -261,7 +261,7 @@ void main() {
     expect(
       tts.spoken.last,
       'What should we do? '
-      'Choice 1: Climb up to the Sun Crystal in the old oak. '
+      'Choice 1: Walk up to the Sun Crystal in the old oak. '
       'Choice 2: Follow the stream that still sparkles.',
     );
     vm.dispose();

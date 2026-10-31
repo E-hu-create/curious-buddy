@@ -179,10 +179,11 @@ final _animals = QuizTopic(
       questions: [
         _q(
           'biggest_animal',
-          'What is the biggest animal that has ever lived?',
+          'What is the biggest animal known to have ever lived?',
           ['The African elephant', 'The blue whale', 'T. rex', 'The giraffe'],
           1,
-          'The blue whale is the biggest animal that has ever lived, even '
+          'The blue whale is the biggest animal known to have ever lived, '
+              'even '
               'bigger than the largest dinosaurs.',
         ),
         _q(

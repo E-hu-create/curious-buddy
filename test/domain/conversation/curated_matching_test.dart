@@ -250,6 +250,15 @@ void main() {
       expect(feelings.answers.single, contains('When you feel ready'));
     });
 
+    test('fixed facts stay fixed', () {
+      final every = [for (final t in curatedTopics) ...t.answers].join(' ');
+      expect(every, isNot(contains('that has ever lived')));
+      expect(every, isNot(contains('that have ever lived')));
+      expect(every, isNot(contains('almost three times')));
+      expect(every, isNot(contains('because it is so small')));
+      expect(every, contains('path around the Sun'));
+    });
+
     test('the adventure reply does not count the cases', () {
       final adventure = curatedTopics.firstWhere((t) => t.id == 'adventure');
       expect(adventure.answers.single, isNot(contains('three')));

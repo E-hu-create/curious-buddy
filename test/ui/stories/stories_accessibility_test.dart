@@ -109,7 +109,7 @@ void main() {
 
     expect(
       find.bySemanticsLabel(
-        'Choice 1: Climb up to the Sun Crystal in the old oak',
+        'Choice 1: Walk up to the Sun Crystal in the old oak',
       ),
       findsOneWidget,
     );

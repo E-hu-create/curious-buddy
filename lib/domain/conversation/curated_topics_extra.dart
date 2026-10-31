@@ -515,7 +515,8 @@ const _extraTopics = <CuratedTopic>[
     pinned: {'planet': 0, 'dwarf': 0},
     answers: [
       'Pluto used to be called the ninth planet. '
-          'In 2006, scientists renamed it a dwarf planet because it is so small!',
+          'In 2006, scientists renamed it a dwarf planet. '
+          'It shares its path around the Sun with lots of other icy objects.',
     ],
     followUps: ['How many planets are there?', 'What is the biggest planet?'],
   ),

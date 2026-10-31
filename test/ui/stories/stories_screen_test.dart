@@ -195,7 +195,7 @@ void main() {
     await tapText(tester, StoryPlayScreen.tryAnotherLabel);
     expect(find.text(StoryPlayScreen.pageLabel(1)), findsOneWidget);
 
-    await tapText(tester, 'Climb up to the Sun Crystal in the old oak');
+    await tapText(tester, 'Walk up to the Sun Crystal in the old oak');
     await tapText(tester, 'Ask the robins to brush it clean');
     await tapText(tester, 'Turn the crystal to face the morning sun');
 
@@ -224,7 +224,7 @@ void main() {
     await openStories(tester);
     await tapText(tester, StoriesScreen.startLabel);
     await tapText(tester, StoryPlayScreen.beginLabel);
-    await tapText(tester, 'Climb up to the Sun Crystal in the old oak');
+    await tapText(tester, 'Walk up to the Sun Crystal in the old oak');
     await tester.pageBack();
     await tester.pumpAndSettle();
 
@@ -253,7 +253,7 @@ void main() {
     await openStories(tester);
     await tapText(tester, StoriesScreen.startLabel);
     await tapText(tester, StoryPlayScreen.beginLabel);
-    await tapText(tester, 'Climb up to the Sun Crystal in the old oak');
+    await tapText(tester, 'Walk up to the Sun Crystal in the old oak');
     await tester.pageBack();
     await tester.pumpAndSettle();
 
@@ -330,7 +330,7 @@ void main() {
     await tapText(tester, StoryPlayScreen.readChoicesLabel);
 
     expect(tts.spoken.last, startsWith(StoryPlayScreen.whatNext));
-    expect(tts.spoken.last, contains('Choice 1: Climb up'));
+    expect(tts.spoken.last, contains('Choice 1: Walk up'));
     expect(tts.spoken.last, contains('Choice 2: Follow the stream'));
   });
 

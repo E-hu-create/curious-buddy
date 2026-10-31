@@ -38,7 +38,7 @@ const Map<int, List<WordPuzzle>> wordLevels = {
     WordPuzzle('TIGER', 'The largest big cat, with a striped coat.'),
     WordPuzzle(
       'WHALE',
-      'The largest animal that has ever lived is one of these.',
+      'The largest animal known to have ever lived is one of these.',
       picture: GamePicture.whale,
     ),
     WordPuzzle('RIVER', 'Fresh water flowing towards the sea.'),

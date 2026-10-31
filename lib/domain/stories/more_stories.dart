@@ -255,7 +255,8 @@ const _snow = Story(
           '"Snowflakes? I just shovel them!" Walrus chuckled. "But look at '
           'the frost on my sledge." Feathery patterns spread across the metal '
           'like tiny ferns. "They grow from the air when it is very cold," '
-          'said Walrus. The lake had a new sheet of clear ice too.',
+          'said Walrus. The lake had a new sheet of clear ice too. "New ice '
+          'is thin," said Walrus, "so we never walk on it."',
       choices: [
         StoryChoice(
           id: 'study_frost',
@@ -267,7 +268,7 @@ const _snow = Story(
           id: 'study_lake',
           text: 'Look at the ice on the lake',
           nextSceneId: 'floating_ice',
-          consequence: 'You crept up to the edge of the lake with Walrus.',
+          consequence: 'You looked at the lake from the bank with Walrus.',
         ),
       ],
     ),
@@ -912,7 +913,9 @@ const _spring = Story(
           'The stones on the path felt warm, and the snow around them had '
           'melted. Tessa sniffed. "Eggs?" she said, wrinkling her nose. Ahead '
           'lay two trails: one to a small steaming pool, and one to a crack '
-          'in the rock that whistled softly with steam.',
+          'in the rock that whistled softly with steam. "Some hot pools are '
+          'hot enough to burn," said Tessa, "so we only look, and never touch '
+          'the water."',
       choices: [
         StoryChoice(
           id: 'see_pool',
@@ -990,7 +993,8 @@ const _spring = Story(
           'There it was: a pool of warm blue water, with snow all around it. '
           'A family of snow monkeys were sitting in it up to their chins, '
           'looking very pleased. "Rain sank down, the hot rock warmed it, and '
-          'up it came," said Tessa. "The mountain has its own bath!"',
+          'up it came," said Tessa. "The mountain has its own bath! We will '
+          'just watch. People only bathe where grown-ups say it is safe."',
       ending: StoryEnding(
         id: 'mountain_bath',
         title: 'The Mountain\'s Bath',
@@ -1277,8 +1281,8 @@ const _robot = Story(
       text:
           'The swirl was a dust devil, a spinning column of air. Rusty '
           'calculated its path. "Warm air is rising and spinning," it said. '
-          '"It may sweep the dust away for us!" Rusty could steer the others '
-          'nearer to its path, or leave it and start cleaning.',
+          '"It may sweep the dust away for us!" Rusty could wait for it to '
+          'pass, or start cleaning by hand.',
       choices: [
         StoryChoice(
           id: 'wait_devil',

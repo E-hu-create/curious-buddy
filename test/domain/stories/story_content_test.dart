@@ -117,4 +117,17 @@ void main() {
     };
     expect(used, ScenePicture.values.toSet());
   });
+
+  test('scenes a child could copy keep them safe', () {
+    String scene(String id) =>
+        allStories.expand((s) => s.scenes).firstWhere((s) => s.id == id).text;
+
+    // The Sun Crystal is in reach, so nobody climbs a tall tree.
+    expect(scene('grey_morning'), contains('low branch'));
+    expect(scene('dusty_crystal'), contains('low branch'));
+    // New ice is thin, and hot pools can burn.
+    expect(scene('lake_walrus'), contains('never walk on it'));
+    expect(scene('warm_stones'), contains('hot enough to burn'));
+    expect(scene('steaming_pool'), contains('grown-ups say it is safe'));
+  });
 }

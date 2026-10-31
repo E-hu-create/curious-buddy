@@ -103,6 +103,17 @@ void main() {
     expect(lantern.endings[2].text, contains('little battery circuit'));
   });
 
+  test('the cave and toolbox stories make sense and stay safe', () {
+    MakerMystery mystery(String id) =>
+        StoryMaker.mysteries.firstWhere((m) => m.id == id);
+
+    final cave = mystery('dark_cave');
+    expect(cave.science, contains("never towards anyone's eyes"));
+    expect(cave.endings[0].text, contains('with a grown-up'));
+    // The hook is made before it is used.
+    expect(mystery('toolbox').endings[0].text, contains('make a hook'));
+  });
+
   test('a surprise picks from every list', () {
     final random = Random(1);
     final seen = <String>{};

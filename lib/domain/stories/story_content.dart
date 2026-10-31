@@ -27,15 +27,16 @@ const _forest = Story(
           'Fennel the hedgehog blinked at the forest. The ferns were grey. '
           'The berries were grey. Even the butterflies were grey. "Last night '
           'a big dusty storm blew through," Fennel said. "Ever since, the '
-          'colours have been gone." High on the hill, the old oak tree held '
-          'the Sun Crystal, which used to scatter light all over the wood. '
+          'colours have been gone." Up on the hill, the Sun Crystal sat on a '
+          'low branch of the old oak, where it used to scatter light all over '
+          'the wood. '
           'Down below, a little stream still sparkled, just a bit.',
       choices: [
         StoryChoice(
           id: 'climb_oak',
-          text: 'Climb up to the Sun Crystal in the old oak',
+          text: 'Walk up to the Sun Crystal in the old oak',
           nextSceneId: 'dusty_crystal',
-          consequence: 'You and Fennel climbed all the way up the old oak.',
+          consequence: 'You and Fennel walked all the way up the hill.',
         ),
         StoryChoice(
           id: 'follow_stream',
@@ -50,7 +51,8 @@ const _forest = Story(
       title: 'The Dusty Crystal',
       picture: ScenePicture.forestOak,
       text:
-          'At the top of the oak sat the Sun Crystal, but it was covered in '
+          'On a low branch of the oak sat the Sun Crystal, just in reach, but '
+          'it was covered in '
           'thick grey dust from the storm. "Sunlight looks white," Fennel '
           'said, "but it is really made of every colour mixed together. The '
           'crystal splits it apart, so the forest gets its colours." Under '

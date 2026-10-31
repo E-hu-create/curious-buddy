@@ -223,8 +223,9 @@ const curatedTopics = <CuratedTopic>[
       ['trivia'],
     ],
     answers: [
-      "Let's do it! Quiz Time has questions about space, animals, your "
-          'body and our planet. Each right answer helps you earn stars.',
+      "Let's do it! Quiz Time has topics from space and dinosaurs to "
+          'oceans, robots and your amazing body. Each right answer helps you '
+          'earn stars.',
     ],
     action: BuddyAction.startQuiz,
     actionLabel: 'Play Quiz Time',
@@ -288,8 +289,8 @@ const curatedTopics = <CuratedTopic>[
       ['arena'],
     ],
     answers: [
-      "Let's play! The Game Zone has quick games for your memory, your logic "
-          'and your eyes.',
+      "Let's play! The Game Zone has lots of games, like Dino Discovery, "
+          'Treasure Maze, Code the Robot and Word Builder, and more.',
     ],
     action: BuddyAction.openGames,
     actionLabel: 'Open the Game Zone',
@@ -490,7 +491,7 @@ const curatedTopics = <CuratedTopic>[
     answers: [
       'An octopus has three hearts and blue blood! '
           'Want to discover another ocean secret?',
-      'Blue whales are the biggest animals that have ever lived. '
+      'Blue whales are the biggest animals known to have ever lived. '
           'Even bigger than the largest dinosaurs!',
       'Sharks have been around for longer than trees. '
           'Sharks are over 400 million years old!',
