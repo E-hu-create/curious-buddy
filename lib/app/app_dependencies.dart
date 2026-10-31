@@ -1,9 +1,13 @@
+import 'package:flutter/foundation.dart';
+
 import '../data/repositories/creations_repository.dart';
 import '../data/repositories/mission_repository.dart';
 import '../data/repositories/progress_repository.dart';
 import '../data/repositories/quiz_repository.dart';
 import '../data/repositories/story_repository.dart';
 import '../data/services/key_value_store.dart';
+import '../data/services/purchase/play_purchase_service.dart';
+import '../data/services/purchase/purchase_service.dart';
 import '../data/services/shared_preferences_key_value_store.dart';
 import '../data/services/sound/sound_effects_service.dart';
 import '../data/services/voice/flutter_tts_service.dart';
@@ -29,7 +33,13 @@ class AppDependencies {
     required this.quizRepository,
     required this.creationsRepository,
     required this.soundEffects,
+    this.purchases = const NoStorePurchaseService(),
+    this.locksOn = false,
   });
+
+  /// Set with --dart-define=PREVIEW_LOCKS=true to try the free version in a
+  /// test build. Store builds always lock.
+  static const previewLocks = bool.fromEnvironment('PREVIEW_LOCKS');
 
   /// Speech output uses the device's built-in engine. Speech input is
   /// tap-to-talk on Android's recogniser, on-device only unless a grown-up
@@ -37,6 +47,9 @@ class AppDependencies {
   /// Progress and settings are saved on the device only.
   factory AppDependencies.defaults() {
     final store = SharedPreferencesKeyValueStore();
+    // Purchases only work in the version from Google Play, so test builds
+    // are fully open and never contact the store.
+    const locksOn = kReleaseMode || previewLocks;
     return AppDependencies(
       textToSpeech: FlutterTtsService(),
       speechRecognition: SpeechToTextRecognitionService(),
@@ -48,6 +61,10 @@ class AppDependencies {
       quizRepository: BundledQuizRepository(),
       creationsRepository: LocalCreationsRepository(store),
       soundEffects: PlatformSoundEffectsService(),
+      purchases: locksOn
+          ? PlayPurchaseService()
+          : const NoStorePurchaseService(),
+      locksOn: locksOn,
     );
   }
 
@@ -76,4 +93,10 @@ class AppDependencies {
 
   /// Short sounds bundled in the app.
   final SoundEffectsService soundEffects;
+
+  /// The one-time full unlock, bought by a grown-up in the Parent Zone.
+  final PurchaseService purchases;
+
+  /// Whether the free version's locks apply.
+  final bool locksOn;
 }

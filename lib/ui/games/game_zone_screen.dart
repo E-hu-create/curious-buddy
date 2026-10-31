@@ -14,6 +14,7 @@ import '../../domain/games/sound_game.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
+import '../core/widgets/access_scope.dart';
 import '../core/widgets/buddy/buddy.dart';
 import '../core/widgets/motion.dart';
 import '../creative/drawing_screen.dart';
@@ -63,6 +64,16 @@ class GameZoneScreen extends StatefulWidget {
 }
 
 class _GameZoneScreenState extends State<GameZoneScreen> {
+  /// A game's Play button, or "Ask a grown-up" when it needs the full app.
+  Widget _play(String id, String label, IconData icon, String route) =>
+      AccessScope.of(context)?.gameLocked(id) ?? false
+      ? const AskGrownUpButton()
+      : PlayButton(
+          label: label,
+          icon: icon,
+          onPressed: () => unawaited(_open(route)),
+        );
+
   int _stars = 0;
 
   @override
@@ -112,10 +123,11 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
         art: const _DinoTileArt(),
         title: GameZoneScreen.dinoTitle,
         text: GameZoneScreen.dinoText,
-        button: PlayButton(
-          label: GameZoneScreen.dinoLabel,
-          icon: Icons.explore_rounded,
-          onPressed: () => unawaited(_open(Routes.dino)),
+        button: _play(
+          'dino',
+          GameZoneScreen.dinoLabel,
+          Icons.explore_rounded,
+          Routes.dino,
         ),
       ),
       const SizedBox(height: 16),
@@ -124,10 +136,11 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
         art: const _MazeTileArt(),
         title: GameKind.maze.title,
         text: GameKind.maze.tagline,
-        button: PlayButton(
-          label: GameZoneScreen.mazeLabel,
-          icon: Icons.diamond_rounded,
-          onPressed: () => unawaited(_open(Routes.maze)),
+        button: _play(
+          'maze',
+          GameZoneScreen.mazeLabel,
+          Icons.diamond_rounded,
+          Routes.maze,
         ),
       ),
       const SizedBox(height: 16),
@@ -136,10 +149,11 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
         art: const _RobotTileArt(),
         title: GameKind.robot.title,
         text: GameKind.robot.tagline,
-        button: PlayButton(
-          label: GameZoneScreen.robotLabel,
-          icon: Icons.smart_toy_rounded,
-          onPressed: () => unawaited(_open(Routes.robot)),
+        button: _play(
+          'robot',
+          GameZoneScreen.robotLabel,
+          Icons.smart_toy_rounded,
+          Routes.robot,
         ),
       ),
       const SizedBox(height: 16),
@@ -148,10 +162,11 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
         art: const _WordTileArt(),
         title: GameKind.words.title,
         text: GameKind.words.tagline,
-        button: PlayButton(
-          label: GameZoneScreen.wordsLabel,
-          icon: Icons.abc_rounded,
-          onPressed: () => unawaited(_open(Routes.words)),
+        button: _play(
+          'words',
+          GameZoneScreen.wordsLabel,
+          Icons.abc_rounded,
+          Routes.words,
         ),
       ),
       const SizedBox(height: 16),
@@ -160,10 +175,11 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
         art: const _FourTileArt(),
         title: GameKind.four.title,
         text: GameKind.four.tagline,
-        button: PlayButton(
-          label: GameZoneScreen.fourLabel,
-          icon: Icons.grid_on_rounded,
-          onPressed: () => unawaited(_open(Routes.four)),
+        button: _play(
+          'four',
+          GameZoneScreen.fourLabel,
+          Icons.grid_on_rounded,
+          Routes.four,
         ),
       ),
       const SizedBox(height: 16),
@@ -172,10 +188,11 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
         art: const _NumberTileArt(),
         title: GameKind.number.title,
         text: GameKind.number.tagline,
-        button: PlayButton(
-          label: GameZoneScreen.numberLabel,
-          icon: Icons.bubble_chart_rounded,
-          onPressed: () => unawaited(_open(Routes.number)),
+        button: _play(
+          'number',
+          GameZoneScreen.numberLabel,
+          Icons.bubble_chart_rounded,
+          Routes.number,
         ),
       ),
       const SizedBox(height: 16),
@@ -184,10 +201,11 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
         art: const _SortTileArt(),
         title: GameKind.sort.title,
         text: GameKind.sort.tagline,
-        button: PlayButton(
-          label: GameZoneScreen.sortLabel,
-          icon: Icons.category_rounded,
-          onPressed: () => unawaited(_open(Routes.sort)),
+        button: _play(
+          'sort',
+          GameZoneScreen.sortLabel,
+          Icons.category_rounded,
+          Routes.sort,
         ),
       ),
       const SizedBox(height: 16),
@@ -196,10 +214,11 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
         art: const _CircuitTileArt(),
         title: GameKind.circuit.title,
         text: GameKind.circuit.tagline,
-        button: PlayButton(
-          label: GameZoneScreen.circuitLabel,
-          icon: Icons.lightbulb_rounded,
-          onPressed: () => unawaited(_open(Routes.circuit)),
+        button: _play(
+          'circuit',
+          GameZoneScreen.circuitLabel,
+          Icons.lightbulb_rounded,
+          Routes.circuit,
         ),
       ),
       const SizedBox(height: 16),
@@ -208,10 +227,11 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
         art: const _SudokuTileArt(),
         title: GameKind.sudoku.title,
         text: GameKind.sudoku.tagline,
-        button: PlayButton(
-          label: GameZoneScreen.sudokuLabel,
-          icon: Icons.grid_on_rounded,
-          onPressed: () => unawaited(_open(Routes.sudoku)),
+        button: _play(
+          'sudoku',
+          GameZoneScreen.sudokuLabel,
+          Icons.grid_on_rounded,
+          Routes.sudoku,
         ),
       ),
       const SizedBox(height: 16),
@@ -220,10 +240,11 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
         art: const _ParadeTileArt(),
         title: GameKind.parade.title,
         text: GameKind.parade.tagline,
-        button: PlayButton(
-          label: GameZoneScreen.paradeLabel,
-          icon: Icons.public_rounded,
-          onPressed: () => unawaited(_open(Routes.parade)),
+        button: _play(
+          'parade',
+          GameZoneScreen.paradeLabel,
+          Icons.public_rounded,
+          Routes.parade,
         ),
       ),
       const SizedBox(height: 16),
@@ -232,10 +253,11 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
         art: const _ArenaTileArt(),
         title: GameZoneScreen.arenaTitle,
         text: GameZoneScreen.arenaText,
-        button: PlayButton(
-          label: GameZoneScreen.arenaLabel,
-          icon: Icons.sports_esports_rounded,
-          onPressed: () => unawaited(_open(Routes.arena)),
+        button: _play(
+          'arena',
+          GameZoneScreen.arenaLabel,
+          Icons.sports_esports_rounded,
+          Routes.arena,
         ),
       ),
       const SizedBox(height: 16),
@@ -244,10 +266,11 @@ class _GameZoneScreenState extends State<GameZoneScreen> {
         art: const _SoundTileArt(),
         title: GameKind.sounds.title,
         text: GameKind.sounds.tagline,
-        button: PlayButton(
-          label: GameZoneScreen.soundsLabel,
-          icon: Icons.hearing_rounded,
-          onPressed: () => unawaited(_open(Routes.sounds)),
+        button: _play(
+          'sounds',
+          GameZoneScreen.soundsLabel,
+          Icons.hearing_rounded,
+          Routes.sounds,
         ),
       ),
     ],

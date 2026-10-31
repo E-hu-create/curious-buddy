@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:curious_buddy/data/services/key_value_store.dart';
+import 'package:curious_buddy/data/services/purchase/purchase_service.dart';
 import 'package:curious_buddy/data/services/sound/sound_effects_service.dart';
 import 'package:curious_buddy/data/services/voice/speech_recognition_service.dart';
 import 'package:curious_buddy/data/services/voice/text_to_speech_service.dart';
@@ -217,4 +218,47 @@ class FailingKeyValueStore implements KeyValueStore {
 
 class FileSystemLikeException implements Exception {
   const FileSystemLikeException();
+}
+
+/// Stands in for Google Play. Tests decide what the store reports.
+class FakePurchaseService implements PurchaseService {
+  final _events = StreamController<PurchaseEvent>.broadcast();
+  String? storePrice = 'GH₵ 30.00';
+  bool storeReachable = true;
+
+  /// What the store reports after a purchase starts. Null: nothing yet.
+  PurchaseEvent? afterBuy = PurchaseEvent.owned;
+
+  /// Whether Restore finds an earlier purchase.
+  bool ownedBefore = false;
+
+  int buyCalls = 0;
+
+  /// Sends an update, as when a pending payment goes through later.
+  void report(PurchaseEvent event) => _events.add(event);
+
+  @override
+  Stream<PurchaseEvent> get events => _events.stream;
+
+  @override
+  Future<String?> price() async => storeReachable ? storePrice : null;
+
+  @override
+  Future<bool> buy() async {
+    buyCalls++;
+    if (!storeReachable) return false;
+    final event = afterBuy;
+    if (event != null) scheduleMicrotask(() => _events.add(event));
+    return true;
+  }
+
+  @override
+  Future<bool> restore() async {
+    if (!storeReachable) return false;
+    if (ownedBefore) scheduleMicrotask(() => _events.add(PurchaseEvent.owned));
+    return true;
+  }
+
+  @override
+  void dispose() => unawaited(_events.close());
 }

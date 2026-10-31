@@ -6,6 +6,7 @@ import 'package:curious_buddy/data/repositories/progress_repository.dart';
 import 'package:curious_buddy/data/repositories/quiz_repository.dart';
 import 'package:curious_buddy/data/repositories/story_repository.dart';
 import 'package:curious_buddy/data/services/key_value_store.dart';
+import 'package:curious_buddy/data/services/purchase/purchase_service.dart';
 import 'package:curious_buddy/data/services/sound/sound_effects_service.dart';
 import 'package:curious_buddy/domain/conversation/curated_response_provider.dart';
 import 'package:curious_buddy/domain/voice/educational_response_provider.dart';
@@ -27,6 +28,8 @@ Widget buildTestApp({
   QuizRepository? quizzes,
   CreationsRepository? creations,
   SoundEffectsService? sounds,
+  PurchaseService? purchases,
+  bool locksOn = false,
 }) {
   final keyValueStore = store ?? InMemoryKeyValueStore();
   return CuriousBuddyApp(
@@ -41,6 +44,8 @@ Widget buildTestApp({
       quizRepository: quizzes ?? BundledQuizRepository(),
       creationsRepository: creations ?? LocalCreationsRepository(keyValueStore),
       soundEffects: sounds ?? FakeSoundEffectsService(),
+      purchases: purchases ?? const NoStorePurchaseService(),
+      locksOn: locksOn,
     ),
   );
 }

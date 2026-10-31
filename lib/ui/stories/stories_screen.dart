@@ -8,6 +8,7 @@ import '../../domain/stories/world_stories.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
+import '../core/widgets/access_scope.dart';
 import '../core/widgets/buddy/buddy.dart';
 import 'stories_view_model.dart';
 import 'story_maker_screen.dart';
@@ -282,6 +283,7 @@ class _StoryCard extends StatelessWidget {
     final colours = storyColours(story.cover);
     final found = summary.foundEndings;
     final allFound = found.length == summary.totalEndings;
+    final locked = AccessScope.of(context)?.storyLocked(story.id) ?? false;
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: AppShapes.sticker(AppColors.white),
@@ -333,7 +335,9 @@ class _StoryCard extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 12),
-          if (summary.canContinue) ...[
+          if (locked)
+            const AskGrownUpButton()
+          else if (summary.canContinue) ...[
             FilledButton.icon(
               onPressed: () => onOpen(resume: true),
               icon: const Icon(Icons.play_arrow_rounded),

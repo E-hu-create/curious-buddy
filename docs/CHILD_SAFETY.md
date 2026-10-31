@@ -30,6 +30,7 @@ Zone shows the same list to parents, with live values read from storage.
 | `sound.effects` | Sound effects on/off | Grown-up choice | Same as above |
 | `voice.allowOnlineRecognition` | Allow online voice recognition, off by default | Grown-up choice about where speech is recognised | Same as above |
 | `display.reduceMotion` | Calmer animations | Accessibility | Same as above |
+| `unlock.full` | Whether the one-time full unlock was bought (`true`) | Keep the full app open | Kept (it is a purchase; Restore in the Parent Zone brings it back) |
 | `creations` | Creative Island drawings (brush strokes as numbers) and creatures (chosen parts and a name from a fixed list). No typed text, no photos | The child's own work, shown on their shelf | Deleted (the child can also remove one at a time) |
 | `creations.corrupt_backup` | A copy of the shelf that could not be read (only exists if that ever happened) | Not silently losing a child's work | Deleted |
 
@@ -79,6 +80,13 @@ Release builds request exactly (verified in the merged manifest):
 - `DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` (added automatically by
   AndroidX via `flutter_tts`): private to this app, signature-protected,
   never shown to users, gives no access to user data.
+- `com.android.vending.BILLING` (added automatically by Google Play
+  Billing, through `in_app_purchase`): lets the store version sell the
+  one-time full unlock. Used only when a grown-up taps Unlock or Restore in
+  the Parent Zone. No other data is sent.
+- `ACCESS_NETWORK_STATE` (also added by Google Play Billing): lets the
+  billing library see whether there is a connection before contacting the
+  store. It reads no data and is not shown to users.
 - Each new permission must be listed here with its reason.
 
 ## Buddy's voice
@@ -193,6 +201,26 @@ each time it opens, so Delete all progress empties it.
   exclude all app data, but some manufacturers' devices may still transfer
   it. Not yet tested with a real transfer (for example Samsung Smart Switch
   to a second phone). The Parent Zone tells parents this.
+
+## The full unlock (store version only)
+
+- The free version keeps Buddy's answers, all safety and feelings replies,
+  3 stories, Story Maker, 3 missions, every quiz's starter level, 5 games
+  and Creative Island. One payment unlocks the rest, for good
+  (`FreeContent`, `AccessController`).
+- **Only grown-ups can buy.** Unlock and Restore are only in the Parent
+  Zone, behind the parent check, and Google Play asks for the account
+  password as well. Children see a calm "Ask a grown-up" button and note:
+  no prices, countdowns, pop-ups or sales talk (tested).
+- **No subscriptions, coins, consumables or timers.** One non-consumable
+  product, `full_unlock`, priced in the Play Console.
+- The app talks to Google Play only when a grown-up taps Unlock or Restore,
+  and to receive the result (including payments that complete later). The
+  app never sees card or account details. Purchases are checked on the
+  phone; there is no server.
+- Builds that are not from the store (testing) are fully open and never
+  contact the store. `--dart-define=PREVIEW_LOCKS=true` previews the free
+  version.
 
 ## No accounts, backend or AI yet
 

@@ -8,6 +8,7 @@ import '../../domain/quiz/quiz.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
+import '../core/widgets/access_scope.dart';
 import '../core/widgets/buddy/buddy.dart';
 import 'quiz_hub_view_model.dart';
 import 'quiz_play_screen.dart';
@@ -290,7 +291,12 @@ class _LevelRow extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          if (summary.unlocked)
+          if (AccessScope.of(
+                context,
+              )?.quizLevelLocked(summary.level.difficulty) ??
+              false)
+            const AskGrownUpButton()
+          else if (summary.unlocked)
             FilledButton.icon(
               onPressed: onPlay,
               icon: Icon(

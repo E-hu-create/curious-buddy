@@ -4,6 +4,7 @@ import '../../../domain/settings/display_settings.dart';
 import '../../../domain/voice/buddy_listener.dart';
 import '../../../domain/voice/buddy_voice.dart';
 import '../../core/themes/app_colors.dart';
+import '../../core/widgets/access_scope.dart';
 import '../parent_zone_view_model.dart';
 import 'parent_section.dart';
 import 'parent_settings.dart';
@@ -59,6 +60,14 @@ class DataOverviewSection extends StatelessWidget {
       'lost.';
   static const settingsTitle = 'Settings';
   static const settingsWhy = 'Remembers the choices on this page.';
+  static const unlockTitle = 'Full app unlocked';
+  static const unlockWhy =
+      'Remembers the one-time purchase, so the full app stays open. It is '
+      'not a payment detail: Google Play keeps those.';
+  static const unlockKept =
+      'Kept by "Delete all progress". Restore brings it back on a new phone.';
+  static String unlockValue({required bool unlocked}) =>
+      unlocked ? 'Yes' : 'No';
 
   static const memoryTitle = 'Only kept while the app is open (never saved)';
   static const memoryItems = [
@@ -95,6 +104,9 @@ class DataOverviewSection extends StatelessWidget {
     'With online voice recognition off, listening only works if the phone '
         'can do it on the device. With it on, the phone\'s recognition '
         'service (often Google) may send your child\'s voice to its servers.',
+    'Only when a grown-up taps Unlock or Restore in Full app: Google Play '
+        'handles the payment under its own terms. Curious Buddy never sees '
+        'card or account details.',
   ];
 
   static String missionsValue(ActivitySummary s) =>
@@ -218,6 +230,13 @@ class DataOverviewSection extends StatelessWidget {
             why: settingsWhy,
             reset: kept,
           ),
+          if (AccessScope.of(context) case final access?)
+            _Record(
+              title: unlockTitle,
+              value: unlockValue(unlocked: access.unlocked),
+              why: unlockWhy,
+              reset: unlockKept,
+            ),
           const SizedBox(height: 8),
           Text(memoryTitle, style: textTheme.titleMedium),
           const SizedBox(height: 6),

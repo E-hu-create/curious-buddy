@@ -8,6 +8,7 @@ import '../../domain/missions/mission.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../core/themes/app_colors.dart';
 import '../core/themes/app_theme.dart';
+import '../core/widgets/access_scope.dart';
 import '../core/widgets/buddy/buddy.dart';
 import 'mission_play_screen.dart';
 import 'missions_view_model.dart';
@@ -293,17 +294,22 @@ class _MissionCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text('${mission.stages.length} steps', style: textTheme.bodyMedium),
           const SizedBox(height: 12),
-          FilledButton.icon(
-            onPressed: onPlay,
-            icon: Icon(
-              summary.solved ? Icons.replay_rounded : Icons.play_arrow_rounded,
+          if (AccessScope.of(context)?.missionLocked(mission.id) ?? false)
+            const AskGrownUpButton()
+          else
+            FilledButton.icon(
+              onPressed: onPlay,
+              icon: Icon(
+                summary.solved
+                    ? Icons.replay_rounded
+                    : Icons.play_arrow_rounded,
+              ),
+              label: Text(
+                summary.solved
+                    ? MissionsScreen.replayLabel
+                    : MissionsScreen.playLabel,
+              ),
             ),
-            label: Text(
-              summary.solved
-                  ? MissionsScreen.replayLabel
-                  : MissionsScreen.playLabel,
-            ),
-          ),
         ],
       ),
     );

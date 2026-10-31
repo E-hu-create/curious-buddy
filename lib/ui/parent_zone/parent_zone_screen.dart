@@ -10,6 +10,7 @@ import '../../domain/voice/buddy_listener.dart';
 import '../../domain/voice/buddy_voice.dart';
 import '../../domain/wardrobe/buddy_wardrobe.dart';
 import '../core/themes/app_colors.dart';
+import '../core/widgets/access_scope.dart';
 import '../core/widgets/motion.dart';
 import 'parent_zone_view_model.dart';
 import 'widgets/data_overview.dart';
@@ -18,6 +19,7 @@ import 'widgets/parent_section.dart';
 import 'widgets/parent_settings.dart';
 import 'widgets/progress_overview.dart';
 import 'widgets/reset_dialogs.dart';
+import 'widgets/unlock_section.dart';
 
 /// Grown-ups only: a parent check, then settings, an overview of everything
 /// saved on the phone, and a two-step reset.
@@ -49,6 +51,7 @@ class ParentZoneScreen extends StatefulWidget {
   static const title = 'Parent Zone';
   static const backToBuddy = 'Back to Buddy';
   static const jumpProgress = 'Progress';
+  static const jumpUnlock = 'Full app';
   static const jumpVoice = 'Voice';
   static const jumpListening = 'Microphone';
   static const jumpDisplay = 'Animations';
@@ -78,6 +81,7 @@ class ParentZoneScreen extends StatefulWidget {
 
 class _ParentZoneScreenState extends State<ParentZoneScreen> {
   final _progressKey = GlobalKey();
+  final _unlockKey = GlobalKey();
   final _voiceKey = GlobalKey();
   final _listeningKey = GlobalKey();
   final _displayKey = GlobalKey();
@@ -197,47 +201,56 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
     );
   }
 
-  Widget _unlockedBody() => Column(
-    crossAxisAlignment: .stretch,
-    children: [
-      ParentJumpBar(
-        links: [
-          (ParentZoneScreen.jumpProgress, () => _jumpTo(_progressKey)),
-          (ParentZoneScreen.jumpVoice, () => _jumpTo(_voiceKey)),
-          (ParentZoneScreen.jumpListening, () => _jumpTo(_listeningKey)),
-          (ParentZoneScreen.jumpDisplay, () => _jumpTo(_displayKey)),
-          (ParentZoneScreen.jumpData, () => _jumpTo(_dataKey)),
-          (ParentZoneScreen.jumpDelete, () => _jumpTo(_deleteKey)),
+  Widget _unlockedBody() {
+    final access = AccessScope.of(context);
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        ParentJumpBar(
+          links: [
+            (ParentZoneScreen.jumpProgress, () => _jumpTo(_progressKey)),
+            if (access != null)
+              (ParentZoneScreen.jumpUnlock, () => _jumpTo(_unlockKey)),
+            (ParentZoneScreen.jumpVoice, () => _jumpTo(_voiceKey)),
+            (ParentZoneScreen.jumpListening, () => _jumpTo(_listeningKey)),
+            (ParentZoneScreen.jumpDisplay, () => _jumpTo(_displayKey)),
+            (ParentZoneScreen.jumpData, () => _jumpTo(_dataKey)),
+            (ParentZoneScreen.jumpDelete, () => _jumpTo(_deleteKey)),
+          ],
+        ),
+        const SizedBox(height: 16),
+        ProgressOverviewSection(key: _progressKey, vm: _vm),
+        const SizedBox(height: 16),
+        if (access != null) ...[
+          UnlockSection(key: _unlockKey, access: access),
+          const SizedBox(height: 16),
         ],
-      ),
-      const SizedBox(height: 16),
-      ProgressOverviewSection(key: _progressKey, vm: _vm),
-      const SizedBox(height: 16),
-      KeyedSubtree(
-        key: _voiceKey,
-        child: VoiceSettingsSection(voice: widget.voice),
-      ),
-      const SizedBox(height: 16),
-      KeyedSubtree(
-        key: _listeningKey,
-        child: ListeningSettingsSection(listener: widget.listener),
-      ),
-      const SizedBox(height: 16),
-      KeyedSubtree(
-        key: _displayKey,
-        child: DisplaySettingsSection(display: widget.display),
-      ),
-      const SizedBox(height: 16),
-      KeyedSubtree(
-        key: _dataKey,
-        child: DataOverviewSection(vm: _vm),
-      ),
-      const SizedBox(height: 16),
-      KeyedSubtree(key: _deleteKey, child: _resetSection()),
-      const SizedBox(height: 16),
-      const ParentNote(ParentZoneScreen.legalNote),
-    ],
-  );
+        KeyedSubtree(
+          key: _voiceKey,
+          child: VoiceSettingsSection(voice: widget.voice),
+        ),
+        const SizedBox(height: 16),
+        KeyedSubtree(
+          key: _listeningKey,
+          child: ListeningSettingsSection(listener: widget.listener),
+        ),
+        const SizedBox(height: 16),
+        KeyedSubtree(
+          key: _displayKey,
+          child: DisplaySettingsSection(display: widget.display),
+        ),
+        const SizedBox(height: 16),
+        KeyedSubtree(
+          key: _dataKey,
+          child: DataOverviewSection(vm: _vm),
+        ),
+        const SizedBox(height: 16),
+        KeyedSubtree(key: _deleteKey, child: _resetSection()),
+        const SizedBox(height: 16),
+        const ParentNote(ParentZoneScreen.legalNote),
+      ],
+    );
+  }
 
   Widget _resetSection() {
     final status = _vm.resetStatus;

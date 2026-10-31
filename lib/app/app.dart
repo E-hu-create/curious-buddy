@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../domain/access/access_controller.dart';
 import '../domain/games/games.dart';
 import '../domain/parent/parent_gate.dart';
 import '../domain/settings/display_settings.dart';
@@ -9,6 +10,7 @@ import '../domain/voice/buddy_listener.dart';
 import '../domain/voice/buddy_voice.dart';
 import '../domain/wardrobe/buddy_wardrobe.dart';
 import '../ui/core/themes/app_theme.dart';
+import '../ui/core/widgets/access_scope.dart';
 import '../ui/core/widgets/buddy/buddy.dart';
 import '../ui/core/widgets/buddy/buddy_look_scope.dart';
 import '../ui/core/widgets/placeholder_screen.dart';
@@ -56,6 +58,12 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
     settings: widget.dependencies.settingsStore,
   );
 
+  late final AccessController _access = AccessController(
+    store: widget.dependencies.settingsStore,
+    purchases: widget.dependencies.purchases,
+    locksOn: widget.dependencies.locksOn,
+  );
+
   late final BuddyWardrobe _wardrobe = BuddyWardrobe(
     progressRepository: widget.dependencies.progressRepository,
   );
@@ -78,6 +86,7 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
     unawaited(_listener.ready);
     unawaited(_display.ready);
     unawaited(_wardrobe.load());
+    unawaited(_access.ready);
     _lifecycle = AppLifecycleListener(
       // Covers calls, the app switcher, the screen turning off, and leaving
       // the app.
@@ -98,6 +107,8 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
     _voice.dispose();
     _display.dispose();
     _wardrobe.dispose();
+    _access.dispose();
+    widget.dependencies.purchases.dispose();
     super.dispose();
   }
 
@@ -119,7 +130,10 @@ class _CuriousBuddyAppState extends State<CuriousBuddyApp> {
               disableAnimations:
                   media.disableAnimations || _display.reduceMotion,
             ),
-            child: BuddyLookScope(wardrobe: _wardrobe, child: child!),
+            child: AccessScope(
+              access: _access,
+              child: BuddyLookScope(wardrobe: _wardrobe, child: child!),
+            ),
           );
         },
       ),
