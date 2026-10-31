@@ -411,6 +411,23 @@ void main() {
     expect(response, fallbackAnswer);
   });
 
+  test('"I don\'t know" praises the question and says where to find out', () {
+    expect(fallbackAnswer.text, startsWith('Ooh, great question!'));
+    expect(fallbackAnswer.text, contains('teacher'));
+    expect(fallbackAnswer.text, contains('library book'));
+    expect(fallbackAnswer.followUps, isNotEmpty);
+  });
+
+  test('a nearby fact says "an" before a vowel', () async {
+    expect(notSureLeadIn('ocean'), contains('an ocean fact'));
+    expect(notSureLeadIn('snake'), contains('a snake fact'));
+    final response = await provider.respond(
+      const EducationalPrompt(question: 'how deep is the sea'),
+    );
+    expect(response.text, startsWith('Great question!'));
+    expect(response.text, contains('an ocean fact'));
+  });
+
   test('library size', () {
     // Guards against accidentally dropping topics.
     expect(curatedTopics.length, greaterThanOrEqualTo(119));

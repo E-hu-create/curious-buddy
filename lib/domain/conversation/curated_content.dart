@@ -120,8 +120,12 @@ const typoTolerantWords = {
 };
 
 String notSureLeadIn(String subject) =>
-    "I'm not sure about that exact question yet. "
-    "Here's a $subject fact instead! ";
+    "Great question! I'm not sure about that exact one yet. "
+    "Here's ${_article(subject)} $subject fact instead! ";
+
+/// "an" before a vowel sound ("an ocean fact"), otherwise "a".
+String _article(String word) =>
+    'aeiou'.contains(word[0].toLowerCase()) ? 'an' : 'a';
 
 /// Shown on Home before the child has asked anything.
 const starterPrompts = [
@@ -134,9 +138,9 @@ const starterPrompts = [
 
 const fallbackAnswer = EducationalResponse(
   text:
-      "Hmm, I don't know that one yet. "
-      'I only know some topics so far, and I am still learning. '
-      'Try asking me about animals, space, or why the sky is blue!',
+      "Ooh, great question! I don't know that one yet. "
+      'You could ask a teacher or a grown-up, or look in a library book. '
+      'Or try one of these!',
   kind: ResponseKind.fallback,
   followUps: [
     'Tell me an animal fact.',
