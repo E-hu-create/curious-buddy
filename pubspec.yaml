@@ -65,6 +65,7 @@ flutter:
   # The font's licence must ship with the font.
   assets:
     - assets/fonts/OFL.txt
+    - assets/voice/
 
   # Nunito, bundled so the app never fetches fonts from the network.
   # Fixed weights made from the official variable font; licence in

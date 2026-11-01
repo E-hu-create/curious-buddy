@@ -25,3 +25,13 @@ from.
 
 `tool/prepare_game_sounds.py` made the clips: the loudest four seconds at most,
 with soft fades and an even volume.
+
+## Buddy's recorded voice
+
+`assets/voice/` holds one AAC clip per sentence, named by
+`VoiceClips.name`, with `index.txt` listing what is recorded. Lines with any
+sentence missing use the phone's own voice. Made offline with the Kokoro-82M
+model (Apache 2.0 licence, voice `bf_emma`), so the clips may ship in a paid
+app. Do not swap in voices from free online tools without checking their
+licence. To add lines: run `tool/export_voice_lines_test.dart`, then
+`tool/record_voice.py`, then rebuild `index.txt`.

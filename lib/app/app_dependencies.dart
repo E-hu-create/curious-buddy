@@ -11,6 +11,7 @@ import '../data/services/purchase/purchase_service.dart';
 import '../data/services/shared_preferences_key_value_store.dart';
 import '../data/services/sound/sound_effects_service.dart';
 import '../data/services/voice/flutter_tts_service.dart';
+import '../data/services/voice/recorded_voice_service.dart';
 import '../data/services/voice/speech_recognition_service.dart';
 import '../data/services/voice/speech_to_text_recognition_service.dart';
 import '../data/services/voice/text_to_speech_service.dart';
@@ -46,7 +47,8 @@ class AppDependencies {
   /// store build.
   static const friendTest = bool.fromEnvironment('FRIEND_TEST');
 
-  /// Speech output uses the device's built-in engine. Speech input is
+  /// Speech output plays Buddy's recorded voice, falling back to the
+  /// device's built-in engine for lines not recorded. Speech input is
   /// tap-to-talk on Android's recogniser, on-device only unless a grown-up
   /// allows online recognition. Answers come from reviewed offline content.
   /// Progress and settings are saved on the device only.
@@ -56,7 +58,7 @@ class AppDependencies {
     // are fully open and never contact the store.
     const locksOn = (kReleaseMode && !friendTest) || previewLocks;
     return AppDependencies(
-      textToSpeech: FlutterTtsService(),
+      textToSpeech: RecordedVoiceService(fallback: FlutterTtsService()),
       speechRecognition: SpeechToTextRecognitionService(),
       progressRepository: LocalProgressRepository(store),
       settingsStore: store,

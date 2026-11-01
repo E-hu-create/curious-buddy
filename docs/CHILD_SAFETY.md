@@ -91,7 +91,9 @@ Release builds request exactly (verified in the merged manifest):
 
 ## Buddy's voice
 
-- Uses the phone's own text-to-speech engine (e.g. Google or Samsung TTS).
+- Plays recorded clips bundled in the app where they exist (offline, see
+  SOUNDS.md). Otherwise uses the phone's own text-to-speech engine (e.g. Google
+  or Samsung TTS).
   Google's engine is preferred when installed, with the best offline British
   voice, a natural pitch and a slightly slower pace. Network voices are never
   chosen, so Buddy's voice works without the internet.

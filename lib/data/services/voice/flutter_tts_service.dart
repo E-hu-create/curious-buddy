@@ -20,7 +20,7 @@ class FlutterTtsService implements TextToSpeechService {
     this.languages = const ['en-GB', 'en-US', 'en-AU', 'en-CA', 'en-IN'],
     this.speechRate = 0.43,
     this.pitch = 1.0,
-    Duration setupTimeout = const Duration(seconds: 8),
+    Duration setupTimeout = const Duration(seconds: 14),
     Duration Function(String text)? timeoutFor,
   }) : _createTts = createTts,
        _setupTimeout = setupTimeout,
@@ -113,7 +113,7 @@ class FlutterTtsService implements TextToSpeechService {
     try {
       final engines = await _tts.getEngines;
       if (engines is! List || !engines.contains(preferredEngine)) return;
-      await _tts.setEngine(preferredEngine).timeout(const Duration(seconds: 3));
+      await _tts.setEngine(preferredEngine).timeout(const Duration(seconds: 8));
     } on Exception catch (error) {
       debugPrint('TTS: keeping the default engine ($error)');
     }

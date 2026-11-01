@@ -1,9 +1,11 @@
 package io.github.e_hu_create.curiousbuddy
 
 import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Build
 import android.speech.SpeechRecognizer
+import io.flutter.FlutterInjector
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -13,6 +15,8 @@ class MainActivity : FlutterActivity() {
     private val sounds = mutableMapOf<String, Int>()
     private val clips = mutableMapOf<String, Int>()
     private var clipStream = 0
+    private var voicePlayer: MediaPlayer? = null
+    private var voiceResult: MethodChannel.Result? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -26,6 +30,23 @@ class MainActivity : FlutterActivity() {
                         Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
                             SpeechRecognizer.isOnDeviceRecognitionAvailable(this)
                     )
+                    else -> result.notImplemented()
+                }
+            }
+
+        // Buddy's recorded voice: one clip at a time, answered when it ends.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "curious_buddy/voice")
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "play" -> playVoice(
+                        call.argument<String>("asset")!!,
+                        (call.argument<Double>("speed") ?: 1.0).toFloat(),
+                        result,
+                    )
+                    "stop" -> {
+                        stopVoice()
+                        result.success(null)
+                    }
                     else -> result.notImplemented()
                 }
             }
@@ -55,6 +76,55 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    private fun playVoice(asset: String, speed: Float, result: MethodChannel.Result) {
+        stopVoice()
+        try {
+            val key = FlutterInjector.instance().flutterLoader().getLookupKeyForAsset(asset)
+            val player = MediaPlayer()
+            voicePlayer = player
+            voiceResult = result
+            assets.openFd(key).use { player.setDataSource(it.fileDescriptor, it.startOffset, it.length) }
+            player.setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build()
+            )
+            player.setOnCompletionListener { finishVoice(true) }
+            player.setOnErrorListener { _, what, _ ->
+                failVoice("playback error $what")
+                true
+            }
+            player.prepare()
+            // Changes speed, not pitch. Setting this also starts playback.
+            player.playbackParams = player.playbackParams.setSpeed(speed)
+            player.start()
+        } catch (error: Exception) {
+            failVoice(error.toString())
+        }
+    }
+
+    private fun stopVoice() = finishVoice(false)
+
+    private fun finishVoice(finished: Boolean) {
+        val result = voiceResult
+        voiceResult = null
+        releaseVoice()
+        result?.success(finished)
+    }
+
+    private fun failVoice(message: String) {
+        val result = voiceResult
+        voiceResult = null
+        releaseVoice()
+        result?.error("voice", message, null)
+    }
+
+    private fun releaseVoice() {
+        voicePlayer?.release()
+        voicePlayer = null
     }
 
     private fun setUpSounds() {
@@ -91,6 +161,7 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onDestroy() {
+        stopVoice()
         soundPool?.release()
         soundPool = null
         super.onDestroy()
